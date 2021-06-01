@@ -11,3 +11,7 @@
  #lpac-find-location-btn{
      margin: 20px 0;
  }
+
+ .hidden{
+     display: none;
+ }

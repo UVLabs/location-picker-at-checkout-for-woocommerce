@@ -36,7 +36,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Rename this for your plugin and update it as you release new versions.
  */
 define( 'LPAC_VERSION', '1.0.0' );
-define( 'LPAC_PLUGIN_NAME', 'LPAC' );
+define( 'LPAC_PLUGIN_NAME', 'lpac' );
 
 /**
  * The code that runs during plugin activation.

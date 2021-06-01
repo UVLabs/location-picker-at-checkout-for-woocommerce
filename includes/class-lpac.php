@@ -182,11 +182,13 @@ class Lpac {
 
 		// WooCommerce 
 
-		$this->loader->add_action( 'woocommerce_after_checkout_shipping_form', $plugin_public_display, 'lpac_output_map' );
+		$this->loader->add_action( 'woocommerce_after_checkout_shipping_form', $plugin_public_display, 'lpac_output_map_checkout_page' );
 		$this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public_display, 'lpac_long_and_lat_inputs' );
 		// TODO change the location of this method to be admin facing.
 		$this->loader->add_action( 'woocommerce_admin_order_data_after_shipping_address', $plugin_public_display, 'lpac_display_lpac_admin_order_meta', 10, 1 );
+		
 		$this->loader->add_action( 'woocommerce_checkout_update_order_meta', $plugin_public_display, 'lpac_save_cords_order_meta' );
+		$this->loader->add_action( 'woocommerce_order_details_after_order_table', $plugin_public_display, 'lpac_output_map_past_order_page' );
 
 	}
 
