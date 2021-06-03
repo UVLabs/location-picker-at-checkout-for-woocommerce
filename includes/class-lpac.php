@@ -114,12 +114,18 @@ class Lpac {
 		/**
 		 * The class responsible for defining all settings of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-lpac-admin-settings.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/admin/class-lpac-admin-settings.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-lpac-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/admin/class-lpac-admin.php';
+
+		/**
+		 * The class responsible for defining all actions that occur in the admin-facing
+		 * side of the site.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/admin/partials/class-lpac-admin-display.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -127,11 +133,6 @@ class Lpac {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-lpac-public.php';
 
-		/**
-		 * The class responsible for defining all actions that occur in the admin-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/class-lpac-admin-display.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
