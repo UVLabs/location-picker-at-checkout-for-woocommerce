@@ -50,9 +50,38 @@ class Lpac_Admin_Settings{
             
         $lpac_settings[] = array(
             'name'     => __( 'Google Maps API Key', 'lpac' ),
-            'desc_tip' => __( 'Enter the API key from google console..', 'lpac' ),
+            'desc_tip' => __( 'Enter the API key from Google console.', 'lpac' ),
             'id'       => 'lpac_google_maps_api_key',
             'type'     => 'text',
+            'css'      => 'min-width:300px;',
+        );
+            
+        $lpac_settings[] = array(
+            'name'     => __( 'Default Coordinates', 'lpac' ),
+            'desc_tip' => __( 'Enter the default latitude and logitude that will be fetched every time the map loads.', 'lpac' ),
+            'desc' => __( 'Enter the default latitude and logitude that will be fetched every time the map loads. Be sure to include the comma.', 'lpac' ),
+            'id'       => 'lpac_map_starting_coordinates',
+            'placeholder' => '14.024519,-60.974876',
+            'type'     => 'text',
+            'css'      => 'min-width:300px;',
+        );
+            
+        $lpac_settings[] = array(
+            'name'     => __( 'Default Zoom', 'lpac' ),
+            'desc_tip' => __( 'Recommended number is 16.', 'lpac' ),
+            'desc'     => __( 'Enter the default zoom that will be used every time the map loads.', 'lpac' ),
+            'id'       => 'lpac_general_map_zoom_level',
+            'placeholder' => '16',
+            'type'     => 'number',
+            'css'      => 'max-width:80px;',
+        );
+            
+        $lpac_settings[] = array(
+            'name'     => __( 'Enable Clickable Icons', 'lpac' ),
+            'desc_tip' => __( 'Recommended setting: Disabled', 'lpac' ),
+            'desc'     => __( 'Should customers be able to click on icons of different locations that appear on Google Maps?', 'lpac' ),
+            'id'       => 'lpac_allow_clicking_on_map_icons',
+            'type'     => 'checkbox',
             'css'      => 'min-width:300px;',
         );
 
@@ -74,6 +103,7 @@ class Lpac_Admin_Settings{
 			'name'     => __( 'Checkout Page Map Height (in px)', 'lpac' ),
 			'desc_tip' => __( 'Enter the height of map you\'d like.', 'lpac' ),
 			'id'       => 'lpac_checkout_page_map_height',
+            'placeholder' => '400',
 			'type'     => 'number',
 			'css'      => 'max-width:80px;',
 		);
@@ -82,6 +112,7 @@ class Lpac_Admin_Settings{
 			'name'     => __( 'Checkout Page Map Width (in %)', 'lpac' ),
 			'desc_tip' => __( 'Enter the width of map you\'d like.', 'lpac' ),
 			'id'       => 'lpac_checkout_page_map_width',
+            'placeholder' => '100',
 			'type'     => 'number',
 			'css'      => 'max-width:80px;',
 		);
@@ -99,6 +130,7 @@ class Lpac_Admin_Settings{
 			'name'     => __( 'Order Received Page Map Height (in px)', 'lpac' ),
 			'desc_tip' => __( 'Enter the height of map you\'d like.', 'lpac' ),
 			'id'       => 'lpac_order_received_page_map_height',
+            'placeholder' => '400',
 			'type'     => 'number',
 			'css'      => 'max-width:80px;',
 		);
@@ -107,6 +139,7 @@ class Lpac_Admin_Settings{
 			'name'     => __( 'Order Received Page Map Width (in px)', 'lpac' ),
 			'desc_tip' => __( 'Enter the width of map you\'d like.', 'lpac' ),
 			'id'       => 'lpac_order_received_page_map_width',
+            'placeholder' => '100',
 			'type'     => 'number',
 			'css'      => 'max-width:80px;',
 		);
@@ -124,6 +157,7 @@ class Lpac_Admin_Settings{
 			'name'     => __( 'View Order Page Map Height (in px)', 'lpac' ),
 			'desc_tip' => __( 'Enter the height of map you\'d like.', 'lpac' ),
 			'id'       => 'lpac_view_order_page_map_height',
+            'placeholder' => '400',
 			'type'     => 'number',
 			'css'      => 'max-width:80px;',
 		);
@@ -132,6 +166,7 @@ class Lpac_Admin_Settings{
 			'name'     => __( 'View Order Page Map Width (in px)', 'lpac' ),
 			'desc_tip' => __( 'Enter the height of map you\'d like.', 'lpac' ),
 			'id'       => 'lpac_view_order_page_map_width',
+            'placeholder' => '100',
 			'type'     => 'number',
 			'css'      => 'max-width:80px;',
 		);

@@ -1,8 +1,8 @@
 function initMap() {
 
     const map = new google.maps.Map(document.querySelector(".lpac-map"), {
-      zoom: 8,
-      center: { lat: 14.024519, lng: -60.974876 },
+      zoom: zoom_level,
+      center: { lat: latitude, lng: longitude },
     });
 
     const geocoder = new google.maps.Geocoder();
@@ -12,12 +12,15 @@ function initMap() {
       geocodeLatLng(geocoder, map, infowindow);
     });
 
+    // Allow this if user decides to have plugin automatically detect location
+    // geocodeLatLng(geocoder, map, infowindow);
+
   }
 
   function getCoordinates() {
         
     return new Promise(function(resolve, reject) {
-          //TODO return reject if navigator not preset
+          //TODO return reject if navigator not present
     if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(resolve, reject);
     }

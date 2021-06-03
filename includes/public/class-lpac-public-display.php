@@ -11,7 +11,7 @@
  * @package    Lpac
  * @subpackage Lpac/public/partials
  */
-class Lpac_Public_Display {
+class Lpac_Public_Display extends Lpac_Public{
 
 	private $lpac_google_maps_link;
 
@@ -49,8 +49,24 @@ MAP;
 
 		echo $markup;
 
-		$lpac_google_maps_resource = $this->lpac_google_maps_link . $this->lpac_google_api_key .  $this->lpac_google_maps_options;
+		$js_variables = $this->lpac_map_settings();
 
+		// Extract array into variables to pass to JS
+		// See @ Lpac_Public/lpac_map_settings
+		extract( $js_variables );
+
+		$global_variables = <<<GLOBALVARS
+		const latitude = $latitude;
+		const longitude = $longitude;
+		const zoom_level = $zoom_level;
+		const clickable_icons = $clickable_icons;
+GLOBALVARS;
+		
+		// Add inline global JS so that we can use data fetched using PHP inside JS
+		wp_add_inline_script( LPAC_PLUGIN_NAME . 'map', $global_variables, 'before' );
+		
+		// Enqueue the Google Maps from CDN
+		$lpac_google_maps_resource = $this->lpac_google_maps_link . $this->lpac_google_api_key .  $this->lpac_google_maps_options;
 		wp_enqueue_script( LPAC_PLUGIN_NAME . 'google-maps-js', $lpac_google_maps_resource, '', LPAC_VERSION, false );
 
 	}
@@ -110,7 +126,10 @@ MAP;
 		
 		$lpac_google_maps_resource = $this->lpac_google_maps_link . $this->lpac_google_api_key .  $this->lpac_google_maps_options;
 		
+		// Add inline global JS so that we can use data fetched using PHP inside JS
 		wp_add_inline_script( LPAC_PLUGIN_NAME . 'base-map', 'const saved_coordinates=' . json_encode($data), 'before' );
+		
+		// Enqueue the Google Maps from CDN
 		wp_enqueue_script( LPAC_PLUGIN_NAME . 'base-google-maps-js', $lpac_google_maps_resource, '', LPAC_VERSION, false );
 
 	}
