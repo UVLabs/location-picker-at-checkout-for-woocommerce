@@ -50,7 +50,7 @@ class Lpac_Public {
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		$this->version     = $version;
 
 	}
 
@@ -101,11 +101,11 @@ class Lpac_Public {
 		// $show_on_view_order_page = Lpac_Functions_Helper::lpac_show_map('lpac_display_map_on_view_order_page');
 		// $show_on_order_received_page = Lpac_Functions_Helper::lpac_show_map('lpac_display_map_on_order_received_page');
 
-		if( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) ){
+		if ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) ) {
 			wp_enqueue_script( $this->plugin_name . 'base-map', plugin_dir_url( __FILE__ ) . 'js/base-map.js', '', $this->version, true );
 		}
 
-		if( is_checkout() && !is_wc_endpoint_url( 'order-received' ) ){
+		if ( is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
 			wp_enqueue_script( $this->plugin_name . 'map', plugin_dir_url( __FILE__ ) . 'js/map.js', '', $this->version, true );
 		}
 
@@ -122,8 +122,8 @@ class Lpac_Public {
 		$starting_coordinates = apply_filters( 'lpac_map_starting_coordinates', $starting_coordinates );
 
 		$coordinates_parts = explode( ',', $starting_coordinates );
-		$latitude = ! empty( $coordinates_parts[0] ) ? $coordinates_parts[0] : 14.024519;
-		$longitude = ! empty( $coordinates_parts[1] ) ? $coordinates_parts[1] : -60.974876;
+		$latitude          = ! empty( $coordinates_parts[0] ) ? $coordinates_parts[0] : 14.024519;
+		$longitude         = ! empty( $coordinates_parts[1] ) ? $coordinates_parts[1] : -60.974876;
 
 		$zoom_level = get_option( 'lpac_general_map_zoom_level', '16' );
 		$zoom_level = apply_filters( 'lpac_general_map_zoom_level', $zoom_level );
@@ -132,10 +132,10 @@ class Lpac_Public {
 		$clickable_icons = apply_filters( 'lpac_allow_clicking_on_map_icons', $clickable_icons );
 
 		$data = array(
-			'latitude' => $latitude,
-			'longitude' => $longitude,
-			'zoom_level' 		   => $zoom_level,
-			'clickable_icons' 	   => $clickable_icons === 'yes' ? true : false,
+			'latitude'        => $latitude,
+			'longitude'       => $longitude,
+			'zoom_level'      => $zoom_level,
+			'clickable_icons' => $clickable_icons === 'yes' ? true : false,
 		);
 
 		return $data;

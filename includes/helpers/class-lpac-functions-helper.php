@@ -14,19 +14,19 @@
 
 class Lpac_Functions_Helper {
 
-/**
- * Shows a feature if the setting is enabled
- *
- * @since    1.0.0
- */
-public static function lpac_show_map( $option ){
+	/**
+	 * Shows a feature if the setting is enabled
+	 *
+	 * @since    1.0.0
+	 */
+	public static function lpac_show_map( $option ) {
 
-    $show = get_option($option, true);
+		$show = get_option( $option, true );
 
-    if( $show !== 'yes' ){
-        return false;
-    }
+		if ( $show !== 'yes' ) {
+			return false;
+		}
 
-}
+	}
 
 }

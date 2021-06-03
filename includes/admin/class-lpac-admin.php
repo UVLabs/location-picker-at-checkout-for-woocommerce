@@ -9,7 +9,7 @@
  * @package    Lpac
  * @subpackage Lpac/admin
  * @author     Uriahs Victor <info@soaringleads.com>
- * 
+ *
  */
 class Lpac_Admin {
 
@@ -41,7 +41,7 @@ class Lpac_Admin {
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		$this->version     = $version;
 
 	}
 
