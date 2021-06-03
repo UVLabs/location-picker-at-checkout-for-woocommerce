@@ -125,7 +125,7 @@ class Lpac {
 		 * The class responsible for defining all actions that occur in the admin-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/admin/partials/class-lpac-admin-display.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/admin/class-lpac-admin-display.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -204,7 +204,7 @@ class Lpac {
 		$this->loader->add_action( 'woocommerce_after_checkout_shipping_form', $plugin_public_display, 'lpac_output_map_checkout_page' );
 		$this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public_display, 'lpac_long_and_lat_inputs' );
 		$this->loader->add_action( 'woocommerce_checkout_update_order_meta', $plugin_public_display, 'lpac_save_cords_order_meta' );
-		$this->loader->add_action( 'woocommerce_order_details_after_order_table', $plugin_public_display, 'lpac_output_map_past_order_page' );
+		$this->loader->add_action( 'woocommerce_order_details_after_order_table', $plugin_public_display, 'lpac_output_map_on_order_details_page' );
 
 	}
 

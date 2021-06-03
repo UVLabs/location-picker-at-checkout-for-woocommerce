@@ -35,17 +35,18 @@ class Lpac_Admin_Settings{
     public function lpac_plugin_settings( $settings, $current_section ){
 
     /**
-	 * Check the current section is what we want
+	 * Check if the current section is what we want
 	 **/
 	if ( $current_section == 'lpac_settings' ) {
 		
         $lpac_settings = array();
 
-		$lpac_settings[] = array( 'name' => __( 'LPAC Settings', 'lpac' ), 
-                                    'id'   => 'lpac',
-                                    'type' => 'title', 
-                                    'desc' => __( 'Use the below options to change the settings of LPAC', 'lpac' )
-                                ); 
+		$lpac_settings[] = array( 
+            'name' => __( 'LPAC Settings', 'lpac' ), 
+            'id'   => 'lpac',
+            'type' => 'title', 
+            'desc' => __( 'Use the below options to change the settings of LPAC', 'lpac' )
+            ); 
 
         $lpac_settings[] = array(
 			'name'     => __( 'Show Map on the Order Received Page', 'text-domain' ),
@@ -65,9 +66,10 @@ class Lpac_Admin_Settings{
 			'desc'     => __( 'Enable', 'lpac' ),
 		);
 
-        $lpac_settings[] = array( 'type' => 'sectionend', 
-                                  'id' => 'lpac' 
-                                );
+        $lpac_settings[] = array( 
+            'type' => 'sectionend', 
+            'id' => 'lpac' 
+        );
 
 		return $lpac_settings;		
 

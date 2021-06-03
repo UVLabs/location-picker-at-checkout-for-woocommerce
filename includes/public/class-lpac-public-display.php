@@ -62,7 +62,7 @@ MAP;
  *
  * @since    1.0.0
  */
-public function lpac_output_map_past_order_page(){
+public function lpac_output_map_on_order_details_page(){
 
 	global $woocommerce, $wp;
 
