@@ -123,6 +123,12 @@ class Lpac {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-lpac-public.php';
 
 		/**
+		 * The class responsible for defining all actions that occur in the admin-facing
+		 * side of the site.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/class-lpac-admin-display.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
@@ -159,9 +165,13 @@ class Lpac {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new Lpac_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin_display = new Lpac_Admin_Display();
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		// Display map on order details page
+		$this->loader->add_action( 'woocommerce_admin_order_data_after_shipping_address', $plugin_admin_display, 'lpac_display_lpac_admin_order_meta', 10, 1 );
+		
 
 	}
 
@@ -184,9 +194,6 @@ class Lpac {
 
 		$this->loader->add_action( 'woocommerce_after_checkout_shipping_form', $plugin_public_display, 'lpac_output_map_checkout_page' );
 		$this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public_display, 'lpac_long_and_lat_inputs' );
-		// TODO change the location of this method to be admin facing.
-		$this->loader->add_action( 'woocommerce_admin_order_data_after_shipping_address', $plugin_public_display, 'lpac_display_lpac_admin_order_meta', 10, 1 );
-		
 		$this->loader->add_action( 'woocommerce_checkout_update_order_meta', $plugin_public_display, 'lpac_save_cords_order_meta' );
 		$this->loader->add_action( 'woocommerce_order_details_after_order_table', $plugin_public_display, 'lpac_output_map_past_order_page' );
 

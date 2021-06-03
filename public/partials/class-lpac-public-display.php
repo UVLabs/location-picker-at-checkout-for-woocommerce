@@ -141,27 +141,4 @@ public function lpac_save_cords_order_meta( $order_id ) {
     update_post_meta( $order_id, '_lpac_longitude', sanitize_text_field( $_POST['lpac_longitude'] ) );
 }
 
-/**
- * Displays the view on map button on the admin order page.
- *
- * @since    1.0.0
- * @param array $order The order object.
- */
-// TODO Move this to admin display
-public function lpac_display_lpac_admin_order_meta($order){
-	
-	$order_meta_text = __('Customer Location', 'lpac');
-	$view_on_map_text = __('View on Map', 'lpac');
-	$latitude = get_post_meta( $order->get_id(), '_lpac_latitude', true );
-	$longitude = get_post_meta( $order->get_id(), '_lpac_longitude', true );
-	$map_link = apply_filters('lpac_map_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
-
-	$markup = <<<LOCATIONMETA
-	<p><strong>$order_meta_text:</strong></p>
-	<p><a href="$map_link" target="_blank"><button style="cursor:pointer" type='button'>$view_on_map_text</button></a></p>
-LOCATIONMETA;
-
-echo $markup;
-}
-
 }
