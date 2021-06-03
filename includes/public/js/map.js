@@ -1,6 +1,6 @@
 function initMap() {
 
-    const map = new google.maps.Map(document.getElementById("lpac-map"), {
+    const map = new google.maps.Map(document.querySelector(".lpac-map"), {
       zoom: 8,
       center: { lat: 14.024519, lng: -60.974876 },
     });

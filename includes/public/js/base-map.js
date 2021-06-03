@@ -4,7 +4,7 @@ const longitude = saved_coordinates.longitude;
 
 function initMap() {
 
-    const map = new google.maps.Map(document.getElementById("lpac-map"), {
+    const map = new google.maps.Map(document.querySelector(".lpac-map"), {
         zoom: 16,
         clickableIcons: false,
         mapId: 'a64c229d17399b09',

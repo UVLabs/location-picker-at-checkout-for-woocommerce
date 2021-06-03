@@ -98,6 +98,9 @@ class Lpac_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/lpac-public.js', array( 'jquery' ), $this->version, false );
 
+		// $show_on_view_order_page = Lpac_Functions_Helper::lpac_show_map('lpac_display_map_on_view_order_page');
+		// $show_on_order_received_page = Lpac_Functions_Helper::lpac_show_map('lpac_display_map_on_order_received_page');
+
 		if( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) ){
 			wp_enqueue_script( $this->plugin_name . 'base-map', plugin_dir_url( __FILE__ ) . 'js/base-map.js', '', $this->version, true );
 		}

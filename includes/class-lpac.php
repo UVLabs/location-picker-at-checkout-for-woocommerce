@@ -204,9 +204,33 @@ class Lpac {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'wp_head', $plugin_public_display, 'lpac_output_map_custom_styles' );
 
 		// WooCommerce 
-		$this->loader->add_action( 'woocommerce_after_checkout_shipping_form', $plugin_public_display, 'lpac_output_map_checkout_page' );
+
+		$location = get_option( 'lpac_checkout_map_orientation' );
+		
+		switch ( $location ) {
+			case 'billing_address_area_top':
+				$location = 'woocommerce_before_checkout_billing_form';
+				break;
+			case 'billing_address_area_bottom':
+				$location = 'woocommerce_after_checkout_billing_form';
+				break;
+			case 'shipping_address_area_top':
+				$location = 'woocommerce_before_checkout_shipping_form';
+				break;
+			case 'shipping_address_area_bottom':
+				$location = 'woocommerce_after_checkout_shipping_form';
+				break;
+			default:
+				$location = 'woocommerce_after_checkout_shipping_form';
+				break;
+		}
+
+		$location = apply_filters( 'lpac_checkout_map_orientation', $location );
+
+		$this->loader->add_action( $location, $plugin_public_display, 'lpac_output_map_on_checkout_page' );
 		$this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public_display, 'lpac_long_and_lat_inputs' );
 		$this->loader->add_action( 'woocommerce_checkout_update_order_meta', $plugin_public_display, 'lpac_save_cords_order_meta' );
 		$this->loader->add_action( 'woocommerce_order_details_after_order_table', $plugin_public_display, 'lpac_output_map_on_order_details_page' );
