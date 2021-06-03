@@ -112,6 +112,11 @@ class Lpac {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-lpac-i18n.php';
 
 		/**
+		 * The class responsible for defining all settings of the plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-lpac-admin-settings.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-lpac-admin.php';
@@ -166,12 +171,16 @@ class Lpac {
 
 		$plugin_admin = new Lpac_Admin( $this->get_plugin_name(), $this->get_version() );
 		$plugin_admin_display = new Lpac_Admin_Display();
+		$plugin_admin_settings = new Lpac_Admin_Settings();
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		// Display map on order details page
 		$this->loader->add_action( 'woocommerce_admin_order_data_after_shipping_address', $plugin_admin_display, 'lpac_display_lpac_admin_order_meta', 10, 1 );
 		
+		// WooCommerce 
+		$this->loader->add_filter( 'woocommerce_get_sections_shipping', $plugin_admin_settings, 'lpac_add_settings_section', 10, 1 );
+		$this->loader->add_filter( 'woocommerce_get_settings_shipping', $plugin_admin_settings, 'lpac_plugin_settings', 10, 2 );
 
 	}
 
@@ -191,7 +200,6 @@ class Lpac {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
 		// WooCommerce 
-
 		$this->loader->add_action( 'woocommerce_after_checkout_shipping_form', $plugin_public_display, 'lpac_output_map_checkout_page' );
 		$this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public_display, 'lpac_long_and_lat_inputs' );
 		$this->loader->add_action( 'woocommerce_checkout_update_order_meta', $plugin_public_display, 'lpac_save_cords_order_meta' );
