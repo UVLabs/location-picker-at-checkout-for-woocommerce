@@ -128,11 +128,16 @@ class Lpac {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/admin/class-lpac-admin-display.php';
 
 		/**
+		 * The class responsible for defining static helper functions that might
+		 * be used in multiple classes.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/helpers/class-lpac-functions-helper.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/public/class-lpac-public.php';
-
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing

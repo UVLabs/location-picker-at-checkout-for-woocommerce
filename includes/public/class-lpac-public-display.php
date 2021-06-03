@@ -58,7 +58,7 @@ MAP;
 }
 
 /**
- * Outputs map on the WooCommerce past order details page.
+ * Outputs map on the WooCommerce view order page and order received page.
  *
  * @since    1.0.0
  */
@@ -66,7 +66,19 @@ public function lpac_output_map_on_order_details_page(){
 
 	global $woocommerce, $wp;
 
+	// If this isn't the order received page shown after a purchase, or the view order page shown on the user account, then bail.
 	if( ! is_wc_endpoint_url( 'view-order' ) && ! is_wc_endpoint_url( 'order-received' ) ){
+		return;
+	}
+
+	$show_on_view_order_page = Lpac_Functions_Helper::lpac_show_map('lpac_display_map_on_view_order_page');
+	$show_on_order_received_page = Lpac_Functions_Helper::lpac_show_map('lpac_display_map_on_order_recieved_page');
+
+	if( is_wc_endpoint_url( 'view-order' ) && $show_on_view_order_page === false ){
+		return;
+	}
+
+	if( is_wc_endpoint_url( 'order-received' ) && $show_on_order_received_page === false ){
 		return;
 	}
 

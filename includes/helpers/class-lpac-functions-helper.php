@@ -15,11 +15,17 @@
 class Lpac_Functions_Helper {
 
 /**
- * Outputs map on the WooCommerce past order details page.
+ * Shows a feature if the setting is enabled
  *
  * @since    1.0.0
  */
-public function lpac_show(){
+public static function lpac_show_map( $option ){
+
+    $show = get_option($option, true);
+
+    if( $show !== 'yes' ){
+        return false;
+    }
 
 }
 

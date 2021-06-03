@@ -60,7 +60,7 @@ class Lpac_Admin_Settings{
         $lpac_settings[] = array(
 			'name'     => __( 'Show Map on the Order Details Page', 'text-domain' ),
 			'desc_tip' => __( 'This option displays a map view on the order details page in the customer account.', 'lpac' ),
-			'id'       => 'lpac_display_map_on_order_details_page',
+			'id'       => 'lpac_display_map_on_view_order_page',
 			'type'     => 'checkbox',
 			'css'      => 'min-width:300px;',
 			'desc'     => __( 'Enable', 'lpac' ),
