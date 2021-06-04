@@ -182,8 +182,8 @@ MAP;
 
 		if ( is_wc_endpoint_url( 'order-received' ) ) {
 
-			$order_received_map_height = get_option( 'lpac_order_received_page_map_height' );
-			$order_received_map_width  = get_option( 'lpac_order_received_page_map_width' );
+			$order_received_map_height = get_option( 'lpac_order_received_page_map_height', 400 );
+			$order_received_map_width  = get_option( 'lpac_order_received_page_map_width', 100 );
 
 			$style = "height: {$order_received_map_height}px !important; width: {$order_received_map_width}% !important; ";
 
@@ -191,8 +191,8 @@ MAP;
 
 		if ( is_wc_endpoint_url( 'view-order' ) ) {
 
-			$view_order_map_height = get_option( 'lpac_view_order_page_map_height' );
-			$view_order_map_width  = get_option( 'lpac_view_order_page_map_width' );
+			$view_order_map_height = get_option( 'lpac_view_order_page_map_height', 400 );
+			$view_order_map_width  = get_option( 'lpac_view_order_page_map_width', 100 );
 
 			$style = "height: {$view_order_map_height}px !important; width: {$view_order_map_width}% !important; ";
 
@@ -201,8 +201,8 @@ MAP;
 		// We have to set the condition for !is_wc_endpoint_url() or else this setting would also apply to the order-received page
 		if ( is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
 
-			$checkout_map_height = get_option( 'lpac_checkout_page_map_height' );
-			$checkout_map_width  = get_option( 'lpac_checkout_page_map_width' );
+			$checkout_map_height = get_option( 'lpac_checkout_page_map_height', 400 );
+			$checkout_map_width  = get_option( 'lpac_checkout_page_map_width', 100 );
 
 			$style = "height: {$checkout_map_height}px !important; width: {$checkout_map_width}% !important; ";
 

@@ -122,13 +122,13 @@ class Lpac_Public {
 		$starting_coordinates = apply_filters( 'lpac_map_starting_coordinates', $starting_coordinates );
 
 		$coordinates_parts = explode( ',', $starting_coordinates );
-		$latitude          = ! empty( $coordinates_parts[0] ) ? $coordinates_parts[0] : 14.024519;
-		$longitude         = ! empty( $coordinates_parts[1] ) ? $coordinates_parts[1] : -60.974876;
+		$latitude          = ! empty( $coordinates_parts[0] ) ? (float) $coordinates_parts[0] : (float) 14.024519;
+		$longitude         = ! empty( $coordinates_parts[1] ) ? (float) $coordinates_parts[1] : (float) -60.974876;
 
-		$zoom_level = get_option( 'lpac_general_map_zoom_level', '16' );
+		$zoom_level = get_option( 'lpac_general_map_zoom_level', 16 );
 		$zoom_level = apply_filters( 'lpac_general_map_zoom_level', $zoom_level );
 
-		$clickable_icons = get_option( 'lpac_allow_clicking_on_map_icons', '16' );
+		$clickable_icons = get_option( 'lpac_allow_clicking_on_map_icons', 'no' );
 		$clickable_icons = apply_filters( 'lpac_allow_clicking_on_map_icons', $clickable_icons );
 
 		$data = array(
