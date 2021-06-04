@@ -50,7 +50,8 @@ class Lpac_Admin_Settings {
 
 			$lpac_settings[] = array(
 				'name'     => __( 'Google Maps API Key', 'lpac' ),
-				'desc_tip' => __( 'Enter the API key from Google console.', 'lpac' ),
+				'desc_tip' => __( 'Enter the API key from Google cloud console.', 'lpac' ),
+                'desc'     => __( 'Enter the API you copied from the Google Cloud Console. <a href="#">Learn More >></a>', 'lpac' ),
 				'id'       => 'lpac_google_maps_api_key',
 				'type'     => 'text',
 				'css'      => 'min-width:300px;',
