@@ -128,14 +128,14 @@ class Lpac_Public {
 		$zoom_level = get_option( 'lpac_general_map_zoom_level', 16 );
 		$zoom_level = apply_filters( 'lpac_general_map_zoom_level', $zoom_level );
 
-		$clickable_icons = get_option( 'lpac_allow_clicking_on_map_icons', 'no' );
+		$clickable_icons = get_option( 'lpac_allow_clicking_on_map_icons', 'yes' );
 		$clickable_icons = apply_filters( 'lpac_allow_clicking_on_map_icons', $clickable_icons );
 
 		$data = array(
 			'latitude'        => $latitude,
 			'longitude'       => $longitude,
 			'zoom_level'      => $zoom_level,
-			'clickable_icons' => $clickable_icons === 'yes' ? true : false,
+			'clickable_icons' => $clickable_icons === 'yes' ? "true" : "false",
 		);
 
 		return $data;

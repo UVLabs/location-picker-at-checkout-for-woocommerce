@@ -3,6 +3,7 @@ function initMap() {
 	const map = new google.maps.Map(
 		document.querySelector( ".lpac-map" ),
 		{
+            clickableIcons: clickable_icons,
 			zoom: zoom_level,
 			center: { lat: latitude, lng: longitude },
 		}

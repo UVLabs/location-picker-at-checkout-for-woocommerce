@@ -208,7 +208,7 @@ class Lpac {
 
 		// WooCommerce
 
-		$location = get_option( 'lpac_checkout_map_orientation' );
+		$location = get_option( 'lpac_checkout_map_orientation', 'shipping_address_area_bottom' );
 
 		switch ( $location ) {
 			case 'billing_address_area_top':

@@ -56,6 +56,7 @@ MAP;
 		extract( $js_variables );
 
 		$global_variables = <<<GLOBALVARS
+		// LPAC Map Options
 		const latitude = $latitude;
 		const longitude = $longitude;
 		const zoom_level = $zoom_level;
@@ -127,6 +128,8 @@ MAP;
 		$lpac_google_maps_resource = $this->lpac_google_maps_link . $this->lpac_google_api_key . $this->lpac_google_maps_options;
 
 		// Add inline global JS so that we can use data fetched using PHP inside JS
+		// TODO add remaining map options like for checkout map and also refactor this to resemble
+		// Checkout map options see @lpac_output_map_on_checkout_page()
 		wp_add_inline_script( LPAC_PLUGIN_NAME . 'base-map', 'const saved_coordinates=' . json_encode( $data ), 'before' );
 
 		// Enqueue the Google Maps from CDN
