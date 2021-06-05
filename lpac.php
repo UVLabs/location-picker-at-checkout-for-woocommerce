@@ -23,6 +23,8 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       lpac
  * Domain Path:       /languages
+ * WC requires at least: 3.0
+ * WC tested up to: 5.3
  */
 
 // If this file is called directly, abort.
