@@ -1,3 +1,5 @@
 todo.txt
 vendor
 .DS_Store
+dist
+artifact
