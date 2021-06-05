@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://soaringleads.com
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Allow customers to choose their shipping location using a map at checkout.
  * Version:           1.0.0
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com

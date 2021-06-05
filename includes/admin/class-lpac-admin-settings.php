@@ -60,7 +60,7 @@ class Lpac_Admin_Settings {
 			$lpac_settings[] = array(
 				'name'        => __( 'Default Coordinates', 'lpac' ),
 				'desc_tip'    => __( 'Enter the default latitude and logitude that will be fetched every time the map loads.', 'lpac' ),
-				'desc'        => __( 'Enter the default latitude and logitude that will be fetched every time the map loads. Be sure to include the comma.', 'lpac' ),
+				'desc'        => __( 'Enter the default latitude and logitude that will be fetched every time the map loads. You can find the coordinates for a location <a href="https://www.latlong.net/" target="_blank">here >></a>. Be sure to include the comma when adding your coordinates above.', 'lpac' ),
 				'id'          => 'lpac_map_starting_coordinates',
 				'placeholder' => '14.024519,-60.974876',
 				'type'        => 'text',
@@ -73,6 +73,7 @@ class Lpac_Admin_Settings {
 				'desc'        => __( 'Enter the default zoom that will be used every time the map loads.', 'lpac' ),
 				'id'          => 'lpac_general_map_zoom_level',
 				'placeholder' => '16',
+				'default'     => 3,
 				'type'        => 'number',
 				'css'         => 'max-width:80px;',
 			);
@@ -100,7 +101,8 @@ class Lpac_Admin_Settings {
 				'desc'        => __( 'Background color of map container (visible while map is loading).', 'lpac' ),
 				'id'          => 'lpac_map_background_color',
 				'type'        => 'text',
-				'placeholder' => '#eeeeee',
+				'placeholder' => '#EEEEEE',
+				'default'     => '#EEEEEE',
 				'css'         => 'max-width:80px;',
 			);
 
@@ -110,10 +112,10 @@ class Lpac_Admin_Settings {
 				'id'       => 'lpac_checkout_map_orientation',
 				'type'     => 'select',
 				'options'  => array(
+					'shipping_address_area_top'    => __( 'Shipping Address Area - Top', 'lpac' ),
+					'shipping_address_area_bottom' => __( 'Shipping Address Area - Bottom (recommended)', 'lpac' ),
 					'billing_address_area_top'     => __( 'Billing Address Area - Top', 'lpac' ),
 					'billing_address_area_bottom'  => __( 'Billing Address Area - Bottom', 'lpac' ),
-					'shipping_address_area_top'    => __( 'Shipping Address Area - Top', 'lpac' ),
-					'shipping_address_area_bottom' => __( 'Shipping Address Area - Bottom', 'lpac' ),
 				),
 				'css'      => 'min-width:300px;',
 			);
@@ -123,6 +125,7 @@ class Lpac_Admin_Settings {
 				'desc_tip'    => __( 'Enter the height of map you\'d like.', 'lpac' ),
 				'id'          => 'lpac_checkout_page_map_height',
 				'placeholder' => '400',
+				'default'     => 400,
 				'type'        => 'number',
 				'css'         => 'max-width:80px;',
 			);
@@ -132,6 +135,7 @@ class Lpac_Admin_Settings {
 				'desc_tip'    => __( 'Enter the width of map you\'d like.', 'lpac' ),
 				'id'          => 'lpac_checkout_page_map_width',
 				'placeholder' => '100',
+				'default'     => 100,
 				'type'        => 'number',
 				'css'         => 'max-width:80px;',
 			);
@@ -150,6 +154,7 @@ class Lpac_Admin_Settings {
 				'desc_tip'    => __( 'Enter the height of map you\'d like.', 'lpac' ),
 				'id'          => 'lpac_order_received_page_map_height',
 				'placeholder' => '400',
+				'default'     => 400,
 				'type'        => 'number',
 				'css'         => 'max-width:80px;',
 			);
@@ -159,6 +164,7 @@ class Lpac_Admin_Settings {
 				'desc_tip'    => __( 'Enter the width of map you\'d like.', 'lpac' ),
 				'id'          => 'lpac_order_received_page_map_width',
 				'placeholder' => '100',
+				'default'     => 100,
 				'type'        => 'number',
 				'css'         => 'max-width:80px;',
 			);
@@ -177,6 +183,7 @@ class Lpac_Admin_Settings {
 				'desc_tip'    => __( 'Enter the height of map you\'d like.', 'lpac' ),
 				'id'          => 'lpac_view_order_page_map_height',
 				'placeholder' => '400',
+				'default'     => 400,
 				'type'        => 'number',
 				'css'         => 'max-width:80px;',
 			);
@@ -186,8 +193,16 @@ class Lpac_Admin_Settings {
 				'desc_tip'    => __( 'Enter the height of map you\'d like.', 'lpac' ),
 				'id'          => 'lpac_view_order_page_map_width',
 				'placeholder' => '100',
+				'default'     => 100,
 				'type'        => 'number',
 				'css'         => 'max-width:80px;',
+			);
+
+			$lpac_settings[] = array(
+				'name'     => __( 'Housekeeping', 'lpac' ),
+				'desc_tip' => __( 'Delete all plugin settings on uninstall.', 'lpac' ),
+				'id'       => 'lpac_delete_settings_on_uninstall',
+				'type'     => 'checkbox',
 			);
 
 			$lpac_settings[] = array(
