@@ -45,7 +45,7 @@ class Lpac_Admin_Settings {
 				'name' => __( 'LPAC Settings', 'lpac' ),
 				'id'   => 'lpac',
 				'type' => 'title',
-				'desc' => __( 'Use the below options to change the settings of LPAC', 'lpac' ),
+				'desc' => __( 'Use the below options to change the plugin settings.', 'lpac' ),
 			);
 
 			$lpac_settings[] = array(
