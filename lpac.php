@@ -13,7 +13,7 @@
  * @package           Lpac
  *
  * @wordpress-plugin
- * Plugin Name:       Location Picker At Checkout For WooCommerce
+ * Plugin Name:       Map Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://soaringleads.com
  * Description:       Allow customers to choose their shipping location using a map at checkout.
  * Version:           1.0.0

@@ -1,4 +1,4 @@
-=== Location Picker at Checkout for WooCommerce ===
+=== Map Location Picker at Checkout for WooCommerce ===
 Contributors: uriahs-victor
 Donate link: https://uriahsvictor.com
 Tags: woocommerce, location picker, map, geolocation, checkout map, delivery map, google map
