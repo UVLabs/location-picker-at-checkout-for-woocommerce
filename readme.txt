@@ -1,7 +1,7 @@
 === Location Picker at Checkout for WooCommerce ===
 Contributors: uriahs-victor
 Donate link: https://uriahsvictor.com
-Tags: woocommerce, location picker, geolocation, checkout map, delivery map
+Tags: woocommerce, location picker, map, geolocation, checkout map, delivery map, google map
 Requires at least: 5.5
 Requires PHP: 5.6
 Tested up to: 5.7
