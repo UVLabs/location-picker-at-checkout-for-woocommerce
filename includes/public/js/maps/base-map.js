@@ -9,6 +9,7 @@ if ( map_options.lpac_map_saved_map_id ) {
 		{
 			center: { lat: map_options.lpac_map_default_latitude, lng: map_options.lpac_map_default_longitude },
 			zoom: map_options.lpac_map_zoom_level,
+			streetViewControl: false,
 			clickableIcons: map_options.lpac_map_clickable_icons,
 			backgroundColor: map_options.lpac_map_background_color, //loading background color
 			mapId: map_id,

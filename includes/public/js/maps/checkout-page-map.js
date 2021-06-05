@@ -29,7 +29,13 @@ function getCoordinates() {
 
 }
 
-//   let moved_to_address = '';
+// Globally scoped so that only one marker can be added to map.
+const marker = new google.maps.Marker(
+    {
+        draggable: true,
+        map: map,
+        }
+    );
 
   async function geocodeLatLng(geocoder, map, infowindow) {
 
@@ -52,20 +58,13 @@ function getCoordinates() {
                     map.setZoom( 16 );
                     map.setCenter( { lat: latitude, lng: longitude } );
 
-                    const marker = new google.maps.Marker(
-                    {
-                        draggable: true,
-                        position: latlng,
-                        map: map,
-                        }
-                    );
-
+                    marker.setPosition(latlng)
                         let detected_address = results[0].formatted_address;
 
                         infowindow.setContent( detected_address );
                         infowindow.open( map, marker );
 
-                      //   document.querySelector('#current-address').innerHTML = detected_address;
+                        // document.querySelector('#current-address').innerHTML = detected_address;
 
                         // When Marker is Moved/Dragged
                         google.maps.event.addListener(
@@ -81,13 +80,20 @@ function getCoordinates() {
                                 lng: parseFloat( moved_to_lng ),
                             };
 
-                            geocoder.geocode(
-                            { location: moved_to_latlng },
-                            (results, status) => {
-                                let moved_to_address = results[0].formatted_address;
-                                infowindow.setContent( moved_to_address );
-                            }
-                            );
+                            // NOTE: This can cause a "GEOCODER_GEOCODE: OVER_QUERY_LIMIT" console error
+                            // When the user is trying to drag the marker too quickly
+                            // Fixes include not using goecoding for finding updated address 
+                            // geocoder.geocode(
+                            // { location: moved_to_latlng },
+                            // (results, status) => {
+                            //     if( results && status === "OK" ){
+                            //         let moved_to_address = results[0].formatted_address;
+                            //         infowindow.setContent( moved_to_address );
+                            //     }
+                            // }
+                            // );
+
+                            infowindow.close();
 
                             document.querySelector( '#lpac_latitude' ).value  = moved_to_lat;
                             document.querySelector( '#lpac_longitude' ).value = moved_to_lng;
