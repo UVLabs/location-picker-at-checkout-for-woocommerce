@@ -3,11 +3,15 @@
  * included in this file.
  */
 
- #lpac-map{
-     height: 400px;
-     /* width: 100%; */
+ .lpac-map{
+	 height: 400px;
+	 /* width: 100%; */
  }
 
  #lpac-find-location-btn{
-     margin: 20px 0;
+	 margin: 20px 0;
+ }
+
+ .hidden{
+	 display: none;
  }

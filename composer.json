@@ -1,0 +1,10 @@
+{   
+    "scripts": {
+        "lint" : "vendor/bin/phpcs",
+        "beautify": "vendor/bin/phpcbf"
+    },
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
+        "wp-coding-standards/wpcs": "^2.3"
+    }
+}

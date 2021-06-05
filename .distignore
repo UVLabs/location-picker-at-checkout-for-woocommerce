@@ -1,0 +1,8 @@
+dist.sh
+composer.json
+composer.lock
+todo.txt
+artifact
+dist
+bin
+vendor/bin
