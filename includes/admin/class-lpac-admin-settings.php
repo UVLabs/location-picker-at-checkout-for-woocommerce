@@ -51,7 +51,7 @@ class Lpac_Admin_Settings {
 			$lpac_settings[] = array(
 				'name'     => __( 'Google Maps API Key', 'lpac' ),
 				'desc_tip' => __( 'Enter the API key from Google cloud console.', 'lpac' ),
-                'desc'     => __( 'Enter the API you copied from the Google Cloud Console. <a href="#">Learn More >></a>', 'lpac' ),
+				'desc'     => __( 'Enter the API you copied from the Google Cloud Console. <a href="#">Learn More >></a>', 'lpac' ),
 				'id'       => 'lpac_google_maps_api_key',
 				'type'     => 'text',
 				'css'      => 'min-width:300px;',
@@ -84,6 +84,24 @@ class Lpac_Admin_Settings {
 				'id'       => 'lpac_allow_clicking_on_map_icons',
 				'type'     => 'checkbox',
 				'css'      => 'min-width:300px;',
+			);
+
+			// TODO
+			// $lpac_settings[] = array(
+			// 	'name'     => __( 'Remove Map Buttons', 'lpac' ),
+			//     'desc'     => __( 'This will remove all interative buttons from the map such as Zoom and Terrain chooser.', 'lpac' ),
+			// 	'id'       => 'lpac_hide_map_buttons',
+			// 	'type'     => 'checkbox',
+			// 	'css'      => 'min-width:300px;',
+			// );
+
+			$lpac_settings[] = array(
+				'name'        => __( 'Background Color (HEX)', 'lpac' ),
+				'desc'        => __( 'Background color of map container (visible while map is loading).', 'lpac' ),
+				'id'          => 'lpac_map_background_color',
+				'type'        => 'text',
+				'placeholder' => '#eeeeee',
+				'css'         => 'max-width:80px;',
 			);
 
 			$lpac_settings[] = array(

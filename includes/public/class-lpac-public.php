@@ -41,6 +41,33 @@ class Lpac_Public {
 	private $version;
 
 	/**
+	 * The Google Maps CDN link.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $lpac_google_maps_link    The Google Maps CDN link.
+	 */
+	private $lpac_google_maps_link;
+
+	/**
+	 * The Google Maps API Key.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $lpac_google_api_key    The Google Maps API Key.
+	 */
+	private $lpac_google_api_key;
+
+	/**
+	 * The Google Maps parameters.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $lpac_google_maps_params  Additional parameters added to the google maps CDN library.
+	 */
+	private $lpac_google_maps_params;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -48,9 +75,14 @@ class Lpac_Public {
 	 * @param      string    $version    The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
-
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
+
+		$this->lpac_google_maps_link = 'https://maps.googleapis.com/maps/api/js?key=';
+		$this->lpac_google_api_key   = get_option( 'lpac_google_maps_api_key' );
+
+		$site_locale                   = get_locale();
+		$this->lpac_google_maps_params = "&language={$site_locale}&libraries=&v=weekly";
 
 	}
 
@@ -98,15 +130,55 @@ class Lpac_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/lpac-public.js', array( 'jquery' ), $this->version, false );
 
-		// $show_on_view_order_page = Lpac_Functions_Helper::lpac_show_map('lpac_display_map_on_view_order_page');
-		// $show_on_order_received_page = Lpac_Functions_Helper::lpac_show_map('lpac_display_map_on_order_received_page');
+		$show_on_view_order_page     = Lpac_Functions_Helper::lpac_show_map( 'lpac_display_map_on_view_order_page' );
+		$show_on_order_received_page = Lpac_Functions_Helper::lpac_show_map( 'lpac_display_map_on_order_received_page' );
 
-		if ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) ) {
-			wp_enqueue_script( $this->plugin_name . 'base-map', plugin_dir_url( __FILE__ ) . 'js/base-map.js', '', $this->version, true );
+		// Only enqueue the Google Map CDN script on the needed pages
+		if ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) || is_checkout() ) {
+
+			if ( is_wc_endpoint_url( 'view-order' ) && $show_on_view_order_page === false ) {
+				return;
+			}
+
+			if ( is_wc_endpoint_url( 'order-received' ) && $show_on_order_received_page === false ) {
+				return;
+			}
+
+			// Map CDN resource will always load on checkout page since this is the basic functionality of the plugin.
+
+			$lpac_google_maps_resource = $this->lpac_google_maps_link . $this->lpac_google_api_key . $this->lpac_google_maps_params;
+			wp_enqueue_script( LPAC_PLUGIN_NAME . '-google-maps-js', $lpac_google_maps_resource, array(), LPAC_VERSION, false );
+
 		}
 
+		// Enqueue our base map and page specific maps
+		if ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) ) {
+
+			if ( is_wc_endpoint_url( 'view-order' ) && $show_on_view_order_page === false ) {
+				return;
+			}
+
+			if ( is_wc_endpoint_url( 'order-received' ) && $show_on_order_received_page === false ) {
+				return;
+			}
+
+			// Map resources will always load on checkout page since this is the basic functionality of the plugin.
+
+			wp_enqueue_script( $this->plugin_name . '-base-map', plugin_dir_url( __FILE__ ) . 'js/maps/base-map.js', '', $this->version, true );
+
+			if ( is_wc_endpoint_url( 'order-received' ) ) {
+				wp_enqueue_script( $this->plugin_name . '-order-received-map', plugin_dir_url( __FILE__ ) . 'js/maps/order-received-map.js', array( $this->plugin_name . '-base-map' ), $this->version, true );
+			} else {
+				wp_enqueue_script( $this->plugin_name . '-order-details-map', plugin_dir_url( __FILE__ ) . 'js/maps/order-details-map.js', array( $this->plugin_name . '-base-map' ), $this->version, true );
+			}
+		}
+
+		// Enqueue our base map and page specific maps
 		if ( is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
-			wp_enqueue_script( $this->plugin_name . 'map', plugin_dir_url( __FILE__ ) . 'js/map.js', '', $this->version, true );
+
+			wp_enqueue_script( $this->plugin_name . '-base-map', plugin_dir_url( __FILE__ ) . 'js/maps/base-map.js', array( $this->plugin_name . '-google-maps-js' ), $this->version, true );
+			wp_enqueue_script( $this->plugin_name . '-checkout-page-map', plugin_dir_url( __FILE__ ) . 'js/maps/checkout-page-map.js', array( $this->plugin_name . '-base-map' ), $this->version, true );
+
 		}
 
 	}
@@ -116,7 +188,7 @@ class Lpac_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function lpac_map_settings() {
+	public function lpac_get_map_settings() {
 
 		$starting_coordinates = get_option( 'lpac_map_starting_coordinates', '14.024519,-60.974876' );
 		$starting_coordinates = apply_filters( 'lpac_map_starting_coordinates', $starting_coordinates );
@@ -125,20 +197,24 @@ class Lpac_Public {
 		$latitude          = ! empty( $coordinates_parts[0] ) ? (float) $coordinates_parts[0] : (float) 14.024519;
 		$longitude         = ! empty( $coordinates_parts[1] ) ? (float) $coordinates_parts[1] : (float) -60.974876;
 
-		$zoom_level = get_option( 'lpac_general_map_zoom_level', 16 );
+		$zoom_level = (int) get_option( 'lpac_general_map_zoom_level', 16 );
 		$zoom_level = apply_filters( 'lpac_general_map_zoom_level', $zoom_level );
 
 		$clickable_icons = get_option( 'lpac_allow_clicking_on_map_icons', 'yes' );
 		$clickable_icons = apply_filters( 'lpac_allow_clicking_on_map_icons', $clickable_icons );
 
+		$background_color = get_option( 'lpac_map_background_color', '#eee' );
+		$background_color = apply_filters( 'lpac_map_background_color', $background_color );
+
 		$data = array(
-			'latitude'        => $latitude,
-			'longitude'       => $longitude,
-			'zoom_level'      => $zoom_level,
-			'clickable_icons' => $clickable_icons === 'yes' ? "true" : "false",
+			'lpac_map_default_latitude'  => $latitude,
+			'lpac_map_default_longitude' => $longitude,
+			'lpac_map_zoom_level'        => $zoom_level,
+			'lpac_map_clickable_icons'   => $clickable_icons === 'yes' ? true : false,
+			'lpac_map_background_color'  => $background_color,
 		);
 
-		return $data;
+		return apply_filters( 'lpac_map_stored_settings', $data );
 
 	}
 

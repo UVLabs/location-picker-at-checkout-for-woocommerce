@@ -13,22 +13,46 @@
  */
 class Lpac_Public_Display extends Lpac_Public {
 
-	private $lpac_google_maps_link;
-
-	private $lpac_google_api_key;
-
-	private $lpac_google_maps_options;
+	/**
+	 * Global map settings for JavaScript.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $lpac_global_map_settings_js  Contains the exposed map settings for JS consumption.
+	 */
+	private $lpac_global_map_settings_js;
 
 
 	/**
-	 * Initialize the class and set its properties.
+	* Initialize the class and set its properties.
+	*
+	* @since    1.0.0
+	*/
+	public function __construct() {
+		$this->lpac_expose_map_settings_js();
+	}
+
+	/**
+	 * Exposes map settings to be used in client-side javascript.
 	 *
 	 * @since    1.0.0
+	 * @param      string    $additional   Additional settings to pass to JS.
 	 */
-	public function __construct() {
-		$this->lpac_google_maps_link    = 'https://maps.googleapis.com/maps/api/js?key=';
-		$this->lpac_google_api_key      = get_option( 'lpac_google_maps_api_key' );
-		$this->lpac_google_maps_options = '&callback=initMap&libraries=&v=weekly';
+	private function lpac_expose_map_settings_js( $additional = array() ) {
+
+		$js_variables = $this->lpac_get_map_settings();
+
+		$js_variables = array_merge( $js_variables, $additional );
+
+		$map_options = json_encode( $js_variables );
+
+		$global_variables = <<<GLOBALVARS
+		// LPAC Map Options
+		var map_options = $map_options;
+GLOBALVARS;
+
+		$this->lpac_global_map_settings_js = $global_variables;
+
 	}
 
 	/**
@@ -49,26 +73,8 @@ MAP;
 
 		echo $markup;
 
-		$js_variables = $this->lpac_map_settings();
-
-		// Extract array into variables to pass to JS
-		// See @ Lpac_Public/lpac_map_settings
-		extract( $js_variables );
-
-		$global_variables = <<<GLOBALVARS
-		// LPAC Map Options
-		const latitude = $latitude;
-		const longitude = $longitude;
-		const zoom_level = $zoom_level;
-		const clickable_icons = $clickable_icons;
-GLOBALVARS;
-
 		// Add inline global JS so that we can use data fetched using PHP inside JS
-		wp_add_inline_script( LPAC_PLUGIN_NAME . 'map', $global_variables, 'before' );
-
-		// Enqueue the Google Maps from CDN
-		$lpac_google_maps_resource = $this->lpac_google_maps_link . $this->lpac_google_api_key . $this->lpac_google_maps_options;
-		wp_enqueue_script( LPAC_PLUGIN_NAME . 'google-maps-js', $lpac_google_maps_resource, '', LPAC_VERSION, false );
+		wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $this->lpac_global_map_settings_js, 'before' );
 
 	}
 
@@ -112,10 +118,12 @@ GLOBALVARS;
 		$latitude  = (float) get_post_meta( $order_id, '_lpac_latitude', true );
 		$longitude = (float) get_post_meta( $order_id, '_lpac_longitude', true );
 
-		$data = array(
-			'latitude'  => $latitude,
-			'longitude' => $longitude,
+		$user_location_collected_during_order = array(
+			'lpac_map_order_latitude'  => $latitude,
+			'lpac_map_order_longitude' => $longitude,
 		);
+
+		$this->lpac_expose_map_settings_js( $user_location_collected_during_order );
 
 		$markup = <<<MAP
 		<div class='woocommerce-shipping-fields__field-wrapper lpac-map'></div>
@@ -125,15 +133,8 @@ MAP;
 
 		echo $markup;
 
-		$lpac_google_maps_resource = $this->lpac_google_maps_link . $this->lpac_google_api_key . $this->lpac_google_maps_options;
-
 		// Add inline global JS so that we can use data fetched using PHP inside JS
-		// TODO add remaining map options like for checkout map and also refactor this to resemble
-		// Checkout map options see @lpac_output_map_on_checkout_page()
-		wp_add_inline_script( LPAC_PLUGIN_NAME . 'base-map', 'const saved_coordinates=' . json_encode( $data ), 'before' );
-
-		// Enqueue the Google Maps from CDN
-		wp_enqueue_script( LPAC_PLUGIN_NAME . 'base-google-maps-js', $lpac_google_maps_resource, '', LPAC_VERSION, false );
+		wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $this->lpac_global_map_settings_js, 'before' );
 
 	}
 

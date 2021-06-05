@@ -1,28 +1,19 @@
-function initMap() {
+map.setOptions({
 
-	const map = new google.maps.Map(
-		document.querySelector( ".lpac-map" ),
-		{
-            clickableIcons: clickable_icons,
-			zoom: zoom_level,
-			center: { lat: latitude, lng: longitude },
-		}
-	);
+// Overwrite map options
+// https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
 
-	const geocoder   = new google.maps.Geocoder();
-	const infowindow = new google.maps.InfoWindow();
+});
 
-	document.getElementById( "lpac-find-location-btn" ).addEventListener(
-		"click",
-		() => {
-			geocodeLatLng( geocoder, map, infowindow );
-		}
-	);
+const geocoder   = new google.maps.Geocoder();
+const infowindow = new google.maps.InfoWindow();
 
-	// Allow this if user decides to have plugin automatically detect location
-	// geocodeLatLng(geocoder, map, infowindow);
-
-}
+document.getElementById( "lpac-find-location-btn" ).addEventListener(
+    "click",
+    () => {
+        geocodeLatLng( geocoder, map, infowindow );
+    }
+);
 
 function getCoordinates() {
 
@@ -38,7 +29,7 @@ function getCoordinates() {
 
 }
 
-  let moved_to_address = '';
+//   let moved_to_address = '';
 
   async function geocodeLatLng(geocoder, map, infowindow) {
 

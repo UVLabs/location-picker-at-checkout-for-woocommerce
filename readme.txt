@@ -29,6 +29,7 @@ Some stores that would benefit tremendously from this plugin include:
 ### Features:
 
 - Allow customers to pick their exact location on Google maps.
+- Automatically translates map's buttons based on site language (set in general settings).
 - Detect current location of customer.
 - Customize map container
 - "View on map" button to allow admin to view exact location for delivery of any order.
