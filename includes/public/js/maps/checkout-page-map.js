@@ -19,13 +19,28 @@ function get_coordinates() {
 
 	return new Promise(
 		function(resolve, reject) {
-			//TODO return reject if navigator not present
-			if (navigator.geolocation) {
+
+            if (navigator.geolocation) {
 				  navigator.geolocation.getCurrentPosition( resolve, reject )
-			}
+			}else{
+                // TODO add input fields so users can change this text
+                alert('Geolocation is not possible on this web browser. Please switch to a different web browser to use our interactive map.');
+            }
 
 		}
-	)
+	).catch(function(error){
+        
+        console.log('Location Picker At Checkout Plugin: ' + error.message)
+
+        if( error.code === 1 ){
+            // TODO add input fields so users can change this text
+            alert("You have disabled our website from receiving your location. Click on the location icon in the address bar and allow our website to detect your location.");
+            return
+        }
+
+        alert(error.message);
+
+    })
 
 }
 
@@ -45,6 +60,11 @@ function get_coordinates() {
   async function geocodeLatLng(geocoder, map, infowindow) {
 
 	const position = await this.get_coordinates()
+
+    if( ! position ){
+        console.log('Location Picker At Checkout Plugin: Position object is empty. Navigator might be disabled.')
+        return;
+    }
 
 	latitude  = position.coords.latitude
 	longitude = position.coords.longitude
