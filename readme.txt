@@ -72,5 +72,12 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 
 == Changelog ==
 
+= 1.0.1 =
+* [New] Automatically fill in address fields with information pulled from Google Maps.
+* [Improvement] Error handling of invalid locations.
+* [Improvement] Show users a message if they denied the website access to their location.
+* [Improvement] Handle cases where customer is moving marker too quickly within a short period of time.
+* [Improvement] Better handling of cases where geolocation feature is not available for the browser.
+
 = 1.0.0 =
 * Intial Release
