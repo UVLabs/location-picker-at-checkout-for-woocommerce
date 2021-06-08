@@ -15,7 +15,7 @@ document.getElementById( "lpac-find-location-btn" ).addEventListener(
     }
 );
 
-function getCoordinates() {
+function get_coordinates() {
 
 	return new Promise(
 		function(resolve, reject) {
@@ -29,9 +29,9 @@ function getCoordinates() {
 
 }
 
-// Globally scoped so that only one marker can be added to map.
-const marker = new google.maps.Marker(
-    {
+    // Globally scoped so that only one marker can be added to map.
+    const marker = new google.maps.Marker(
+        {
         draggable: true,
         map: map,
         }
@@ -39,7 +39,7 @@ const marker = new google.maps.Marker(
 
   async function geocodeLatLng(geocoder, map, infowindow) {
 
-	const position = await this.getCoordinates();
+	const position = await this.get_coordinates();
 
 	latitude  = position.coords.latitude;
 	longitude = position.coords.longitude;
@@ -59,47 +59,56 @@ const marker = new google.maps.Marker(
                     map.setCenter( { lat: latitude, lng: longitude } );
 
                     marker.setPosition(latlng)
-                        let detected_address = results[0].formatted_address;
+                    
+                    let detected_address = results[0].formatted_address;
 
-                        infowindow.setContent( detected_address );
-                        infowindow.open( map, marker );
+                    infowindow.setContent( detected_address );
+                    infowindow.open( map, marker );
 
-                        // document.querySelector('#current-address').innerHTML = detected_address;
+                    // document.querySelector('#current-address').innerHTML = detected_address;
+                    // When Marker is Moved/Dragged
+                    google.maps.event.addListener(
+                    marker,
+                    'dragend',
+                    function (event) {
 
-                        // When Marker is Moved/Dragged
-                        google.maps.event.addListener(
-                        marker,
-                        'dragend',
-                        function (event) {
+                        const moved_to_lat = event.latLng.lat();
+                        const moved_to_lng = event.latLng.lng();
 
-                            const moved_to_lat = event.latLng.lat();
-                            const moved_to_lng = event.latLng.lng();
+                        const moved_to_latlng = {
+                            lat: parseFloat( moved_to_lat ),
+                            lng: parseFloat( moved_to_lng ),
+                        };
 
-                            const moved_to_latlng = {
-                                lat: parseFloat( moved_to_lat ),
-                                lng: parseFloat( moved_to_lng ),
-                            };
+                        geocoder.geocode(
+                        { location: moved_to_latlng },
+                        (results, status) => {
+                            console.log(results);
 
-                            // NOTE: This can cause a "GEOCODER_GEOCODE: OVER_QUERY_LIMIT" console error
-                            // When the user is trying to drag the marker too quickly
-                            // Fixes include not using goecoding for finding updated address 
-                            // geocoder.geocode(
-                            // { location: moved_to_latlng },
-                            // (results, status) => {
-                            //     if( results && status === "OK" ){
-                            //         let moved_to_address = results[0].formatted_address;
-                            //         infowindow.setContent( moved_to_address );
-                            //     }
-                            // }
-                            // );
-
-                            infowindow.close();
-
+                                let moved_to_address = results[0].formatted_address;
+                                infowindow.setContent( moved_to_address );
+                        }
+                        ).then( function(resolved){
+                            // infowindow.close();
                             document.querySelector( '#lpac_latitude' ).value  = moved_to_lat;
                             document.querySelector( '#lpac_longitude' ).value = moved_to_lng;
-
+    
                             map.panTo( event.latLng );
-                        }
+                            
+
+                        }).catch( function(error){
+                            
+                            console.log(error)
+                            
+                            if( error.code = 'OVER_QUERY_LIMIT' ){
+                            error_msg = 'You are moving the map marker too quickly, use the zoom out button to move the marker across larger distances.'
+                            alert(error_msg);
+                            location.reload()
+                            }
+
+                        });
+
+                    }
                     );
 
                 } else {
