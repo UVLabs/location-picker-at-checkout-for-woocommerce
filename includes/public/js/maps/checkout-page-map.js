@@ -29,6 +29,7 @@ function get_coordinates() {
 
 }
 
+    /**  <Global Settings> */
     // Globally scoped so that only one marker can be added to map.
     const marker = new google.maps.Marker(
         {
@@ -36,6 +37,10 @@ function get_coordinates() {
         map: map,
         }
     )
+    
+    var lpac_autofill_billing_fields = map_options.lpac_autofill_billing_fields
+    /**  </Global Settings> */
+    
 
   async function geocodeLatLng(geocoder, map, infowindow) {
 
@@ -138,7 +143,7 @@ function get_coordinates() {
 
   }
 
-  function lpac_fill_in_address_fields( results ){
+function lpac_fill_in_address_fields( results ){
 
     lpac_fill_in_country_region( results )
     lpac_fill_in_full_address( results )
@@ -161,6 +166,11 @@ function lpac_fill_in_country_region( results ){
     document.querySelector('#shipping_country').value = country
     document.querySelector('#shipping_country').dispatchEvent(new Event('change', { 'bubbles': true })) // ensure Select2 sees the change
 
+    if(lpac_autofill_billing_fields){
+    document.querySelector('#billing_country').value = country
+    document.querySelector('#billing_country').dispatchEvent(new Event('change', { 'bubbles': true })) // ensure Select2 sees the change
+    }
+
 }
 
 // Fill in street address field
@@ -168,6 +178,10 @@ function lpac_fill_in_full_address( results ){
 
     const full_address = results[0].formatted_address
     document.querySelector('#shipping_address_1').value = full_address
+
+    if(lpac_autofill_billing_fields){
+        document.querySelector('#billing_address_1').value = full_address
+    }
 
 }
 
@@ -182,12 +196,16 @@ function lpac_fill_in_town_city( results ){
         town_city = town_city_array.long_name
     }
 
-    //Overwrite with more standard "postal_town" field if it exists
+    // Overwrite with more standard "postal_town" field if it exists
     if( town_city_array2 ){
         town_city = town_city_array2.long_name
     }
 
     document.querySelector('#shipping_city').value = town_city
+
+    if(lpac_autofill_billing_fields){
+        document.querySelector('#billing_city').value = town_city
+    }
 
 }
 
@@ -214,6 +232,22 @@ function lpac_fill_in_state_county( results ){
         shipping_state_field.value = state_county
     }
 
+    if(lpac_autofill_billing_fields){
+
+        var billing_state_field = document.querySelector('#billing_state')
+        
+        if( billing_state_field.classList.contains('select2-hidden-accessible') ){
+
+            if( state_county_array ){
+                billing_state_field.value = state_county_array.short_name
+                billing_state_field.dispatchEvent(new Event('change', { 'bubbles': true })) // ensure Select2 sees the change
+            }
+        
+        }else{
+            billing_state_field.value = state_county
+        }
+
+    }
 }
 
 // Fill in Zipcode field
@@ -227,5 +261,9 @@ function lpac_fill_in_zipcode( results ){
     }
 
     document.querySelector('#shipping_postcode').value = zipcode
+    
+    if(lpac_autofill_billing_fields){
+        document.querySelector('#billing_postcode').value = zipcode
+    }
 
 }

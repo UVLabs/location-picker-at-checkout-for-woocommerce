@@ -63,13 +63,13 @@ GLOBALVARS;
 	public function lpac_output_map_on_checkout_page() {
 
 		$lpac_find_location_btn_text = apply_filters( 'lpac_find_location_btn_text', 'Detect Current Location' );
-		$instuctions_text            = __( 'Move the red marker to your desired shipping address.', 'lpac' );
+		$instuctions_text            = __( 'Click the "Detect Current Location" button then move the red marker to your desired shipping address.', 'lpac' );
 		$instuctions_text            = apply_filters( 'lpac_map_instuctions_text', $instuctions_text );
 
 		$markup = <<<MAP
 		<div class='woocommerce-shipping-fields__field-wrapper lpac-map'></div>
 		<div class='woocommerce-shipping-fields__field-wrapper'>
-		<small>$instuctions_text<small>
+		<div style="font-size: 10px">$instuctions_text</div>
 		<button id='lpac-find-location-btn' type='button'>$lpac_find_location_btn_text</button>
 		</div>
 MAP;

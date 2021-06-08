@@ -80,8 +80,8 @@ class Lpac_Admin_Settings {
 
 			$lpac_settings[] = array(
 				'name'     => __( 'Enable Clickable Icons', 'lpac' ),
-				'desc_tip' => __( 'Recommended setting: Disabled', 'lpac' ),
-				'desc'     => __( 'Should customers be able to click on icons of different locations that appear on Google Maps?', 'lpac' ),
+				'desc_tip' => __( 'Should customers be able to click on icons of different locations that appear on Google Maps? Recommended setting: Disabled', 'lpac' ),
+				'desc'     => __( 'Yes', 'lpac' ),
 				'id'       => 'lpac_allow_clicking_on_map_icons',
 				'type'     => 'checkbox',
 				'css'      => 'min-width:300px;',
@@ -117,6 +117,15 @@ class Lpac_Admin_Settings {
 					'billing_address_area_top'     => __( 'Billing Address Area - Top', 'lpac' ),
 					'billing_address_area_bottom'  => __( 'Billing Address Area - Bottom', 'lpac' ),
 				),
+				'css'      => 'min-width:300px;',
+			);
+
+			$lpac_settings[] = array(
+				'name'     => __( 'Autofill Billing fields', 'lpac' ),
+				'desc_tip' => __( 'Should the billing fields be automatically populated with information pulled from the location?', 'lpac' ),
+				'desc'     => __( 'Yes', 'lpac' ),
+				'id'       => 'lpac_autofill_billing_fields',
+				'type'     => 'checkbox',
 				'css'      => 'min-width:300px;',
 			);
 
