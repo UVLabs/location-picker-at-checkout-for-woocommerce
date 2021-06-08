@@ -87,6 +87,19 @@ class Lpac_Admin_Settings {
 				'css'      => 'min-width:300px;',
 			);
 
+			// TODO default checkbox
+			// https://wordpress.stackexchange.com/questions/390270/woocommerce-settings-api-set-checkbox-checked-by-default?noredirect=1#comment567330_390270
+			// $lpac_settings[] = array(
+			// 	'name'     => __( 'test', 'lpac' ),
+			// 	// 'cbvalue' => 'yes',
+			// 	// 'value' => 'yes',
+			// 	'desc_tip' => __( 'Should customers be able to click on icons of different locations that appear on Google Maps? Recommended setting: Disabled', 'lpac' ),
+			// 	'desc'     => __( 'Yes', 'lpac' ),
+			// 	'id'       => 'lpac_test_option',
+			// 	'type'     => 'checkbox',
+			// 	'css'      => 'min-width:300px;',
+			// );
+
 			// TODO
 			// $lpac_settings[] = array(
 			// 	'name'     => __( 'Remove Map Buttons', 'lpac' ),
