@@ -1,7 +1,8 @@
 {   
     "scripts": {
         "lint" : "vendor/bin/phpcs",
-        "beautify": "vendor/bin/phpcbf"
+        "beautify": "vendor/bin/phpcbf",
+        "svn-sync": "sh bin/svn-sync.sh"
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",

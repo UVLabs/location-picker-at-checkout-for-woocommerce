@@ -80,12 +80,25 @@ class Lpac_Admin_Settings {
 
 			$lpac_settings[] = array(
 				'name'     => __( 'Enable Clickable Icons', 'lpac' ),
-				'desc_tip' => __( 'Recommended setting: Disabled', 'lpac' ),
-				'desc'     => __( 'Should customers be able to click on icons of different locations that appear on Google Maps?', 'lpac' ),
+				'desc_tip' => __( 'Should customers be able to click on icons of different locations that appear on Google Maps? Recommended setting: Disabled', 'lpac' ),
+				'desc'     => __( 'Yes', 'lpac' ),
 				'id'       => 'lpac_allow_clicking_on_map_icons',
 				'type'     => 'checkbox',
 				'css'      => 'min-width:300px;',
 			);
+
+			// TODO default checkbox
+			// https://wordpress.stackexchange.com/questions/390270/woocommerce-settings-api-set-checkbox-checked-by-default?noredirect=1#comment567330_390270
+			// $lpac_settings[] = array(
+			// 	'name'     => __( 'test', 'lpac' ),
+			// 	// 'cbvalue' => 'yes',
+			// 	// 'value' => 'yes',
+			// 	'desc_tip' => __( 'Should customers be able to click on icons of different locations that appear on Google Maps? Recommended setting: Disabled', 'lpac' ),
+			// 	'desc'     => __( 'Yes', 'lpac' ),
+			// 	'id'       => 'lpac_test_option',
+			// 	'type'     => 'checkbox',
+			// 	'css'      => 'min-width:300px;',
+			// );
 
 			// TODO
 			// $lpac_settings[] = array(
@@ -117,6 +130,15 @@ class Lpac_Admin_Settings {
 					'billing_address_area_top'     => __( 'Billing Address Area - Top', 'lpac' ),
 					'billing_address_area_bottom'  => __( 'Billing Address Area - Bottom', 'lpac' ),
 				),
+				'css'      => 'min-width:300px;',
+			);
+
+			$lpac_settings[] = array(
+				'name'     => __( 'Autofill Billing fields', 'lpac' ),
+				'desc_tip' => __( 'Should the billing fields be automatically populated with information pulled from the location?', 'lpac' ),
+				'desc'     => __( 'Yes', 'lpac' ),
+				'id'       => 'lpac_autofill_billing_fields',
+				'type'     => 'checkbox',
 				'css'      => 'min-width:300px;',
 			);
 

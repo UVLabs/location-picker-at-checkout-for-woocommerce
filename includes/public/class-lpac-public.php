@@ -206,12 +206,17 @@ class Lpac_Public {
 		$background_color = get_option( 'lpac_map_background_color', '#eee' );
 		$background_color = apply_filters( 'lpac_map_background_color', $background_color );
 
+		$fill_in_billing_fields = get_option( 'lpac_autofill_billing_fields', 'yes' );
+		$fill_in_billing_fields = apply_filters( 'lpac_autofill_billing_fields', $fill_in_billing_fields );
+
 		$data = array(
 			'lpac_map_default_latitude'  => $latitude,
 			'lpac_map_default_longitude' => $longitude,
 			'lpac_map_zoom_level'        => $zoom_level,
 			'lpac_map_clickable_icons'   => $clickable_icons === 'yes' ? true : false,
 			'lpac_map_background_color'  => $background_color,
+			'lpac_autofill_billing_fields'  => $fill_in_billing_fields  === 'yes' ? true : false,
+
 		);
 
 		return apply_filters( 'lpac_map_stored_settings', $data );

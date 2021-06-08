@@ -19,7 +19,11 @@ Location Picker At Checkout for WooCommerce (LPAC) allows store owners to add mo
 
 Location Picker At Checkout for WooCommerce enables store owners to get more precise location details without having to contact customers via other means for location information or directions. With this plugin, lots of time can be saved by allowing customers to select their exact location on Google Maps at checkout with WooCommerce.
 
-Some stores that would benefit tremendously from this plugin include:
+### Address AutoFill For WooCommerce
+
+This plugin has built-in support for automatically filling in the WooCommerce checkout fields with the information pulled from the Google map. Save users some typing while pulling accurate address information.
+
+### Store types that would benefit tremendously from this plugin include:
 
 - Online Food Delivery websites
 - Online Supermarkets
@@ -28,13 +32,15 @@ Some stores that would benefit tremendously from this plugin include:
 - Car Rental websites
 - Pickup service websites
 - Taxi and pickup scheduling websites
+- And more
 
 ### Features:
 
 - Allow customers to pick their exact location on Google maps.
-- Automatically translates map's buttons based on site language (set in general settings).
+- Autofill checkout fields with information pulled from Google Maps.
+- Automatically translates map's buttons based on site language (set in WordPress' general settings).
 - Detect current location of customer.
-- Customize map container
+- Customizable Map container
 - "View on map" button to allow admin to view exact location for delivery of any order.
 - Customers can see the delivery location they selected on past orders.
 - Have a feature in mind? Feel free to submit it on the support forum.
@@ -65,6 +71,13 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 5. View Order Map View (Past Order)
 
 == Changelog ==
+
+= 1.0.1 =
+* [New] Automatically fill in address fields with information pulled from Google Maps.
+* [Improvement] Error handling of invalid locations.
+* [Improvement] Show users a message if they denied the website access to their location.
+* [Improvement] Handle cases where customer is moving marker too quickly within a short period of time.
+* [Improvement] Better handling of cases where geolocation feature is not available for the browser.
 
 = 1.0.0 =
 * Intial Release
