@@ -13,7 +13,6 @@
  */
 class Lpac_Admin_Display {
 
-
 	/**
 	 * Displays the view on map button on the admin order page.
 	 *

@@ -1,11 +1,16 @@
 {   
     "scripts": {
         "lint" : "vendor/bin/phpcs",
-        "beautify": "vendor/bin/phpcbf",
-        "svn-sync": "sh bin/svn-sync.sh"
+        "beautify": "vendor/bin/phpcbf -p",
+        "dist": "sh bin/freemius-prep.sh",
+        "github-lite": "sh bin/github-lite-prep.sh"
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
         "wp-coding-standards/wpcs": "^2.3"
+    },
+    "require": {
+        "freemius/wordpress-sdk": "^2.4",
+        "endroid/qr-code": "^4.1"
     }
 }

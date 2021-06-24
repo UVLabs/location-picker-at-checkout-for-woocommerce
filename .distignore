@@ -4,9 +4,9 @@ todo.txt
 artifact
 dist
 bin
-vendor
 .git
 .DS_Store
 .distignore
 .gitignore
 phpcs.xml
+lpac.zip

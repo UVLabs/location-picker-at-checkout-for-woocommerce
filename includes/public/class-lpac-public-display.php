@@ -147,7 +147,7 @@ MAP;
 	 * @since    1.0.0
 	 * @param array $fields The fields array.
 	 */
-	public function lpac_long_and_lat_inputs( $fields ) {
+	public function lpac_create_lat_and_long_inputs( $fields ) {
 
 		$fields['shipping']['lpac_latitude'] = array(
 			'label'       => __( 'Latitude', 'lpac' ),
@@ -167,6 +167,24 @@ MAP;
 	}
 
 	/**
+	 * Check if the latitude or longitude inputs are filled in.
+	 *
+	 * @since    1.1.0
+	 * @param array $order_id The order id.
+	 */
+	public function lpac_validate_location_fields( $fields, $errors ) {
+
+		$error_msg = '<strong>' . __( 'Please select your location using the Google Map.', 'lpac' ) . '</strong>';
+
+		$error_msg = apply_filters( 'lpac_checkout_empty_cords_error_msg', $error_msg );
+
+		if ( empty( $fields['lpac_latitude'] ) || empty( $fields['lpac_longitude'] ) ) {
+			$errors->add( 'validation', $error_msg );
+		}
+
+	}
+
+	/**
 	 * Save the coordinates to the database.
 	 *
 	 * @since    1.0.0
@@ -176,7 +194,6 @@ MAP;
 		update_post_meta( $order_id, '_lpac_latitude', sanitize_text_field( $_POST['lpac_latitude'] ) );
 		update_post_meta( $order_id, '_lpac_longitude', sanitize_text_field( $_POST['lpac_longitude'] ) );
 	}
-
 
 	/**
 	 * Output custom height and width for map set by user in settings.
@@ -225,6 +242,81 @@ MAP;
 CUSTOMCSS;
 
 		echo $output;
+	}
+
+	/**
+	 * Create map location button link in email.
+	 *
+	 * @param string $link The link to google maps.
+	 * @since    1.1.0
+	 */
+	public function lpac_create_delivery_location_link_button( $link ) {
+
+		$button_text = __( 'Delivery Location', 'lpac' );
+		$button_text = apply_filters( 'lpac_map_location_link_button_text', $button_text );
+		$base_color  = get_option( 'woocommerce_email_base_color' );
+		$text_color  = wc_light_or_dark( $base_color, '#202020', '#ffffff' );
+
+		$button = <<<BUTTON
+		<a href="$link" class="btn button" style="background: $base_color; border-radius: 20px; color: $text_color; display: block; margin: 30px auto; padding: 10px; text-decoration: none; text-align: center; width: 150px;" target="_blank">$button_text</a>
+BUTTON;
+		echo $button;
+	}
+
+	/**
+	 * Create map location QR Code link in email.
+	 *
+	 * @param string $link The link to google maps.
+	 * @param int $order_id The current order id.
+	 * @since    1.1.0
+	 */
+	public function lpac_create_delivery_location_link_qrcode( $link, $order_id ) {
+
+		$options = array(
+			'qr_code_data'           => $link,
+			'qr_code_foreground_rgb' => '0,0,0',
+			'qr_code_background_rgb' => '255,255,255',
+		);
+
+		/*
+		* Generate and save QR Code
+		*/
+		Lpac_Qr_Code_Generator::lpac_generate_qr_code( $options, $order_id );
+
+		/*
+		* https://example.com/wp-content/uploads/lpac-qr-codes/Y/m/d/order_id.jpg
+		*/
+		$qr_code_link = Lpac_Functions_Helper::lpac_get_qr_codes_directory( 'baseurl' ) . $order_id . '.jpg';
+
+		echo "<img style='display: block !important; margin: 30px auto !important; text-align: center !important;' src='{$qr_code_link}'/>";
+
+	}
+
+	/**
+	 * Outputs a Button or QR Code inside order emails.
+	 *
+	 * @since    1.1.0
+	 */
+	public function lpac_add_delivery_location_link_to_email( $order, $sent_to_admin, $plain_text, $email ) {
+
+		$allowed_emails = get_option( 'lpac_email_delivery_map_emails', array() );
+
+		if ( ! in_array( $email->id, $allowed_emails ) ) {
+			return;
+		}
+
+		$latitude  = get_post_meta( $order->get_id(), '_lpac_latitude', true );
+		$longitude = get_post_meta( $order->get_id(), '_lpac_longitude', true );
+		$map_link  = apply_filters( 'lpac_map_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
+
+		$map_link_type = get_option( 'lpac_email_delivery_map_link_type' );
+
+		if ( $map_link_type === 'button' ) {
+			$this->lpac_create_delivery_location_link_button( $map_link );
+		} else {
+			$this->lpac_create_delivery_location_link_qrcode( $map_link, $order->get_id() );
+		}
+
 	}
 
 }
