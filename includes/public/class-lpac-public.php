@@ -74,9 +74,9 @@ class Lpac_Public {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
-		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
+	public function __construct() {
+		$this->plugin_name = LPAC_PLUGIN_NAME;
+		$this->version     = LPAC_VERSION;
 
 		$this->lpac_google_maps_link = 'https://maps.googleapis.com/maps/api/js?key=';
 		$this->lpac_google_api_key   = get_option( 'lpac_google_maps_api_key' );
@@ -210,17 +210,35 @@ class Lpac_Public {
 		$fill_in_billing_fields = apply_filters( 'lpac_autofill_billing_fields', $fill_in_billing_fields );
 
 		$data = array(
-			'lpac_map_default_latitude'  => $latitude,
-			'lpac_map_default_longitude' => $longitude,
-			'lpac_map_zoom_level'        => $zoom_level,
-			'lpac_map_clickable_icons'   => $clickable_icons === 'yes' ? true : false,
-			'lpac_map_background_color'  => $background_color,
-			'lpac_autofill_billing_fields'  => $fill_in_billing_fields  === 'yes' ? true : false,
+			'lpac_map_default_latitude'    => $latitude,
+			'lpac_map_default_longitude'   => $longitude,
+			'lpac_map_zoom_level'          => $zoom_level,
+			'lpac_map_clickable_icons'     => $clickable_icons === 'yes' ? true : false,
+			'lpac_map_background_color'    => $background_color,
+			'lpac_autofill_billing_fields' => $fill_in_billing_fields === 'yes' ? true : false,
 
 		);
 
 		return apply_filters( 'lpac_map_stored_settings', $data );
 
+	}
+
+	/**
+	* Detect needed Woocommerce pages.
+	*
+	* Detect if the page is one of which the map is supposed to show.
+	*
+	* @since    1.1.0
+	*
+	* @return bool Whether or not the page is one of our needed pages.
+	*/
+	public function lpac_is_allowed_woocommerce_pages() {
+
+		if ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) || is_checkout() ) {
+			return true;
+		}
+
+		return false;
 	}
 
 }
