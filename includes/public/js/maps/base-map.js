@@ -1,7 +1,7 @@
-// Google Maps ID
-	var map_id = '';
-if ( map_options.lpac_map_saved_map_id ) {
-	map_id = map_options.lpac_map_saved_map_id;
+var map_id = '';
+
+if ( typeof lpac_pro_js !== 'undefined' ) {
+	map_id = lpac_pro_js.map_id;
 }
 
 	const map = new google.maps.Map(

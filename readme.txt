@@ -54,7 +54,7 @@ Plugin settings are located in WordPress Admin Dashboard->WooCommerce->Shipping-
 
 1. Extract the downloaded zip file and upload the `location-picker-at-checkout-for-woocommerce` folder to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Configure the plugin in WooCommerce->Shipping->Location Picker At Checkout
+1. Configure the plugin in WooCommerce->Settings->Location Picker
 
 == Frequently Asked Questions ==
 
@@ -71,6 +71,15 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 5. View Order Map View (Past Order)
 
 == Changelog ==
+
+= 1.1.0 =
+* [New] Option to add a button link or QR Code to the customer's map location in WooCommerce's emails.
+* [New] Option to disable map on checkout and order details pages without disabling the plugin.
+* [Fix] Customers were able to complete checkout without selecting a location on the map.
+* [Change] Moved plugin settings to it's own tab in the WooCommerce Settings.
+* [Info] Show admin notice if WooCommerce is not active or the site is not running HTTPS.
+* [Info] Added admin notices if WooCommerce not active or site not running HTTPS.
+* [Info] Tested on WC 5.4.
 
 = 1.0.1 =
 * [New] Automatically fill in address fields with information pulled from Google Maps.

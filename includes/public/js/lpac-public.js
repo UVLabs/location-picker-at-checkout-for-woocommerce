@@ -29,9 +29,10 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
-	 $(document).ready(function(){
+	$( document ).ready(
+		function(){
 
-
-	  });
+		}
+	);
 
 })( jQuery );

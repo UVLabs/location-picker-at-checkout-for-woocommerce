@@ -1,9 +1,8 @@
-map.setOptions({
-
-// Overwrite map options
-// https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
-
-})
+// map.setOptions({
+//    disableDefaultUI: true,
+//  Overwrite map options
+//  https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
+// })
 
 const geocoder   = new google.maps.Geocoder()
 const infowindow = new google.maps.InfoWindow()
@@ -34,7 +33,7 @@ function get_coordinates() {
 
         if( error.code === 1 ){
             // TODO add input fields so users can change this text
-            alert("You have disabled our website from receiving your location. Click on the location icon in the address bar and allow our website to detect your location.");
+            alert("Something went wrong while trying to detect your location. Click on the location icon in the address bar and allow our website to detect your location. Please contact us if you need additional assistance.");
             return
         }
 
@@ -62,7 +61,7 @@ function get_coordinates() {
 	const position = await this.get_coordinates()
 
     if( ! position ){
-        console.log('Location Picker At Checkout Plugin: Position object is empty. Navigator might be disabled.')
+        console.log('Location Picker At Checkout Plugin: Position object is empty. Navigator might be disabled or this site might be detected as insecure.')
         return;
     }
 
