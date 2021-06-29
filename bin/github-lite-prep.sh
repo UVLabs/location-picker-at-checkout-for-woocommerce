@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Prepare lite version of plugin for uploading to github.
+# # Prepare plugin for uploading to lite version on github.
 
 # Start fresh
 rm -rf dist

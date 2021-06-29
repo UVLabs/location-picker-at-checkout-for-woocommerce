@@ -19,11 +19,11 @@ Location Picker At Checkout for WooCommerce (LPAC) allows store owners to add mo
 
 Location Picker At Checkout for WooCommerce enables store owners to get more precise location details without having to contact customers via other means for location information or directions. With this plugin, lots of time can be saved by allowing customers to select their exact location on Google Maps at checkout with WooCommerce.
 
-### Address AutoFill For WooCommerce
+### Billing & Shipping Address AutoFill For WooCommerce
 
 This plugin has built-in support for automatically filling in the WooCommerce checkout fields with the information pulled from the Google map. Save users some typing while pulling accurate address information.
 
-### Store types that would benefit tremendously from this plugin include:
+### Below are a few types of stores that would benefit tremendously from this plugin:
 
 - Online Food Delivery websites
 - Online Supermarkets
@@ -36,10 +36,11 @@ This plugin has built-in support for automatically filling in the WooCommerce ch
 
 ### Features:
 
-- Allow customers to pick their exact location on Google maps.
+- Allow customers to pick their exact location using Google Maps.
 - Autofill checkout fields with information pulled from Google Maps.
 - Automatically translates map's buttons based on site language (set in WordPress' general settings).
 - Detect current location of customer.
+- Include a QR Code or button link to the customer's selected location in the WooCommerce order emails.
 - Customizable Map container
 - "View on map" button to allow admin to view exact location for delivery of any order.
 - Customers can see the delivery location they selected on past orders.
@@ -47,18 +48,18 @@ This plugin has built-in support for automatically filling in the WooCommerce ch
 
 ### Configure Plugin:
 
-Plugin settings are located in WordPress Admin Dashboard->WooCommerce->Shipping->Location Picker At Checkout
+Plugin settings are located in WordPress Admin Dashboard->WooCommerce->Location Picker At Checkout
 
 == Installation ==
 
 
 1. Extract the downloaded zip file and upload the `location-picker-at-checkout-for-woocommerce` folder to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Configure the plugin in WooCommerce->Settings->Location Picker
+1. Configure the plugin in WooCommerce->Settings->Location Picker At Checkout
 
 == Frequently Asked Questions ==
 
-= Map doesn't show =
+= The map doesn't show =
 
 Ensure that you have setup the plugin with your API key by going to WordPress Dashboard->WooCommerce->Shipping->Location Picker At Checkout.
 
@@ -71,6 +72,10 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 5. View Order Map View (Past Order)
 
 == Changelog ==
+
+= 1.1.1 =
+* [Fix] Plugin now works with customized checkout fields.
+* [Info] Plugin can better parse and fill in State/County checkout fields
 
 = 1.1.0 =
 * [New] Option to add a button link or QR Code to the customer's map location in WooCommerce's emails.

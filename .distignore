@@ -7,6 +7,7 @@ bin
 .git
 .DS_Store
 .distignore
+.distignore-github-lite
 .gitignore
 phpcs.xml
 lpac.zip
