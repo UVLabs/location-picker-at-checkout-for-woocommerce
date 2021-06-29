@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Prepare plugin for uploading to wp.org.
+
 # Start fresh
 rm -rf dist
 rm -rf artifact
