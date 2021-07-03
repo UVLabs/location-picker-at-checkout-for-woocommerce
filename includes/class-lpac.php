@@ -166,7 +166,7 @@ class Lpac
      */
     private function define_admin_hooks()
     {
-        $plugin_admin = new Lpac_Admin( $this->get_plugin_name(), $this->get_version() );
+        $plugin_admin = new Lpac_Admin();
         $plugin_admin_display = new Lpac_Admin_Display();
         $admin_notices = new Lpac_Admin_Notices();
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
@@ -182,6 +182,7 @@ class Lpac
             10,
             1
         );
+        $this->loader->add_action( 'add_meta_boxes', $plugin_admin_display, 'lpac_create_custom_order_details_metabox' );
     }
     
     /**
@@ -245,8 +246,8 @@ class Lpac
         /*
          * Validate latitude and longitude fields.
          */
-        $validate_lat_long_fields = apply_filters( 'validate_lat_long_fields', true );
-        if ( $validate_lat_long_fields ) {
+        $validate_lat_long_fields = get_option( 'lpac_force_map_use', false );
+        if ( $validate_lat_long_fields === 'yes' ) {
             $this->loader->add_action(
                 'woocommerce_after_checkout_validation',
                 $plugin_public_display,

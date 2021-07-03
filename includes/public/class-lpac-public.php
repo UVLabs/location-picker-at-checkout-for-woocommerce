@@ -78,6 +78,7 @@ class Lpac_Public {
 		$this->plugin_name = LPAC_PLUGIN_NAME;
 		$this->version     = LPAC_VERSION;
 
+		// TODO change to use constants set in lpac.php
 		$this->lpac_google_maps_link = 'https://maps.googleapis.com/maps/api/js?key=';
 		$this->lpac_google_api_key   = get_option( 'lpac_google_maps_api_key' );
 
@@ -145,7 +146,6 @@ class Lpac_Public {
 			}
 
 			// Map CDN resource will always load on checkout page since this is the basic functionality of the plugin.
-
 			$lpac_google_maps_resource = $this->lpac_google_maps_link . $this->lpac_google_api_key . $this->lpac_google_maps_params;
 			wp_enqueue_script( LPAC_PLUGIN_NAME . '-google-maps-js', $lpac_google_maps_resource, array(), LPAC_VERSION, false );
 
@@ -163,7 +163,6 @@ class Lpac_Public {
 			}
 
 			// Map resources will always load on checkout page since this is the basic functionality of the plugin.
-
 			wp_enqueue_script( $this->plugin_name . '-base-map', plugin_dir_url( __FILE__ ) . 'js/maps/base-map.js', '', $this->version, true );
 
 			if ( is_wc_endpoint_url( 'order-received' ) ) {
@@ -177,6 +176,9 @@ class Lpac_Public {
 		if ( is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
 
 			wp_enqueue_script( $this->plugin_name . '-base-map', plugin_dir_url( __FILE__ ) . 'js/maps/base-map.js', array( $this->plugin_name . '-google-maps-js' ), $this->version, true );
+			/**
+			 * This has to be enqueued in the footer so our wp_add_inline_script() function can work.
+			 */
 			wp_enqueue_script( $this->plugin_name . '-checkout-page-map', plugin_dir_url( __FILE__ ) . 'js/maps/checkout-page-map.js', array( $this->plugin_name . '-base-map' ), $this->version, true );
 
 		}
