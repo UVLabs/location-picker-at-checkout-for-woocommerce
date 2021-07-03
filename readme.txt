@@ -70,8 +70,17 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 3. Checkout Page Map View (User selected their location)
 4. Order Received 
 5. View Order Map View (Past Order)
+6. Map view of the customer delivery location on shop order page (in the WordPress dashboard)
 
 == Changelog ==
+
+= 1.1.2 =
+* [New] Option added to allow admin to force customers to select their location on the map before being able to complete the order.
+* [New] Customers can now move the map marker by clicking on the map. This was only possibly by dragging the map marker before.
+* [New] A map view of the customer's location will now appear on the shop order page in WooCommerce->Orders->View.
+* [Change] Order emails multiselect option now uses selectWoo.
+* [Info] Added links to support forum and plugin translation pages to the plugin settings page.
+* [Improvement] Refactored code that handles the checkout page map.
 
 = 1.1.1 =
 * [Fix] Plugin now works with customized checkout fields.

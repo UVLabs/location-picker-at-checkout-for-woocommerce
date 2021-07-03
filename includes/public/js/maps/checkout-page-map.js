@@ -10,11 +10,11 @@ const infowindow = new google.maps.InfoWindow()
 document.querySelector( "#lpac-find-location-btn" ).addEventListener(
 	"click",
 	() => {
-    geocodeLatLng( geocoder, map, infowindow )
+    lpac_bootstrap_map_functionality( geocoder, map, infowindow )
 	}
 )
 
-function get_coordinates() {
+function get_navigator_coordinates() {
 
 	return new Promise(
 		function(resolve, reject) {
@@ -45,9 +45,10 @@ function get_coordinates() {
 
 }
 
-/**
-* <Global Settings>
-*/
+	/**
+	* <Global Settings>
+	*/
+
 	// Globally scoped so that only one marker can be added to map.
 	const marker = new google.maps.Marker(
 		{
@@ -56,14 +57,17 @@ function get_coordinates() {
 		}
 	)
 
-	var lpac_autofill_billing_fields = map_options.lpac_autofill_billing_fields
+	const lpac_autofill_billing_fields = map_options.lpac_autofill_billing_fields
 	/**
 	 * </Global Settings>
 	 */
 
-	async function geocodeLatLng(geocoder, map, infowindow) {
+	/** 
+	*  Bootstrap the functionality of the map and marker.
+	*/
+	async function lpac_bootstrap_map_functionality(geocoder, map, infowindow) {
 
-		const position = await this.get_coordinates()
+		const position = await this.get_navigator_coordinates()
 
 		if ( ! position ) {
 			console.log( 'Location Picker At Checkout Plugin: Position object is empty. Navigator might be disabled or this site might be detected as insecure.' )
@@ -78,99 +82,184 @@ function get_coordinates() {
 			lng: parseFloat( longitude ),
 		}
 
-		geocoder.geocode(
-			{ location: latlng },
-			(results, status) => {
-				if (status === "OK") {
-					if (results[0]) {
-
-						map.setZoom( 16 )
-						map.setCenter( { lat: latitude, lng: longitude } )
-
-						marker.setPosition( latlng )
-
-						let detected_address = results[0].formatted_address
-
-						infowindow.setContent( detected_address )
-						infowindow.open( map, marker )
-
-						// document.querySelector('#current-address').innerHTML = detected_address
-						console.log( results )
-						lpac_fill_in_address_fields( results )
-						// When Marker is Moved/Dragged
-						google.maps.event.addListener(
-							marker,
-							'dragend',
-						function (event) {
-
-							const moved_to_lat = event.latLng.lat()
-							const moved_to_lng = event.latLng.lng()
-
-							const moved_to_latlng = {
-								lat: parseFloat( moved_to_lat ),
-								lng: parseFloat( moved_to_lng ),
-							}
-
-							geocoder.geocode(
-								{ location: moved_to_latlng },
-								(results, status) => {
-                                // Debug
-									console.log( results )
-									if ( status === "OK" ) {
-										let moved_to_address = results[0].formatted_address
-										lpac_fill_in_address_fields( results )
-										infowindow.setContent( moved_to_address )
-									}
-								}
-							).then(
-								function(resolved){
-									// infowindow.close()
-									document.querySelector( '#lpac_latitude' ).value  = moved_to_lat
-									document.querySelector( '#lpac_longitude' ).value = moved_to_lng
-
-									map.panTo( event.latLng )
-
-								}
-							).catch(
-								function(error){
-
-									console.log( error )
-									// TODO Add error messages below map
-
-									if ( error.code === 'OVER_QUERY_LIMIT' ) {
-										error_msg = 'You are moving the map marker too quickly, use the zoom out button to move the marker across larger distances.'
-										alert( error_msg )
-										location.reload()
-									}
-
-								}
-							)
-
-						}
-						)
-
-					} else {
-						window.alert( "No results found" )
-					}
-				} else {
-            window.alert( "Geocoder failed due to: " + status )
-				}
-
-			  }
-		)
-
-		async function output_details(){
-
-			document.querySelector( '#lpac_latitude' ).value  = latitude
-			document.querySelector( '#lpac_longitude' ).value = longitude
-
-		}
-
-		output_details()
+		/**
+		 * Place our initial map marker.
+		 */
+		lpac_setup_initial_map_marker_position( latlng )
+		
+		/**
+		* Fill in latitude and longitude fields.
+		*/
+		lpac_fill_in_latlng( latlng );
 
 	}
 
-	function lpac_fill_in_address_fields( results ){
+	/**
+	 * Function getting address details from latitude and longitudes.
+	 */
+	async function lpac_geocode_coordinates( latlng ){
+
+		var address_array = '';
+
+			await geocoder.geocode( { location: latlng }, (results, status) => {
+
+				if ( status === "OK" ) {
+
+					if ( results[0] ) {
+						
+						address_array =  results;
+
+					} else {
+						window.alert( "No results found" )
+						return;
+					}
+				} else {
+            		window.alert( "Geocoder failed due to: " + status )
+					return
+				}
+
+			  }
+
+		).then(
+			function(resolved){
+				
+				map.panTo( latlng )
+
+			}
+		).catch(
+			function(error){
+
+				console.log( error )
+				// TODO Add error messages below map
+
+				if ( error.code === 'OVER_QUERY_LIMIT' ) {
+					error_msg = 'Slow down, you are moving too quickly, use the zoom out button to move the marker across larger distances.';
+					alert( error_msg )
+					location.reload()
+				}
+
+			}
+		)
+
+		return address_array;
+
+	}
+
+	/**
+	* Setup the intial marker location.
+	*/
+	async function lpac_setup_initial_map_marker_position( latlng ){
+
+		const results = await lpac_geocode_coordinates(latlng);
+
+		if ( ! results[0]) {
+			return
+		}
+
+		map.setZoom( 16 );
+		map.setCenter( latlng );
+
+		marker.setPosition( latlng );
+
+		const detected_address = results[0].formatted_address;
+
+		infowindow.setContent( detected_address );
+		infowindow.open( map, marker );
+
+		lpac_fill_in_address_fields( results, latlng );
+		lpac_marker_listen_to_drag();
+		lpac_map_listen_to_clicks();
+
+	}
+
+	/** 
+	*  Handle clicking of map so marker, fields and coordinates inputs get filled in.
+	*/
+	function lpac_map_listen_to_clicks(){
+
+		map.addListener('click', 
+			async function(event) {
+
+			const results = await lpac_geocode_coordinates(event.latLng);
+
+			const lat = event.latLng.lat()
+			const lng = event.latLng.lng()
+
+			const latLng = {
+				lat: parseFloat( lat ),
+				lng: parseFloat( lng ),
+			}
+			
+			lpac_fill_in_address_fields( results, latLng );
+			
+			marker.setPosition(event.latLng)
+			
+			const  detected_address = results[0].formatted_address;
+
+			infowindow.setContent( detected_address );
+			infowindow.open( map, marker );
+
+		 });
+
+	}
+
+	/** 
+	*  Handle dragging of marker so fields and coordinates inputs get filled in.
+	*/
+	function lpac_marker_listen_to_drag(){
+
+		google.maps.event.addListener(
+			marker,
+			'dragend',
+			async function (event) {
+
+				const moved_to_lat = event.latLng.lat()
+				const moved_to_lng = event.latLng.lng()
+
+				const moved_to_latlng = {
+					lat: parseFloat( moved_to_lat ),
+					lng: parseFloat( moved_to_lng ),
+				}
+
+				let results = await lpac_geocode_coordinates( moved_to_latlng );
+
+				if ( ! results[0]) {
+					console.log('Results not as expected. See lpac_marker_listen_to_drag()')
+					return
+				}
+
+				let moved_to_address = results[0].formatted_address
+				infowindow.setContent( moved_to_address )
+				
+				lpac_fill_in_address_fields( results, moved_to_latlng )
+
+			}
+
+		)
+
+	}
+
+	/**
+	* Function responsible filling in the latitude and longitude fields.
+	*/
+	function lpac_fill_in_latlng( latlng ){
+
+		if( ! latlng.lat || ! latlng.lng){
+			console.log('Location Picker At Checkout Plugin: Empty latlng. See lpac_fill_in_latlng()');
+			return;
+		}
+
+		document.querySelector( '#lpac_latitude' ).value  = latlng.lat
+		document.querySelector( '#lpac_longitude' ).value = latlng.lng
+
+	}
+
+	/**
+	* Function responsible for ochestrating the address filling methods.
+	*/
+	function lpac_fill_in_address_fields( results, latLng = '' ){
+
+		lpac_fill_in_latlng( latLng )
 
 		lpac_fill_in_shipping_country_region( results )
 		lpac_fill_in_shipping_full_address( results )

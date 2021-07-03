@@ -32,16 +32,27 @@ class Lpac_Admin {
 	private $version;
 
 	/**
+	 * The full google maps resource with all needed params
+	 *
+	 * @since    1.1.2
+	 * @access   private
+	 * @var      string    $lpac_google_maps_resource   The google maps url.
+	 */
+	private $lpac_google_maps_resource;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
 	 * @param      string    $plugin_name       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct() {
 
-		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
+		$this->plugin_name = LPAC_PLUGIN_NAME;
+		$this->version     = LPAC_VERSION;
+
+		$this->lpac_google_maps_resource = LPAC_GOOGLE_MAPS_LINK . LPAC_GOOGLE_MAPS_API_KEY . LPAC_GOOGLE_MAPS_PARAMS;
 
 	}
 
@@ -88,6 +99,19 @@ class Lpac_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/lpac-admin.js', array( 'jquery' ), $this->version, false );
+
+		/**
+		 * Enqueue Google Maps script
+		 */
+		wp_enqueue_script( $this->plugin_name . '-google-maps-js', $this->lpac_google_maps_resource, array(), $this->version, false );
+
+		/**
+		 * This has to be enqueued in the footer so our wp_add_inline_script() function can work.
+		 * Only run this code on shop order(order details) page.
+		 */
+		if( get_current_screen()->id === 'shop_order'){
+			wp_enqueue_script( $this->plugin_name . '-order-map', plugin_dir_url( __FILE__ ) . 'js/order-map.js', array( $this->plugin_name . '-google-maps-js' ), $this->version, true );
+		}
 
 	}
 

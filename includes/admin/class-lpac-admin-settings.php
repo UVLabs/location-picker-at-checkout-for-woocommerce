@@ -104,7 +104,7 @@ class Lpac_Admin_Settings extends WC_Settings_Page
                 'name' => __( 'LPAC General Settings', 'lpac' ),
                 'id'   => 'lpac',
                 'type' => 'title',
-                'desc' => __( 'Use the below options to change the general plugin settings.', 'lpac' ),
+                'desc' => __( '<div style="background: #fff; border-radius: 5px; margin-bottom: 20px; padding: 30px; text-align:center;">Use the options below to change the plugin\'s general settings. <br><br> <strong><span style="font-size: 18px;">If you encounter any issues then please open a support ticket <a href="https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/" target="_blank">HERE <span style="text-decoration: none" class="dashicons dashicons-external"></span></a></span></strong> <br><br> <strong><span style="font-size: 18px;">Plugin settings not in your Language? Help translate it <a href="https://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/" target="_blank">HERE <span style="text-decoration: none" class="dashicons dashicons-external"></span></a></span></strong></div>', 'lpac' ),
             );
             $plugin_enabled = get_option( 'lpac_enabled' );
             /*
@@ -136,10 +136,18 @@ class Lpac_Admin_Settings extends WC_Settings_Page
             $lpac_settings[] = array(
                 'name'     => __( 'Google Maps API Key', 'lpac' ),
                 'desc_tip' => __( 'Enter the API key from Google cloud console.', 'lpac' ),
-                'desc'     => __( 'Enter the API you copied from the Google Cloud Console. <a href="https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key" target="_blank">Learn More >></a>', 'lpac' ),
+                'desc'     => __( 'Enter the API you copied from the Google Cloud Console. <a href="https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key" target="_blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'lpac' ),
                 'id'       => 'lpac_google_maps_api_key',
                 'type'     => 'text',
                 'css'      => 'min-width:300px;',
+            );
+            $lpac_settings[] = array(
+                'name'     => __( 'Force Use of Map', 'lpac' ),
+                'desc'     => __( 'Yes', 'lpac' ),
+                'desc_tip' => __( 'Prevent the customer from checking out until they select a location on the map.', 'lpac' ),
+                'id'       => 'lpac_force_map_use',
+                'type'     => 'checkbox',
+                'css'      => 'max-width:80px;',
             );
             $lpac_settings[] = array(
                 'name'        => __( 'Default Coordinates', 'lpac' ),
@@ -299,7 +307,7 @@ class Lpac_Admin_Settings extends WC_Settings_Page
             );
             $lpac_settings[] = array(
                 'name'    => __( 'Select Emails', 'lpac' ),
-                'class'   => 'select2',
+                'class'   => 'wc-enhanced-select',
                 'desc'    => __( 'Select the Emails you\'d like this setting to take effect on.', 'lpac' ),
                 'id'      => 'lpac_email_delivery_map_emails',
                 'type'    => 'multiselect',

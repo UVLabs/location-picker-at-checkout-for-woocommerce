@@ -42,6 +42,7 @@ class Lpac_Uninstall {
 		$option_keys = array(
 			'lpac_enabled',
 			'lpac_google_maps_api_key',
+			'lpac_force_map_use',
 			'lpac_map_starting_coordinates',
 			'lpac_general_map_zoom_level',
 			'lpac_allow_clicking_on_map_icons',
