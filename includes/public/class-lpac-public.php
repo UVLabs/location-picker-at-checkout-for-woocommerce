@@ -59,13 +59,13 @@ class Lpac_Public {
 	private $lpac_google_api_key;
 
 	/**
-	 * The Google Maps parameters.
+	 * The full google maps resource with all needed params.
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $lpac_google_maps_params  Additional parameters added to the google maps CDN library.
+	 * @var      string    $lpac_google_maps_resource  The google maps url.
 	 */
-	private $lpac_google_maps_params;
+	private $lpac_google_maps_resource;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -78,12 +78,7 @@ class Lpac_Public {
 		$this->plugin_name = LPAC_PLUGIN_NAME;
 		$this->version     = LPAC_VERSION;
 
-		// TODO change to use constants set in lpac.php
-		$this->lpac_google_maps_link = 'https://maps.googleapis.com/maps/api/js?key=';
-		$this->lpac_google_api_key   = get_option( 'lpac_google_maps_api_key' );
-
-		$site_locale                   = get_locale();
-		$this->lpac_google_maps_params = "&language={$site_locale}&libraries=&v=weekly";
+		$this->lpac_google_maps_resource = LPAC_GOOGLE_MAPS_LINK . LPAC_GOOGLE_MAPS_API_KEY . LPAC_GOOGLE_MAPS_PARAMS;
 
 	}
 
@@ -131,56 +126,68 @@ class Lpac_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/lpac-public.js', array( 'jquery' ), $this->version, false );
 
-		$show_on_view_order_page     = Lpac_Functions_Helper::lpac_show_map( 'lpac_display_map_on_view_order_page' );
-		$show_on_order_received_page = Lpac_Functions_Helper::lpac_show_map( 'lpac_display_map_on_order_received_page' );
-
 		// Only enqueue the Google Map CDN script on the needed pages
 		if ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) || is_checkout() ) {
 
+			$show_on_view_order_page = Lpac_Functions_Helper::lpac_show_map( 'lpac_display_map_on_view_order_page' );
 			if ( is_wc_endpoint_url( 'view-order' ) && $show_on_view_order_page === false ) {
 				return;
 			}
 
+			$show_on_order_received_page = Lpac_Functions_Helper::lpac_show_map( 'lpac_display_map_on_order_received_page' );
 			if ( is_wc_endpoint_url( 'order-received' ) && $show_on_order_received_page === false ) {
 				return;
 			}
 
-			// Map CDN resource will always load on checkout page since this is the basic functionality of the plugin.
-			$lpac_google_maps_resource = $this->lpac_google_maps_link . $this->lpac_google_api_key . $this->lpac_google_maps_params;
-			wp_enqueue_script( LPAC_PLUGIN_NAME . '-google-maps-js', $lpac_google_maps_resource, array(), LPAC_VERSION, false );
-
-		}
-
-		// Enqueue our base map and page specific maps
-		if ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) ) {
-
-			if ( is_wc_endpoint_url( 'view-order' ) && $show_on_view_order_page === false ) {
+			$show_on_checkout_page = Lpac_Functions_Helper::lpac_show_map( 'checkout' );
+			/**
+			 * is_checkout() also runs on is_wc_endpoint_url( 'order-received' ) so we need to make this if block doesn't
+			 * by added the ! conditional
+			 */
+			if ( is_checkout() && ! is_wc_endpoint_url( 'order-received' ) && $show_on_checkout_page === false ) {
 				return;
 			}
 
-			if ( is_wc_endpoint_url( 'order-received' ) && $show_on_order_received_page === false ) {
-				return;
-			}
+			/**
+			 * Load Google Map from CDN
+			 */
+			wp_enqueue_script( LPAC_PLUGIN_NAME . '-google-maps-js', $this->lpac_google_maps_resource, array(), LPAC_VERSION, false );
 
-			// Map resources will always load on checkout page since this is the basic functionality of the plugin.
-			wp_enqueue_script( $this->plugin_name . '-base-map', plugin_dir_url( __FILE__ ) . 'js/maps/base-map.js', '', $this->version, true );
+			/**
+			* The following javascript files have to be enqueued in the footer so our wp_add_inline_script() function can work.
+			*/
 
+			/**
+			 * Base Map JS
+			 */
+			wp_enqueue_script( $this->plugin_name . '-base-map', plugin_dir_url( __FILE__ ) . 'js/maps/base-map.js', array( $this->plugin_name . '-google-maps-js' ), $this->version, true );
+
+			/**
+			 * Load order received page map
+			 */
 			if ( is_wc_endpoint_url( 'order-received' ) ) {
 				wp_enqueue_script( $this->plugin_name . '-order-received-map', plugin_dir_url( __FILE__ ) . 'js/maps/order-received-map.js', array( $this->plugin_name . '-base-map' ), $this->version, true );
-			} else {
+			}
+
+			/**
+			 * Load view order page map (customer)
+			 */
+			if ( is_wc_endpoint_url( 'view-order' ) ) {
 				wp_enqueue_script( $this->plugin_name . '-order-details-map', plugin_dir_url( __FILE__ ) . 'js/maps/order-details-map.js', array( $this->plugin_name . '-base-map' ), $this->version, true );
 			}
-		}
 
-		// Enqueue our base map and page specific maps
-		if ( is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
-
-			wp_enqueue_script( $this->plugin_name . '-base-map', plugin_dir_url( __FILE__ ) . 'js/maps/base-map.js', array( $this->plugin_name . '-google-maps-js' ), $this->version, true );
 			/**
-			 * This has to be enqueued in the footer so our wp_add_inline_script() function can work.
+			 * is_checkout() also runs on is_wc_endpoint_url( 'order-received' ) so we need to make this if block doesn't
+			 * by added the ! conditional
 			 */
-			wp_enqueue_script( $this->plugin_name . '-checkout-page-map', plugin_dir_url( __FILE__ ) . 'js/maps/checkout-page-map.js', array( $this->plugin_name . '-base-map' ), $this->version, true );
+			if ( is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
 
+				/**
+				 * Load checkout page map
+				 */
+				wp_enqueue_script( $this->plugin_name . '-checkout-page-map', plugin_dir_url( __FILE__ ) . 'js/maps/checkout-page-map.js', array( $this->plugin_name . '-base-map' ), $this->version, true );
+
+			}
 		}
 
 	}

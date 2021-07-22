@@ -62,7 +62,13 @@ GLOBALVARS;
 	 */
 	public function lpac_output_map_on_checkout_page() {
 
-		$lpac_find_location_btn_text = apply_filters( 'lpac_find_location_btn_text', 'Detect Current Location' );
+		if ( Lpac_Functions_Helper::lpac_show_map( 'checkout' ) === false ) {
+			return;
+		}
+
+		$btn_text = __( 'Detect Current Location', 'lpac' );
+
+		$lpac_find_location_btn_text = apply_filters( 'lpac_find_location_btn_text', $btn_text );
 		$instuctions_text            = __( 'Click the "Detect Current Location" button then move the red marker to your desired shipping address.', 'lpac' );
 		$instuctions_text            = apply_filters( 'lpac_map_instuctions_text', $instuctions_text );
 
@@ -121,6 +127,10 @@ MAP;
 		$latitude  = (float) get_post_meta( $order_id, '_lpac_latitude', true );
 		$longitude = (float) get_post_meta( $order_id, '_lpac_longitude', true );
 
+		if ( empty( $latitude ) || empty( $longitude ) ) {
+			return;
+		}
+
 		$user_location_collected_during_order = array(
 			'lpac_map_order_latitude'  => $latitude,
 			'lpac_map_order_longitude' => $longitude,
@@ -149,18 +159,22 @@ MAP;
 	 */
 	public function lpac_create_lat_and_long_inputs( $fields ) {
 
-		$fields['shipping']['lpac_latitude'] = array(
-			'label'       => __( 'Latitude', 'lpac' ),
-			'placeholder' => _x( '0000', 'placeholder', 'lpac' ),
-			'required'    => false,
-			'class'       => array( 'form-row-wide', 'hidden' ),
+		$fields['billing']['lpac_latitude'] = array(
+			'label'    => __( 'Latitude', 'lpac' ),
+			'required' => false,
+			'class'    => array( 'form-row-wide', 'hidden' ),
 		);
 
-		$fields['shipping']['lpac_longitude'] = array(
-			'label'       => __( 'Longitude', 'lpac' ),
-			'placeholder' => _x( '0000', 'placeholder', 'lpac' ),
-			'required'    => false,
-			'class'       => array( 'form-row-wide', 'hidden' ),
+		$fields['billing']['lpac_longitude'] = array(
+			'label'    => __( 'Longitude', 'lpac' ),
+			'required' => false,
+			'class'    => array( 'form-row-wide', 'hidden' ),
+		);
+
+		$fields['billing']['lpac_is_map_shown'] = array(
+			'label'    => __( 'Map Shown', 'lpac' ),
+			'required' => false,
+			'class'    => array( 'form-row-wide', 'hidden' ),
 		);
 
 		return $fields;
@@ -172,7 +186,13 @@ MAP;
 	 * @since    1.1.0
 	 * @param array $order_id The order id.
 	 */
-	public function lpac_validate_location_fields( $fields, $errors ) {
+	public function lpac_validate_location_fields( $fields, $errors ) : void {
+
+		$map_shown = (bool) $fields['lpac_is_map_shown'];
+
+		if ( $map_shown === false ) {
+			return;
+		}
 
 		$error_msg = '<strong>' . __( 'Please select your location using the Google Map.', 'lpac' ) . '</strong>';
 
@@ -191,6 +211,14 @@ MAP;
 	 * @param array $order_id The order id.
 	 */
 	public function lpac_save_cords_order_meta( $order_id ) {
+
+		$latitude  = ( isset( $_POST['lpac_latitude'] ) ) ? $_POST['lpac_latitude'] : '';
+		$longitude = ( isset( $_POST['lpac_longitude'] ) ) ? $_POST['lpac_longitude'] : '';
+
+		if ( empty( $latitude ) || empty( $longitude ) ) {
+			return;
+		}
+
 		update_post_meta( $order_id, '_lpac_latitude', sanitize_text_field( $_POST['lpac_latitude'] ) );
 		update_post_meta( $order_id, '_lpac_longitude', sanitize_text_field( $_POST['lpac_longitude'] ) );
 	}

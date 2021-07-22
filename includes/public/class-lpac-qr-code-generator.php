@@ -64,7 +64,7 @@ class Lpac_Qr_Code_Generator {
 		/*
 		* Create QR Code
 		*/
-		$qrCode = QrCode::create( $qr_code_data )
+		$qr_code = QrCode::create( $qr_code_data )
 			->setEncoding( new Encoding( 'UTF-8' ) )
 			->setErrorCorrectionLevel( new ErrorCorrectionLevelLow() )
 			->setSize( 200 )
@@ -76,7 +76,7 @@ class Lpac_Qr_Code_Generator {
 		$label = Label::create( $qr_code_label )
 		->setFont( new NotoSans( 18 ) );
 
-		$result = $writer->write( $qrCode, null, $label );
+		$result = $writer->write( $qr_code, null, $label );
 
 		$image = $result->saveToFile( $path_with_filename );
 

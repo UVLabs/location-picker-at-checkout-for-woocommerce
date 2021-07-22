@@ -11,3 +11,5 @@ bin
 .gitignore
 phpcs.xml
 lpac.zip
+logs
+.vscode

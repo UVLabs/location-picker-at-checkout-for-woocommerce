@@ -65,6 +65,8 @@ class Lpac_Uninstall {
 			'lpac_email_delivery_map_link_type',
 			'lpac_enable_delivery_map_link_in_email',
 			'lpac_delete_settings_on_uninstall',
+			'lpac_wc_shipping_zones',
+			'lpac_wc_shipping_zones_show_hide',
 		);
 
 		foreach ( $option_keys as $key ) {

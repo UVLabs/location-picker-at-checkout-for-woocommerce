@@ -104,7 +104,18 @@ class Lpac_Admin_Settings extends WC_Settings_Page
                 'name' => __( 'LPAC General Settings', 'lpac' ),
                 'id'   => 'lpac',
                 'type' => 'title',
-                'desc' => __( '<div style="background: #fff; border-radius: 5px; margin-bottom: 20px; padding: 30px; text-align:center;">Use the options below to change the plugin\'s general settings. <br><br> <strong><span style="font-size: 18px;">If you encounter any issues then please open a support ticket <a href="https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/" target="_blank">HERE <span style="text-decoration: none" class="dashicons dashicons-external"></span></a></span></strong> <br><br> <strong><span style="font-size: 18px;">Plugin settings not in your Language? Help translate it <a href="https://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/" target="_blank">HERE <span style="text-decoration: none" class="dashicons dashicons-external"></span></a></span></strong></div>', 'lpac' ),
+                'desc' => sprintf(
+                __( '%1$sUse the options below to change the plugin\'s general settings. %2$s%2$s %3$sYou need an API Key to use Google Maps. Please see this document for how to get it %4$sHERE %5$s %2$s%2$s %3$sIf you encounter any issues then please open a support ticket %6$sHERE %5$s %2$s%2$s %3$sPlugin settings not in your Language? Help translate it %8$sHERE %5$s%9$s', 'lpac' ),
+                '<div style="background: #fff; border-radius: 5px; margin-bottom: 20px; padding: 30px; text-align:center;">',
+                '<br>',
+                '<strong><span style="font-size: 18px;">',
+                '<a href="https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key" target="_blank">',
+                '<span style="text-decoration: none" class="dashicons dashicons-external"></span></a></span></strong>',
+                '<a href="https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/" target="_blank">',
+                '<strong><span style="font-size: 18px;">',
+                '<a href="https://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/" target="_blank">',
+                '</div>'
+            ),
             );
             $plugin_enabled = get_option( 'lpac_enabled' );
             /*
@@ -136,7 +147,7 @@ class Lpac_Admin_Settings extends WC_Settings_Page
             $lpac_settings[] = array(
                 'name'     => __( 'Google Maps API Key', 'lpac' ),
                 'desc_tip' => __( 'Enter the API key from Google cloud console.', 'lpac' ),
-                'desc'     => __( 'Enter the API you copied from the Google Cloud Console. <a href="https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key" target="_blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'lpac' ),
+                'desc'     => __( 'Enter the API key you copied from the Google Cloud Console. <a href="https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key" target="_blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'lpac' ),
                 'id'       => 'lpac_google_maps_api_key',
                 'type'     => 'text',
                 'css'      => 'min-width:300px;',

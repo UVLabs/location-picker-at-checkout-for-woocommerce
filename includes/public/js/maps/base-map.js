@@ -1,10 +1,12 @@
-var map_id = '';
+	var map_id = '';
 
-if ( typeof lpac_pro_js !== 'undefined' ) {
-	map_id = lpac_pro_js.map_id;
-}
+	if ( typeof lpac_pro_js !== 'undefined' ) {
+		map_id = lpac_pro_js.map_id;
+	}
 
-	const map = new google.maps.Map(
+	if( typeof(map_options) !== 'undefined' && map_options !== null ){
+
+	var map = new google.maps.Map(
 		document.querySelector( ".lpac-map" ),
 		{
 			center: { lat: map_options.lpac_map_default_latitude, lng: map_options.lpac_map_default_longitude },
@@ -15,3 +17,7 @@ if ( typeof lpac_pro_js !== 'undefined' ) {
 			mapId: map_id,
 		}
 	);
+
+	}else{
+		console.log('LPAC: map_options object not present, skipping...')
+	}

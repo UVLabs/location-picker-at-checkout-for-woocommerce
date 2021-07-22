@@ -74,6 +74,13 @@ LOCATIONMETA;
 		$latitude  = (float) get_post_meta( get_the_ID(), '_lpac_latitude', true );
 		$longitude = (float) get_post_meta( get_the_ID(), '_lpac_longitude', true );
 
+		/**
+		 * If we have no values for these options bail.
+		 */
+		if ( empty( $latitude ) || empty( $longitude ) ) {
+			return;
+		}
+
 		$order_coordinates = array(
 			'latitude'  => $latitude,
 			'longitude' => $longitude,
