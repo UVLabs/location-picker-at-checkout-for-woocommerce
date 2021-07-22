@@ -74,6 +74,10 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 
 == Changelog ==
 
+= 1.1.3 =
+* [Improvement] Better handle sites with customized checkout pages.
+* [Fix] Console error when the plugin map is not enabled.
+
 = 1.1.2 =
 * [New] Option added to allow admin to force customers to select their location on the map before being able to complete the order.
 * [New] Customers can now move the map marker by clicking on the map. This was only possibly by dragging the map marker before.

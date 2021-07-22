@@ -7,12 +7,18 @@
 const geocoder   = new google.maps.Geocoder()
 const infowindow = new google.maps.InfoWindow()
 
-document.querySelector( "#lpac-find-location-btn" ).addEventListener(
-	"click",
-	() => {
-    lpac_bootstrap_map_functionality( geocoder, map, infowindow )
-	}
-)
+const find_location_btn = document.querySelector( "#lpac-find-location-btn" );
+
+if( typeof(find_location_btn) !== 'undefined' && find_location_btn !== null ){
+	find_location_btn.addEventListener(
+		"click",
+		() => {
+		lpac_bootstrap_map_functionality( geocoder, map, infowindow )
+		}
+	)
+}else{
+	console.log('LPAC: Detect location button not present, skipping...')
+}
 
 function get_navigator_coordinates() {
 
@@ -57,7 +63,6 @@ function get_navigator_coordinates() {
 		}
 	)
 
-	const lpac_autofill_billing_fields = map_options.lpac_autofill_billing_fields
 	/**
 	 * </Global Settings>
 	 */
@@ -249,8 +254,19 @@ function get_navigator_coordinates() {
 			return;
 		}
 
-		document.querySelector( '#lpac_latitude' ).value  = latlng.lat
-		document.querySelector( '#lpac_longitude' ).value = latlng.lng
+		$latitude = document.querySelector( '#lpac_latitude' );
+		$longitude = document.querySelector( '#lpac_longitude' );
+
+		if( typeof(latitude) === 'undefined' || latitude === null ){
+			console.log( 'LPAC: Can\'t find latitude and longitude input areas. Can\'t insert location coordinates.' );
+		}
+
+		if( typeof(longitude) === 'undefined' || longitude === null ){
+			console.log( 'LPAC: Can\'t find latitude and longitude input areas. Can\'t insert location coordinates.' );
+		}
+		
+		$latitude.value  = latlng.lat
+		$longitude.value = latlng.lng
 
 	}
 
@@ -266,6 +282,13 @@ function get_navigator_coordinates() {
 		lpac_fill_in_shipping_town_city( results )
 		lpac_fill_in_shipping_state_county( results )
 		lpac_fill_in_shipping_zipcode( results )
+
+		if( typeof( map_options ) === 'undefined' || map_options === null ){
+			console.log('LPAC: map_options object not present, skipping...')
+			return;
+		}
+
+		const lpac_autofill_billing_fields = map_options.lpac_autofill_billing_fields
 
 		if ( lpac_autofill_billing_fields ) {
 			lpac_fill_in_billing_country_region( results )

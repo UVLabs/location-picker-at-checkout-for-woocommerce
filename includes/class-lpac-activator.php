@@ -30,6 +30,10 @@ class Lpac_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
+		self::lpac_add_default_settings();
+	}
+
+	private static function lpac_add_default_settings() {
 
 	}
 

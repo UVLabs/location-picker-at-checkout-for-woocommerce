@@ -4,3 +4,5 @@ dist
 .git
 .DS_Store
 lpac.zip
+logs
+.vscode

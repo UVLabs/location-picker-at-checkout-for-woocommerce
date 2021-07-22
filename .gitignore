@@ -4,3 +4,5 @@ vendor
 dist
 artifact
 lpac.zip
+logs
+.vscode

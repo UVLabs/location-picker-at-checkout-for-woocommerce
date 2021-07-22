@@ -1,7 +1,7 @@
 {   
     "scripts": {
-        "lint" : "vendor/bin/phpcs",
-        "beautify": "vendor/bin/phpcbf -p",
+        "lint" : "mkdir -p logs; vendor/bin/phpcs > ./logs/log.txt  ",
+        "format": "vendor/bin/phpcbf -p",
         "dist": "sh bin/freemius-prep.sh",
         "github-lite": "sh bin/github-lite-prep.sh"
     },
