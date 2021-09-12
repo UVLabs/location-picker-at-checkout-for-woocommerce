@@ -36,14 +36,15 @@ This plugin has built-in support for automatically filling in the WooCommerce ch
 
 ### Features:
 
+- Detect current location of customer.
 - Allow customers to pick their exact location using Google Maps.
 - Autofill checkout fields with information pulled from Google Maps.
 - Automatically translates map's buttons based on site language (set in WordPress' general settings).
-- Detect current location of customer.
+- Show/Hide Map based on Shipping Class
 - Include a QR Code or button link to the customer's selected location in the WooCommerce order emails.
-- Customizable Map container
 - "View on map" button to allow admin to view exact location for delivery of any order.
 - Customers can see the delivery location they selected on past orders.
+- Customizable Map container
 - Have a feature in mind? Feel free to submit it on the support forum.
 
 ### Configure Plugin:
@@ -73,6 +74,9 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 6. Map view of the customer delivery location on shop order page (in the WordPress dashboard)
 
 == Changelog ==
+
+= 1.2.1 =
+* [Improvement] Better assign coordinates input fields variables on checkout page.
 
 = 1.2.0 =
 * [New] Show or Hide map based on the shipping classes of items in the customer's cart.

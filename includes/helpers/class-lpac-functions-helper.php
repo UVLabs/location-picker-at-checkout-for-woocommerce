@@ -22,6 +22,7 @@ class Lpac_Functions_Helper
      */
     public static function lpac_show_map( $option )
     {
+        //TODO Rather than this one method handling both the checkout on order-received and view-order page, we should possibly split it into another method just for the order-received and view-order pages.
         
         if ( $option === 'checkout' ) {
             $show = true;
