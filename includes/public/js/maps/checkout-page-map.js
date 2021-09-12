@@ -79,8 +79,8 @@ function get_navigator_coordinates() {
 			return;
 		}
 
-		latitude  = position.coords.latitude
-		longitude = position.coords.longitude
+		let latitude  = position.coords.latitude
+		let longitude = position.coords.longitude
 
 		const latlng = {
 			lat: parseFloat( latitude ),
@@ -259,8 +259,8 @@ function get_navigator_coordinates() {
 			return;
 		}
 
-		$latitude = document.querySelector( '#lpac_latitude' );
-		$longitude = document.querySelector( '#lpac_longitude' );
+		let latitude = document.querySelector( '#lpac_latitude' );
+		let longitude = document.querySelector( '#lpac_longitude' );
 
 		if( typeof(latitude) === 'undefined' || latitude === null ){
 			console.log( 'LPAC: Can\'t find latitude and longitude input areas. Can\'t insert location coordinates.' );
@@ -270,8 +270,8 @@ function get_navigator_coordinates() {
 			console.log( 'LPAC: Can\'t find latitude and longitude input areas. Can\'t insert location coordinates.' );
 		}
 		
-		$latitude.value  = latlng.lat
-		$longitude.value = latlng.lng
+		latitude.value  = latlng.lat
+		longitude.value = latlng.lng
 
 	}
 
