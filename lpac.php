@@ -16,7 +16,7 @@
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://soaringleads.com
  * Description:       Allow customers to choose their shipping location using a map at checkout.
- * Version:           1.1.3
+ * Version:           1.2.0
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
  * License:           GPL-2.0+
@@ -25,6 +25,7 @@
  * Domain Path:       /languages
  * WC requires at least: 3.0
  * WC tested up to: 5.5
+ * Requires PHP: 7.0
  */
 // If this file is called directly, abort.
 if ( !defined( 'WPINC' ) ) {
@@ -75,7 +76,7 @@ if ( function_exists( 'lpac_fs' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'LPAC_VERSION', '1.1.3' );
+define( 'LPAC_VERSION', '1.2.0' );
 define( 'LPAC_PLUGIN_NAME', 'lpac' );
 define( 'LPAC_PLUGIN_DIR', __DIR__ );
 define( 'LPAC_PLUGIN_PATH_URL', plugin_dir_url( __FILE__ ) );

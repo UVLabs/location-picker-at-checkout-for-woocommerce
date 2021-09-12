@@ -86,6 +86,43 @@ class Lpac_Admin_Settings extends WC_Settings_Page
     }
     
     /**
+     * Create a banner at the top of the page with some information for user..
+     *
+     * @since    1.2.0
+     * @return mixed $markup The markup for the banner.
+     */
+    private function lpac_create_plugin_settings_banner()
+    {
+        $here = __( 'HERE', 'lpac' );
+        $external_icon = '<strong><span style="text-decoration: none" class="dashicons dashicons-external"></span></strong>';
+        
+        if ( empty(get_option( 'lpac_google_maps_api_key', '' )) ) {
+            $no_api_key = __( 'You need an API Key to use Google Maps. Please see this document for how to get it ', 'lpac' );
+            $no_api_key .= "<a href='https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key' target='_blank'>{$here}</a>";
+            $no_api_key .= $external_icon;
+        } else {
+            $no_api_key = '';
+        }
+        
+        $title = __( "Use the Options Below to Change the Plugin's General Settings", 'lpac' );
+        $issues = __( 'If you encounter any issues then please open a support ticket ', 'lpac' );
+        $issues .= "<a href='https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
+        $issues .= $external_icon;
+        $translate_plugin = __( 'Plugin settings not in your Language? Help translate it ', 'lpac' );
+        $translate_plugin .= "<a href='hhttps://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
+        $translate_plugin .= $external_icon;
+        $markup = <<<MARKUP
+\t\t<div style="background: #fff; border-radius: 5px; margin-bottom: 20px; padding: 30px; text-align:center;">
+\t\t<h2>{$title}</h2>
+\t\t<p>{$no_api_key}</p>
+\t\t<p>{$issues}</p>
+\t\t<p>{$translate_plugin}</p>
+\t\t</div>
+MARKUP;
+        return $markup;
+    }
+    
+    /**
      * Create the setting options for the plugin.
      *
      * @since    1.0.0
@@ -104,18 +141,7 @@ class Lpac_Admin_Settings extends WC_Settings_Page
                 'name' => __( 'LPAC General Settings', 'lpac' ),
                 'id'   => 'lpac',
                 'type' => 'title',
-                'desc' => sprintf(
-                __( '%1$sUse the options below to change the plugin\'s general settings. %2$s%2$s %3$sYou need an API Key to use Google Maps. Please see this document for how to get it %4$sHERE %5$s %2$s%2$s %3$sIf you encounter any issues then please open a support ticket %6$sHERE %5$s %2$s%2$s %3$sPlugin settings not in your Language? Help translate it %8$sHERE %5$s%9$s', 'lpac' ),
-                '<div style="background: #fff; border-radius: 5px; margin-bottom: 20px; padding: 30px; text-align:center;">',
-                '<br>',
-                '<strong><span style="font-size: 18px;">',
-                '<a href="https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key" target="_blank">',
-                '<span style="text-decoration: none" class="dashicons dashicons-external"></span></a></span></strong>',
-                '<a href="https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/" target="_blank">',
-                '<strong><span style="font-size: 18px;">',
-                '<a href="https://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/" target="_blank">',
-                '</div>'
-            ),
+                'desc' => $this->lpac_create_plugin_settings_banner(),
             );
             $plugin_enabled = get_option( 'lpac_enabled' );
             /*
@@ -330,6 +356,31 @@ class Lpac_Admin_Settings extends WC_Settings_Page
                 'customer_invoice'         => __( 'Customer Invoice', 'lpac' ),
             ),
                 'css'     => 'min-width:300px;height: 100px',
+            );
+            $lpac_settings[] = array(
+                'name'    => __( 'Shipping Classes', 'lpac' ),
+                'class'   => 'wc-enhanced-select',
+                'desc'    => __( 'Select shipping classes. NOTE: These settings apply if ANY of the items in the cart meets the condition.', 'lpac' ),
+                'id'      => 'lpac_wc_shipping_classes',
+                'type'    => 'multiselect',
+                'options' => Lpac_Functions_Helper::lpac_get_available_shipping_classes(),
+                'css'     => 'min-width:300px;height: 100px',
+            );
+            $lpac_settings[] = array(
+                'name'    => __( 'Show or Hide', 'lpac' ),
+                'desc'    => sprintf(
+                /* translators: 1: Line break HTML 2: opening strong tag 3: closing strong tag*/
+                __( 'Should the map be shown or hidden if the order falls within above selected shipping classes? %1$s%1$s Selecting %2$sShow%3$s will display the map %2$sONLY IF%3$s the customer order falls inside the shipping classes selected above. %1$s Selecting %2$sHide%3$s will display the map only if the customer order %2$sDOES NOT%3$s fall inside the shipping classes selected above.', 'lpac' ),
+                '<br>',
+                '<strong>',
+                '</strong>'
+            ),
+                'id'      => 'lpac_wc_shipping_classes_show_hide',
+                'type'    => 'radio',
+                'options' => array(
+                'show' => __( 'Show', 'lpac' ),
+                'hide' => __( 'Hide', 'lpac' ),
+            ),
             );
             $lpac_settings[] = array(
                 'name'     => __( 'Housekeeping', 'lpac' ),

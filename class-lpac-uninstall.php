@@ -67,6 +67,9 @@ class Lpac_Uninstall {
 			'lpac_delete_settings_on_uninstall',
 			'lpac_wc_shipping_zones',
 			'lpac_wc_shipping_zones_show_hide',
+			'lpac_wc_shipping_classes',
+			'lpac_wc_shipping_classes_show_hide',
+			'lpac_enable_save_address_feature',
 		);
 
 		foreach ( $option_keys as $key ) {
