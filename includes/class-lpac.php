@@ -196,6 +196,7 @@ class Lpac
     {
         $plugin_public = new Lpac_Public( $this->get_plugin_name(), $this->get_version() );
         $plugin_public_display = new Lpac_Public_Display();
+        $functions_helper = new Lpac_Functions_Helper();
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
         /*
@@ -240,7 +241,7 @@ class Lpac
          */
         $this->loader->add_action( 'woocommerce_order_details_after_order_table', $plugin_public_display, 'lpac_output_map_on_order_details_page' );
         /*
-         * Save location coordinates with to order meta.
+         * Save location coordinates to order meta.
          */
         $this->loader->add_action( 'woocommerce_checkout_update_order_meta', $plugin_public_display, 'lpac_save_cords_order_meta' );
         /*

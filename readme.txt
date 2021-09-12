@@ -3,8 +3,8 @@ Contributors: uriahs-victor
 Donate link: https://uriahsvictor.com
 Tags: woocommerce, location picker, map, geolocation, checkout map, delivery map, google map
 Requires at least: 5.5
-Requires PHP: 5.6
-Tested up to: 5.7
+Requires PHP: 7.0
+Tested up to: 5.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -74,6 +74,17 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 
 == Changelog ==
 
+= 1.2.0 =
+* [New] Show or Hide map based on the shipping classes of items in the customer's cart.
+* [Fix] Console error when the map was not enabled in Settings.
+* [Improvement] Added coordinates fields to billing section of checkout page for better support of sites with custom checkout pages.
+* [Improvement] More checks for better handling of sites with custom checkout pages.
+* [Change] Minimum required PHP version is now 7.0. Please update your PHP version if you have not yet done so; contact your Web Host for assistance if needed.
+* [Info] Added a new filter for "Detect Current Location" Button text: `lpac_find_location_btn_text`.
+* [Info] Filter for map instruction text is: `lpac_map_instuctions_text`.
+* [Info] Tested on WP 5.8.
+* [Info] Tested on WC 5.6.
+
 = 1.1.3 =
 * [Improvement] Better handle sites with customized checkout pages.
 * [Fix] Console error when the plugin map is not enabled.
@@ -82,9 +93,9 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 * [New] Option added to allow admin to force customers to select their location on the map before being able to complete the order.
 * [New] Customers can now move the map marker by clicking on the map. This was only possibly by dragging the map marker before.
 * [New] A map view of the customer's location will now appear on the shop order page in WooCommerce->Orders->View.
+* [Improvement] Refactored code that handles the checkout page map.
 * [Change] Order emails multiselect option now uses selectWoo.
 * [Info] Added links to support forum and plugin translation pages to the plugin settings page.
-* [Improvement] Refactored code that handles the checkout page map.
 
 = 1.1.1 =
 * [Fix] Plugin now works with customized checkout fields.

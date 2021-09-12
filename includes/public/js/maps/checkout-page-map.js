@@ -187,6 +187,11 @@ function get_navigator_coordinates() {
 
 			const results = await lpac_geocode_coordinates(event.latLng);
 
+			if ( ! results[0]) {
+				console.log('Results not as expected. See lpac_map_listen_to_clicks()')
+				return;
+			}
+
 			const lat = event.latLng.lat()
 			const lng = event.latLng.lng()
 
@@ -230,7 +235,7 @@ function get_navigator_coordinates() {
 
 				if ( ! results[0]) {
 					console.log('Results not as expected. See lpac_marker_listen_to_drag()')
-					return
+					return;
 				}
 
 				let moved_to_address = results[0].formatted_address
