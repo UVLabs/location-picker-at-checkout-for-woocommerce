@@ -41,14 +41,20 @@ class Lpac_Public_Display extends Lpac_Public {
 	private function lpac_expose_map_settings_js( $additional = array() ) {
 
 		$js_variables = $this->lpac_get_map_settings();
-
 		$js_variables = array_merge( $js_variables, $additional );
 
 		$map_options = json_encode( $js_variables );
 
+		/**
+		 * Shipping methods Admin has decided to hide the map for.
+		 */
+		$disallowed_shipping_methods = get_option( 'lpac_wc_shipping_methods', array() );
+		$disallowed_shipping_methods = json_encode( $disallowed_shipping_methods );
+
 		$global_variables = <<<GLOBALVARS
 		// LPAC Map Options
 		var map_options = $map_options;
+		var saved_disallowed_shipping_methods = $disallowed_shipping_methods;
 GLOBALVARS;
 
 		$this->lpac_global_map_settings_js = $global_variables;
@@ -72,15 +78,39 @@ GLOBALVARS;
 		$instuctions_text            = __( 'Click the "Detect Current Location" button then move the red marker to your desired shipping address.', 'lpac' );
 		$instuctions_text            = apply_filters( 'lpac_map_instuctions_text', $instuctions_text );
 
+		$user_id = (int) get_current_user_id();
+
+		$saved_addresses_area = apply_filters( 'lpac_saved_addresses', '', $user_id );
+		$saved_addresses_area = wp_kses_post( $saved_addresses_area );
+
+		$before_map_filter = apply_filters( 'lpac_before_map', '', $user_id );
+		$before_map_filter = wp_kses_post( $before_map_filter );
+
+		$after_map_filter = apply_filters( 'lpac_after_map', '', $user_id );
+		$after_map_filter = wp_kses_post( $after_map_filter );
+
+		$before_map_controls_filter = apply_filters( 'lpac_before_map_controls', '', $user_id );
+		$before_map_controls_filter = wp_kses_post( $before_map_controls_filter );
+
+		$after_map_controls_filter = apply_filters( 'lpac_after_map_controls', '', $user_id );
+		$after_map_controls_filter = wp_kses_post( $after_map_controls_filter );
+
 		$markup = <<<MAP
-		<div class='woocommerce-shipping-fields__field-wrapper lpac-map'></div>
-		<div class='woocommerce-shipping-fields__field-wrapper'>
-		<div style="font-size: 10px">$instuctions_text</div>
-		<button id='lpac-find-location-btn' type='button'>$lpac_find_location_btn_text</button>
+		<div id="lpac-map-container" class='woocommerce-shipping-fields__field-wrapper'>
+			$before_map_filter
+			<div class='lpac-map'></div>
+			$after_map_filter
+			<div class='lpac-map-controls'>
+			$before_map_controls_filter
+			<div style="font-size: 10px">$instuctions_text</div>
+			<button id='lpac-find-location-btn' type='button'>$lpac_find_location_btn_text</button>
+			<div id='lpac-saved-addresses'><ul>$saved_addresses_area</ul></div>
+			$after_map_controls_filter
+			</div>
 		</div>
 MAP;
 
-		echo $markup;
+		echo apply_filters( 'lpac_map_markup', $markup, $user_id );
 
 		// Add inline global JS so that we can use data fetched using PHP inside JS
 		wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $this->lpac_global_map_settings_js, 'before' );
@@ -94,7 +124,7 @@ MAP;
 	 */
 	public function lpac_output_map_on_order_details_page() {
 
-		global $woocommerce, $wp;
+		global $wp;
 
 		// If this isn't the order received page shown after a purchase, or the view order page shown on the user account, then bail.
 		if ( ! is_wc_endpoint_url( 'view-order' ) && ! is_wc_endpoint_url( 'order-received' ) ) {
@@ -139,8 +169,8 @@ MAP;
 		$this->lpac_expose_map_settings_js( $user_location_collected_during_order );
 
 		$markup = <<<MAP
-		<div class='woocommerce-shipping-fields__field-wrapper lpac-map'></div>
-		<div class='woocommerce-shipping-fields__field-wrapper'>
+		<div id="lpac-map-container" class='woocommerce-shipping-fields__field-wrapper'>
+		<div class='lpac-map'></div>
 		</div>
 MAP;
 
@@ -185,12 +215,27 @@ MAP;
 	 *
 	 * @since    1.1.0
 	 * @param array $order_id The order id.
+	 *
+	 * @return void
 	 */
-	public function lpac_validate_location_fields( $fields, $errors ) : void {
+	public function lpac_validate_location_fields( $fields, $errors ) {
 
+		/**
+		 * The map visibility might be changed via JS or other conditions
+		 * So we need to check if its actually shown before trying to validate
+		 */
 		$map_shown = (bool) $fields['lpac_is_map_shown'];
 
 		if ( $map_shown === false ) {
+			return;
+		}
+
+		/**
+		 * Allow users to override this setting
+		 */
+		$custom_override = apply_filters( 'lpac_override_map_validation', false, $fields, $errors );
+
+		if ( $custom_override === true ) {
 			return;
 		}
 
@@ -212,10 +257,16 @@ MAP;
 	 */
 	public function lpac_save_cords_order_meta( $order_id ) {
 
-		$latitude  = ( isset( $_POST['lpac_latitude'] ) ) ? $_POST['lpac_latitude'] : '';
-		$longitude = ( isset( $_POST['lpac_longitude'] ) ) ? $_POST['lpac_longitude'] : '';
+		$latitude  = $_POST['lpac_latitude'] ?? '';
+		$longitude = $_POST['lpac_longitude'] ?? '';
+		$map_shown = $_POST['lpac_is_map_shown'] ?? '';
 
 		if ( empty( $latitude ) || empty( $longitude ) ) {
+			return;
+		}
+
+		// If the map was not shown for this order don't save the coordinates.
+		if ( empty( $map_shown ) ) {
 			return;
 		}
 
@@ -344,6 +395,42 @@ BUTTON;
 		} else {
 			$this->lpac_create_delivery_location_link_qrcode( $map_link, $order->get_id() );
 		}
+
+	}
+
+	public function lpac_add_admin_checkout_notice() {
+
+		$hide_notice = get_option( 'lpac_hide_troubleshooting_admin_checkout_notice', 'no' );
+
+		if ( $hide_notice === 'yes' ) {
+			return;
+		}
+
+		$user_id = get_current_user_id();
+
+		if ( empty( $user_id ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$notice_text = esc_html__( 'Hi Admin, some websites might have issues with displaying or using the Google Map. If you\'re having issues then please have a look at your browser console for any errors.' );
+		$additional  = esc_html__( 'Only Admins on your website can see this notice. You can turn it off in the plugin settings if everything works fine.' );
+
+		$markup = <<<MARKUP
+		<div class="lpac-admin-notice" style="background: #246df3; color: #ffffff; text-align: center; margin-bottom: 20px; padding: 10px;">
+			<p style="font-size:14px; "><span style="font-weight: bold">LPAC: </span>
+				$notice_text
+			</p>
+			<p style="font-size:12px; font-weight: bold;" >
+				$additional
+			</p>
+		</div>
+MARKUP;
+
+		echo $markup;
 
 	}
 

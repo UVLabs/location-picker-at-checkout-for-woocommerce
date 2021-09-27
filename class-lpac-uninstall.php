@@ -70,6 +70,8 @@ class Lpac_Uninstall {
 			'lpac_wc_shipping_classes',
 			'lpac_wc_shipping_classes_show_hide',
 			'lpac_enable_save_address_feature',
+			'lpac_wc_shipping_methods',
+			'lpac_hide_troubleshooting_admin_checkout_notice',
 		);
 
 		foreach ( $option_keys as $key ) {

@@ -75,6 +75,11 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 
 == Changelog ==
 
+= 1.2.2 =
+* [New] Added a new option in settings to hide the map based on the chosen shipping method.
+* [Improvement] Better plugin settings arrangement.
+* [Info] Tested on WC 5.7.
+
 = 1.2.1 =
 * [Improvement] Better assign coordinates input fields variables on checkout page.
 

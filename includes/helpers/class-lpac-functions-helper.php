@@ -119,17 +119,17 @@ class Lpac_Functions_Helper
      */
     public static function lpac_get_available_shipping_classes()
     {
-        $normalized_shipping_classes = array();
         
         if ( !class_exists( 'WC_Shipping' ) ) {
             error_log( 'Location Picker at Checkout for WooCommerce: WC_Shipping() class not found.' );
-            return $normalized_shipping_classes;
+            return array();
         }
         
         $lpac_wc_shipping_classes = ( new WC_Shipping() )->get_shipping_classes();
         if ( !is_array( $lpac_wc_shipping_classes ) ) {
-            return $normalized_shipping_classes;
+            return array();
         }
+        $normalized_shipping_classes = array();
         foreach ( $lpac_wc_shipping_classes as $shipping_class_object ) {
             $iterated_shipping_class = array(
                 $shipping_class_object->term_id => $shipping_class_object->name,
@@ -154,6 +154,9 @@ class Lpac_Functions_Helper
     public static function lpac_get_order_shipping_classes()
     {
         $cart = WC()->cart->get_cart();
+        if ( !is_array( $cart ) ) {
+            return array();
+        }
         $shipping_class_array = array();
         foreach ( $cart as $cart_item ) {
             $shipping_class_id = $cart_item['data']->get_shipping_class_id();
@@ -161,6 +164,33 @@ class Lpac_Functions_Helper
             $shipping_class_array[$shipping_class_id] = $shipping_class_name;
         }
         return $shipping_class_array;
+    }
+    
+    /**
+     *
+     * Get all available shipping methods from the shipping zones created by users.
+     *
+     * @return array
+     */
+    public static function lpac_get_available_shipping_methods()
+    {
+        
+        if ( !class_exists( 'WC_Shipping_Zones' ) ) {
+            error_log( 'Location Picker at Checkout for WooCommerce: WC_Shipping_Zones() class not found.' );
+            return array();
+        }
+        
+        $zones = WC_Shipping_Zones::get_zones();
+        if ( !is_array( $zones ) ) {
+            return array();
+        }
+        $shipping_methods = array_column( $zones, 'shipping_methods' );
+        $flatten = array_merge( ...$shipping_methods );
+        $normalized_shipping_methods = array();
+        foreach ( $flatten as $key => $class ) {
+            $normalized_shipping_methods[$class->id] = $class->method_title;
+        }
+        return $normalized_shipping_methods;
     }
 
 }

@@ -28,26 +28,31 @@
 	 * Although scripts in the WordPress core, Plugins and Themes may be
 	 * practising this, we should strive to set a better example in our own work.
 	 */
-
+	// TODO Can most likely merge this into checkout-page-map.js
 	$( document ).ready(
+
 		function(){
 
-			var map_div   = document.querySelector( '.lpac-map' );
-			var lat       = document.querySelector( '#lpac_latitude_field' );
-			var long      = document.querySelector( '#lpac_longitude_field' );
+			var map_div   = document.querySelector( '#lpac-map-container' );
 			var map_shown = document.querySelector( '#lpac_is_map_shown' );
+			var map_present = true;
+			var map_visibility = '';
 
-			if( typeof(map_shown) === 'undefined' || map_shown === null ){
-				console.log('LPAC: map_shown object not present, skipping...')
+			if( typeof( map_shown ) === 'undefined' || map_shown === null ){
+				console.log('LPAC: map_shown object not present, skipping...');
 				return;
 			}
 
-			if ( ! map_div ) {
+			/**
+			 * Detect if map is present and the display property
+			 */
+			if( typeof( map_div ) === 'undefined' || map_div === null ){
+				map_present = false;
+			}else{
+				map_visibility = map_div.style.display;
+			}
 
-				if ( lat && long ) {
-					lat.remove();
-					long.remove();
-				}
+			if ( map_present === false || map_visibility === 'none' ) {
 
 				if ( map_shown ) {
 					map_shown.value = 0

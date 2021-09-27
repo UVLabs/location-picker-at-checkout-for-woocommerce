@@ -4,52 +4,52 @@
 //  https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
 // })
 
-const geocoder   = new google.maps.Geocoder()
-const infowindow = new google.maps.InfoWindow()
+	const geocoder   = new google.maps.Geocoder()
+	const infowindow = new google.maps.InfoWindow()
 
-const find_location_btn = document.querySelector( "#lpac-find-location-btn" );
+	const find_location_btn = document.querySelector( "#lpac-find-location-btn" );
 
-if( typeof(find_location_btn) !== 'undefined' && find_location_btn !== null ){
-	find_location_btn.addEventListener(
-		"click",
-		() => {
-		lpac_bootstrap_map_functionality( geocoder, map, infowindow )
-		}
-	)
-}else{
-	console.log('LPAC: Detect location button not present, skipping...')
-}
-
-function get_navigator_coordinates() {
-
-	return new Promise(
-		function(resolve, reject) {
-
-			if (navigator.geolocation) {
-				  navigator.geolocation.getCurrentPosition( resolve, reject )
-			} else {
-				// TODO add input fields so users can change this text
-				alert( 'Geolocation is not possible on this web browser. Please switch to a different web browser to use our interactive map.' );
+	if( typeof(find_location_btn) !== 'undefined' && find_location_btn !== null ){
+		find_location_btn.addEventListener(
+			"click",
+			() => {
+			lpac_bootstrap_map_functionality( geocoder, map, infowindow )
 			}
+		)
+	}else{
+		console.log('LPAC: Detect location button not present, skipping...')
+	}
 
-		}
-	).catch(
-		function(error){
+	function get_navigator_coordinates() {
 
-			console.log( 'Location Picker At Checkout Plugin: ' + error.message )
+		return new Promise(
+			function(resolve, reject) {
 
-			if ( error.code === 1 ) {
-				// TODO add input fields so users can change this text
-				alert( "Something went wrong while trying to detect your location. Click on the location icon in the address bar and allow our website to detect your location. Please contact us if you need additional assistance." );
-				return
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition( resolve, reject )
+				} else {
+					// TODO add input fields so users can change this text
+					alert( 'Geolocation is not possible on this web browser. Please switch to a different web browser to use our interactive map.' );
+				}
+
 			}
+		).catch(
+			function(error){
 
-			alert( error.message );
+				console.log( 'Location Picker At Checkout Plugin: ' + error.message )
 
-		}
-	)
+				if ( error.code === 1 ) {
+					// TODO add input fields so users can change this text
+					alert( "Something went wrong while trying to detect your location. Click on the location icon in the address bar and allow our website to detect your location. Please contact us if you need additional assistance." );
+					return
+				}
 
-}
+				alert( error.message );
+
+			}
+		)
+
+	}
 
 	/**
 	* <Global Settings>
@@ -66,6 +66,13 @@ function get_navigator_coordinates() {
 	/**
 	 * </Global Settings>
 	 */
+
+	/**
+	 * Setup our conditional hiding of map based on selected shipping methods;
+	 * 
+	 * Running this function as soon as the page loads allows map to be hidden quicker than on document ready event.
+	 */
+	 lpac_hide_show_map_by_shipping_method();
 
 	/** 
 	*  Bootstrap the functionality of the map and marker.
@@ -602,3 +609,88 @@ function get_navigator_coordinates() {
 
 		billing_zipcode.value = lpac_get_zip_code( results );
 	}
+
+	/**
+	 * Show or hide the map based ons hipping method selected
+	 */
+	function lpac_hide_show_map_by_shipping_method(){
+
+		const lpacShippingMethods = document.querySelectorAll('#shipping_method .shipping_method');
+
+		if( typeof( lpacShippingMethods ) === 'undefined' || lpacShippingMethods === null ){
+			console.log('LPAC: Cannot find shipping methods element, skipping...');
+			return;
+		}
+
+		// This saved_disallowed_shipping_methods option is in the global JS scope
+		// See Lpac_Public_Display::lpac_expose_map_settings_js()
+		const disallowed_shipping_methods = saved_disallowed_shipping_methods;
+
+		let show = true;
+
+		loop1:
+		for ( const lpacShippingMethod of lpacShippingMethods ){
+			
+			// We have to check for the hidden type as well because if only one shipping method is available WC doesn't show radio buttons.
+			if( lpacShippingMethod.checked || lpacShippingMethod.type === 'hidden' ){
+
+				loop2:
+				for ( const disallowed_shipping_method of disallowed_shipping_methods ){
+
+						if( lpacShippingMethod.value.indexOf( disallowed_shipping_method ) >= 0 ){
+							show = false;
+							break loop1;
+						}
+
+					}
+
+				}
+
+		}
+
+		if( show ){
+			document.querySelector('#lpac-map-container').style.display = "block";
+			document.querySelector('#lpac_is_map_shown').value = 1;
+		}else{
+			document.querySelector('#lpac-map-container').style.display = "none";
+			document.querySelector('#lpac_is_map_shown').value = 0;
+		}
+
+	}
+
+	/**
+	 * Detect the shipping method on page load
+	 * 
+	 * This function isn't in use. It causes a slight flicker of the map due to the interval checking
+	 * Function remains in place for debugging purposes.
+	 * 
+	 */
+	function lpac_setup_changed_shipping_method_on_load(){
+
+		let stateCheck = setInterval(() => {
+			if (document.readyState === 'complete') {
+				lpac_hide_show_map_by_shipping_method();
+			  	clearInterval(stateCheck);
+			}
+			console.log('checking..');
+		  }, 100);
+
+	}
+
+	/**
+	 * Detect when shipping methods are changed based on WC custom updated_checkout event.
+	 * This event can't be accessed via vanilla JS but is the most reliable for performing this action. 
+	 */
+	(function( $ ) {
+		'use strict';
+	
+		$( document ).ready(
+			function(){
+
+				$( document.body ).on( 'updated_checkout', lpac_hide_show_map_by_shipping_method );
+
+			}
+		);
+	
+	})( jQuery );
+	
