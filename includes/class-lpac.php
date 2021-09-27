@@ -197,36 +197,17 @@ class Lpac
         $plugin_public = new Lpac_Public( $this->get_plugin_name(), $this->get_version() );
         $plugin_public_display = new Lpac_Public_Display();
         $functions_helper = new Lpac_Functions_Helper();
-        $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-        $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
         /*
-         * WooCommerce
+         * If plugin not enabled don't continue
          */
         $plugin_enabled = get_option( 'lpac_enabled', 'yes' );
         if ( $plugin_enabled === 'no' ) {
             return;
         }
+        $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+        $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
         $this->loader->add_action( 'wp_head', $plugin_public_display, 'lpac_output_map_custom_styles' );
         $checkout_page_map_location = get_option( 'lpac_checkout_map_orientation', 'woocommerce_after_checkout_shipping_form' );
-        /*
-         *	Update old options.
-         */
-        //TODO Delete this block when confident most users have updated.
-        
-        if ( $checkout_page_map_location === 'billing_address_area_top' ) {
-            $checkout_page_map_location = 'woocommerce_before_checkout_billing_form';
-            update_option( 'lpac_checkout_map_orientation', 'woocommerce_before_checkout_billing_form' );
-        } elseif ( $checkout_page_map_location === 'billing_address_area_bottom' ) {
-            $checkout_page_map_location = 'woocommerce_after_checkout_billing_form';
-            update_option( 'lpac_checkout_map_orientation', 'woocommerce_after_checkout_billing_form' );
-        } elseif ( $checkout_page_map_location === 'shipping_address_area_top' ) {
-            $checkout_page_map_location = 'woocommerce_before_checkout_shipping_form';
-            update_option( 'lpac_checkout_map_orientation', 'woocommerce_before_checkout_shipping_form' );
-        } elseif ( $checkout_page_map_location === 'shipping_address_area_bottom' ) {
-            $checkout_page_map_location = 'woocommerce_after_checkout_shipping_form';
-            update_option( 'lpac_checkout_map_orientation', 'woocommerce_after_checkout_shipping_form' );
-        }
-        
         /*
          * Output hidden input fields for latitude and longitude.
          */
@@ -273,7 +254,8 @@ class Lpac
                 4
             );
         }
-    
+        
+        $this->loader->add_action( 'woocommerce_before_checkout_form', $plugin_public_display, 'lpac_add_admin_checkout_notice' );
     }
     
     /**
