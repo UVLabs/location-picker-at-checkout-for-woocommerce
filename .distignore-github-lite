@@ -6,3 +6,6 @@ dist
 lpac.zip
 logs
 .vscode
+.parcel-cache
+node_modules
+assets/public/js/maps/build

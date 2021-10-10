@@ -7,7 +7,6 @@
  * @since      1.0.0
  *
  * @package    Lpac
- * @subpackage Lpac/includes
  */
 
 /**

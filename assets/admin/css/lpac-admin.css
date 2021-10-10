@@ -1,0 +1,10 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+ .post-type-shop_order .lpac-map .gm-style-iw-d p{
+	font-size: 1.2em;
+	font-weight: 800;
+	margin: 5px;
+	text-align: center;
+ }

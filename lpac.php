@@ -16,12 +16,12 @@
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://soaringleads.com
  * Description:       Allow customers to choose their shipping location using a map at checkout.
- * Version:           1.2.2
+ * Version:           1.3.2
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       lpac
+ * Text Domain:       map-location-picker-at-checkout-for-woocommerce
  * Domain Path:       /languages
  * WC requires at least: 3.0
  * WC tested up to: 5.7
@@ -31,6 +31,7 @@
 if ( !defined( 'WPINC' ) ) {
     die;
 }
+require dirname( __FILE__ ) . '/vendor/autoload.php';
 
 if ( !function_exists( 'lpac_fs' ) ) {
     // Create a helper function for easy SDK access.
@@ -66,7 +67,6 @@ if ( !function_exists( 'lpac_fs' ) ) {
     do_action( 'lpac_fs_loaded' );
 }
 
-require dirname( __FILE__ ) . '/vendor/autoload.php';
 include __DIR__ . '/class-lpac-uninstall.php';
 if ( function_exists( 'lpac_fs' ) ) {
     lpac_fs()->add_action( 'after_uninstall', array( new Lpac_Uninstall(), 'remove_plugin_settings' ) );
@@ -76,24 +76,24 @@ if ( function_exists( 'lpac_fs' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'LPAC_VERSION', '1.2.2' );
+define( 'LPAC_VERSION', '1.3.2' );
 define( 'LPAC_PLUGIN_NAME', 'lpac' );
-define( 'LPAC_PLUGIN_DIR', __DIR__ );
+define( 'LPAC_PLUGIN_DIR', __DIR__ . '/' );
+define( 'LPAC_PLUGIN_ASSETS_DIR', __DIR__ . '/assets/' );
+define( 'LPAC_PLUGIN_ASSETS_PATH_URL', plugin_dir_url( __FILE__ ) . 'assets/' );
 define( 'LPAC_PLUGIN_PATH_URL', plugin_dir_url( __FILE__ ) );
 define( 'LPAC_GOOGLE_MAPS_LINK', 'https://maps.googleapis.com/maps/api/js?key=' );
 define( 'LPAC_GOOGLE_MAPS_API_KEY', get_option( 'lpac_google_maps_api_key', '' ) );
 $site_locale = get_locale();
 define( 'LPAC_GOOGLE_MAPS_PARAMS', "&language={$site_locale}&libraries=&v=weekly" );
-/**
- * Create our custom WooCommerce settings tab and render our settings fields
- */
-function lpac_create_custom_wc_settings_tab( $settings )
-{
-    $settings[] = (include __DIR__ . '/includes/admin/class-lpac-admin-settings.php');
-    return $settings;
+$debug = false;
+if ( function_exists( 'wp_get_environment_type' ) ) {
+    /* File will only exist in local installation */
+    if ( wp_get_environment_type() === 'local' && file_exists( LPAC_PLUGIN_ASSETS_DIR . 'public/js/maps/base-map.js' ) ) {
+        $debug = true;
+    }
 }
-
-add_action( 'woocommerce_get_settings_pages', 'lpac_create_custom_wc_settings_tab' );
+define( 'LPAC_DEBUG', $debug );
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-lpac-activator.php
@@ -117,11 +117,6 @@ function deactivate_lpac()
 register_activation_hook( __FILE__, 'activate_lpac' );
 register_deactivation_hook( __FILE__, 'deactivate_lpac' );
 /**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/class-lpac.php';
-/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
@@ -130,10 +125,6 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-lpac.php';
  *
  * @since    1.0.0
  */
-function run_lpac()
-{
-    $plugin = new Lpac();
-    $plugin->run();
-}
-
-run_lpac();
+use  Lpac\Bootstrap\Main as Plugin ;
+$plugin = new Plugin();
+$plugin->run();
