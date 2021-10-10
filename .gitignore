@@ -6,3 +6,7 @@ artifact
 lpac.zip
 logs
 .vscode
+node_modules
+.parcel-cache
+assets/public/js/maps/build/
+assets/pro/public/js/maps/build/

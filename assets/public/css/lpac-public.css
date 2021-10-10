@@ -1,0 +1,58 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+ .lpac-map{
+	 height: 400px;
+	 /* width: 100%; */
+ }
+
+ #lpac-find-location-btn{
+	 margin: 20px 0;
+ }
+
+ .hidden{
+	 display: none;
+ }
+
+ #lpac-map-instructions{
+	font-size: 12px;
+	margin: 10px;
+	text-align: center;
+ }
+
+ #lpac-find-location-btn-wrapper{
+	 display: flex;
+	 justify-content: center;
+ }
+
+ #lpac-saved-addresses{
+	 text-align: center;
+ }
+
+ .lpac-map-controls #lpac-saved-addresses{
+	margin: 20px 0;
+ }
+
+ .lpac-map-controls #lpac-saved-addresses ul{
+	list-style-type: none;
+	padding: 0;
+ }
+
+ .lpac-map-controls #lpac-saved-addresses ul li{
+	display: inline-block;
+	margin: 10px 10px 0 0;
+ }
+
+ /* Google maps info window */
+ .woocommerce-page .lpac-map .gm-style-iw-d p{
+	font-size: 1.2em;
+	margin-bottom: 0;
+
+ }
+ .woocommerce-view-order .lpac-map .gm-style-iw-d p, .woocommerce-order-received .lpac-map .gm-style-iw-d p{
+	font-weight: 800;
+	text-align: center;
+ }
+

@@ -13,9 +13,10 @@ mkdir -p artifact
 
 # Remove dev dependencies
 composer install --no-dev
+composer dumpautoload
 
-# Sync SVN
-# rsync -acvP --delete --exclude-from=".distignore" ./ "$LPAC_SVN"
+# Build our JS files with parcel
+npm run-script build
 
 # Sync dist folder
 rsync -acvP --delete --exclude-from=".distignore" ./ "./dist"
@@ -23,6 +24,10 @@ rsync -acvP --delete --exclude-from=".distignore" ./ "./dist"
 #Change to our dist folder and zip to artifact folder
 (cd dist && zip -r ../artifact/lpac.zip .)
 
+# Delete dist folder
+rm -rf dist
+
 # Re-add dev dependencies
 composer install
+composer dumpautoload
 

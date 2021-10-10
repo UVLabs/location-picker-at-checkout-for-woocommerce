@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, map, geolocation, checkout map, delivery map
 Requires at least: 5.5
 Requires PHP: 7.0
 Tested up to: 5.8
-Stable tag: trunk
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,9 +13,9 @@ Let WooCommerce customers set their exact location for delivery on Google Maps a
 
 == Description ==
 
-Do you run a WooCommerce store where you need more detailed location information for a customer? If so, then why not let them choose their exact location on Google Maps? 
+Do you run a WooCommerce store where you need more detailed location information from a customer? If so, then why not let them choose their exact location on Google Maps? 
 
-Location Picker At Checkout for WooCommerce (LPAC) allows store owners to add more flexibility to their store by letting their customers choose exactly where they'd like their product(s) to be delivered. This plugin is excellent for stores with delivery personnel that ship products to customers within a moderate geographical area. 
+Location Picker At Checkout for WooCommerce (LPAC) allows store owners to add more flexibility to their WooCommerce store by letting their customers choose exactly where they'd like their product(s) delivered. This plugin is excellent for stores with delivery personnel that ship products to customers within a moderate geographical area. 
 
 Location Picker At Checkout for WooCommerce enables store owners to get more precise location details without having to contact customers via other means for location information or directions. With this plugin, lots of time can be saved by allowing customers to select their exact location on Google Maps at checkout with WooCommerce.
 
@@ -28,6 +28,7 @@ This plugin has built-in support for automatically filling in the WooCommerce ch
 - Online Food Delivery websites
 - Online Supermarkets
 - Online Furniture websites
+- Restaurants doing delivery
 - Hardware Rental & Delivery websites
 - Car Rental websites
 - Pickup service websites
@@ -39,7 +40,8 @@ This plugin has built-in support for automatically filling in the WooCommerce ch
 - Detect current location of customer.
 - Allow customers to pick their exact location using Google Maps.
 - Autofill checkout fields with information pulled from Google Maps.
-- Automatically translates map's buttons based on site language (set in WordPress' general settings).
+- Automatically translates map's buttons based on the site's language (set in WordPress' general settings).
+- Show/Hide Map based on Shipping Method
 - Show/Hide Map based on Shipping Class
 - Include a QR Code or button link to the customer's selected location in the WooCommerce order emails.
 - "View on map" button to allow admin to view exact location for delivery of any order.
@@ -47,7 +49,7 @@ This plugin has built-in support for automatically filling in the WooCommerce ch
 - Customizable Map container
 - Have a feature in mind? Feel free to submit it on the support forum.
 
-### Configure Plugin:
+### Configuring Plugin:
 
 Plugin settings are located in WordPress Admin Dashboard->WooCommerce->Location Picker At Checkout
 
@@ -55,25 +57,58 @@ Plugin settings are located in WordPress Admin Dashboard->WooCommerce->Location 
 
 
 1. Extract the downloaded zip file and upload the `location-picker-at-checkout-for-woocommerce` folder to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Configure the plugin in WooCommerce->Settings->Location Picker At Checkout
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Configure the plugin in WooCommerce->Settings->Location Picker At Checkout
+
+Alternatively, install this plugin by searching for it from the plugins area of your WordPress website.
 
 == Frequently Asked Questions ==
 
 = The map doesn't show =
 
-Ensure that you have setup the plugin with your API key by going to WordPress Dashboard->WooCommerce->Shipping->Location Picker At Checkout.
+Ensure that you have setup the plugin with your API key by going to WordPress Dashboard->WooCommerce->Location Picker At Checkout. See [this doc](https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key) for getting your API key.
+
+= Nothing happens when I click on the map =
+
+These sorts of issues are usually due to a JavaScript issue on the website. Check your [browser console](https://balsamiq.com/support/faqs/browserconsole/#apple-safari) for any errors that might point to the cause. Feel free to post those errors in the support forum and include a full screenshot of your browser console.
+
+= Why are the plugin settings not in my language? = 
+
+If the plugin settings are not in your language then it means translations for your language do not currently exist for the plugin. You are more than welcome to help translate the plugin into your language [here](https://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/)
+
+= This plugin doesn't have all the features I want, what do I do? =
+
+Post it on the [support forum](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/) of the plugin.
 
 == Screenshots ==
 
 1. Plugin Settings Dashboard
-2. Checkout Page Map View (No location detected yet)
-3. Checkout Page Map View (User selected their location)
-4. Order Received 
-5. View Order Map View (Past Order)
+2. Checkout Page Map View (Before customer clicks "Detect Current Location" button)
+3. Checkout Page Map View (After customer clicks "Detect Current Location" button and selects their location)
+4. Order Received Page with Map
+5. View Order Page (Past Order) with Map 
 6. Map view of the customer delivery location on shop order page (in the WordPress dashboard)
+7. Delivery location button inside email (goes to customer selected location when clicked)
+8. Delivery location QR Code inside email (goes to customer selected location when scanned)
+
+== Upgrade Notice ==
+
+= 1.3.2 =
+Improved support for older browsers.
 
 == Changelog ==
+
+= 1.3.2 =
+* [Fix] Location button and QR code in emails were sometimes not centered.
+* [Improvement] Added more support for older browsers.
+* [Improvement] Show info window inside map on order-received, view-order, and dashboard view-order pages.
+* [Dev] Two new filters for the delivery location button that appear in emails: `lpac_email_btn_p_styles` and `lpac_email_btn_a_styles`.
+
+= 1.3.1 =
+* [Fix] Missing class error.
+
+= 1.3.0 =
+* [Improvement] Code quality changes to plugin.
 
 = 1.2.2 =
 * [New] Added a new option in settings to hide the map based on the chosen shipping method.
@@ -89,8 +124,8 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 * [Improvement] Added coordinates fields to billing section of checkout page for better support of sites with custom checkout pages.
 * [Improvement] More checks for better handling of sites with custom checkout pages.
 * [Change] Minimum required PHP version is now 7.0. Please update your PHP version if you have not yet done so; contact your Web Host for assistance if needed.
-* [Info] Added a new filter for "Detect Current Location" Button text: `lpac_find_location_btn_text`.
-* [Info] Filter for map instruction text is: `lpac_map_instuctions_text`.
+* [Dev] Added a new filter for "Detect Current Location" Button text: `lpac_find_location_btn_text`.
+* [Dev] Filter for map instruction text is: `lpac_map_instuctions_text`.
 * [Info] Tested on WP 5.8.
 * [Info] Tested on WC 5.6.
 

@@ -13,6 +13,7 @@ mkdir -p artifact
 
 # Remove dev dependencies
 composer install --no-dev
+composer dumpautoload
 
 # Sync dist folder
 rsync -acvP --delete --exclude-from=".distignore-github-lite" ./ "./dist"
@@ -22,4 +23,5 @@ rsync -acvP --delete --exclude-from=".distignore-github-lite" ./ "./dist"
 
 # Re-add dev dependencies
 composer install
+composer dumpautoload
 

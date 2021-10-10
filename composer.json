@@ -6,11 +6,16 @@
         "github-lite": "sh bin/github-lite-prep.sh"
     },
     "require-dev": {
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
-        "wp-coding-standards/wpcs": "^2.3"
+        "dealerdirect/phpcodesniffer-composer-installer": "0.7.1",
+        "wp-coding-standards/wpcs": "2.3"
     },
     "require": {
-        "freemius/wordpress-sdk": "^2.4",
-        "endroid/qr-code": "^4.1"
+        "freemius/wordpress-sdk": "2.4.2",
+        "endroid/qr-code": "4.3.5"
+    },
+    "autoload":{
+        "psr-4": {
+            "Lpac\\" : "includes/"
+        }
     }
 }
