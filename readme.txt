@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, map, geolocation, checkout map, delivery map
 Requires at least: 5.5
 Requires PHP: 7.0
 Tested up to: 5.8
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,17 +37,23 @@ This plugin has built-in support for automatically filling in the WooCommerce ch
 
 ### Features:
 
-- Detect current location of customer.
-- Allow customers to pick their exact location using Google Maps.
-- Autofill checkout fields with information pulled from Google Maps.
-- Automatically translates map's buttons based on the site's language (set in WordPress' general settings).
+- Detect current location of customer
+- Allow customers to pick their exact location using Google Maps
+- Autofill checkout fields with information pulled from Google Maps
 - Show/Hide Map based on Shipping Method
 - Show/Hide Map based on Shipping Class
+- Show Map based on Coupon Code
+- Hide Map for Guest Checkout
 - Include a QR Code or button link to the customer's selected location in the WooCommerce order emails.
 - "View on map" button to allow admin to view exact location for delivery of any order.
 - Customers can see the delivery location they selected on past orders.
 - Customizable Map container
+- Automatically translated map buttons based on the website's language (set in WordPress' general settings)
 - Have a feature in mind? Feel free to submit it on the support forum.
+
+### Support for:
+
+- WooFunnels Funnel Builder for WordPress
 
 ### Configuring Plugin:
 
@@ -66,11 +72,19 @@ Alternatively, install this plugin by searching for it from the plugins area of 
 
 = The map doesn't show =
 
-Ensure that you have setup the plugin with your API key by going to WordPress Dashboard->WooCommerce->Location Picker At Checkout. See [this doc](https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key) for getting your API key.
+Ensure that you have setup the plugin with your API key by going to WordPress Dashboard->WooCommerce->Location Picker At Checkout. See [this doc](https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key) for getting your API key. If you've entered your API key and the map still doesn't show, then please have a look at your  [browser console](https://balsamiq.com/support/faqs/browserconsole/#apple-safari) for any errors relating to the map, you can submit an issue thread on the plugin's [support forum](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/)
 
 = Nothing happens when I click on the map =
 
 These sorts of issues are usually due to a JavaScript issue on the website. Check your [browser console](https://balsamiq.com/support/faqs/browserconsole/#apple-safari) for any errors that might point to the cause. Feel free to post those errors in the support forum and include a full screenshot of your browser console.
+
+= Map says "For development purposes only" =
+
+This message shows when you have not finished setting up the map correctly inside the Google Cloud Console. Please make sure you've followed all the steps from the [setup guide](https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key) including the "Setting up Billing & Google Monthly Credit" section.
+
+= Do I need to pay to use this plugin? =
+
+No! The plugin is free to use. The Google Maps APIs it uses, however, do require you to setup an account on Google's Cloud Console. The process is easy and requires you also attaching a billing method to your account. Google provides a $200 monthly credit for usage of their APIs so you don't have to worry about paying anything unless you receive alot of orders on your store (upwards of 15,000 orders in a month). See [this step](https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key#setting-up-billing--google-monthly-credit) in the setup guide for more details about how this works.
 
 = Why are the plugin settings not in my language? = 
 
@@ -83,20 +97,31 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 == Screenshots ==
 
 1. Plugin Settings Dashboard
-2. Checkout Page Map View (Before customer clicks "Detect Current Location" button)
-3. Checkout Page Map View (After customer clicks "Detect Current Location" button and selects their location)
-4. Order Received Page with Map
-5. View Order Page (Past Order) with Map 
-6. Map view of the customer delivery location on shop order page (in the WordPress dashboard)
-7. Delivery location button inside email (goes to customer selected location when clicked)
-8. Delivery location QR Code inside email (goes to customer selected location when scanned)
+2. Map Visibility Rules Dashboard
+3. Checkout Page Map View (Before customer clicks "Detect Current Location" button)
+4. Checkout Page Map View (After customer clicks "Detect Current Location" button and selects their location)
+5. Order Received Page with Map
+6. View Order Page (Past Order) with Map 
+7. Map view of the customer delivery location on shop order page (in the WordPress dashboard)
+8. Delivery location button inside email (goes to customer selected location when clicked)
+9. Delivery location QR Code inside email (goes to customer selected location when scanned)
 
 == Upgrade Notice ==
 
-= 1.3.2 =
-Improved support for older browsers.
+= 1.3.3 =
+The way in which shipping methods are saved by the plugin has been changed. Please go to WooCommerce->Location Picker at Checkout->Visibility Rules and set the desired shipping methods you'd like the map to be hidden for, then save your changes.
 
 == Changelog ==
+
+= 1.3.3 =
+* [New] Added support for WooFunnels' custom checkout pages. 
+* [New] Added a Map Visibility rules table to allow store owners to set the sequence they'd like rules to be ran.
+* [New] Rule to show map based on coupon code.
+* [New] Rule to hide map for guest orders.
+* [Fix] Plugin would still try to run even though WooCommerce was inactive.
+* [Improvement] Map display rules now use Ajax to determine whether or not to show the map.
+* [Improvement] Added a new submenu tab called "Visibility Rules" which houses settings that control when the map is hidden/shown on the checkout page.
+* [Info] Tested on WC 5.8.
 
 = 1.3.2 =
 * [Fix] Location button and QR code in emails were sometimes not centered.

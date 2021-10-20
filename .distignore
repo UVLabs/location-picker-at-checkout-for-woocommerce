@@ -18,6 +18,7 @@ phpcs.xml
 lpac.zip
 logs
 assets/public/js/maps/*.js
+assets/public/js/compat/*.js
 assets/pro/public/js/maps/*.js
 assets/public/js/maps/build/*.map
 assets/pro/public/js/maps/build/*.map

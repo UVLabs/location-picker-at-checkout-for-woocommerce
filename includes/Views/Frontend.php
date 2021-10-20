@@ -12,7 +12,8 @@
  */
 namespace Lpac\Views;
 
-use Lpac\Helpers\Functions as Functions_Helper;
+use Lpac\Controllers\Map_Visibility_Controller;
+use Lpac\Helpers\Functions;
 
 class Frontend {
 
@@ -35,62 +36,27 @@ class Frontend {
 		$this->lpac_expose_map_settings_js();
 	}
 
-		/**
+	/**
 	 * Map settings.
 	 *
 	 * @since    1.0.0
 	 */
 	public function lpac_get_map_settings() {
 
-		$starting_coordinates = get_option( 'lpac_map_starting_coordinates', '14.024519,-60.974876' );
-		$starting_coordinates = apply_filters( 'lpac_map_starting_coordinates', $starting_coordinates );
-
-		$coordinates_parts = explode( ',', $starting_coordinates );
-		$latitude          = ! empty( $coordinates_parts[0] ) ? (float) $coordinates_parts[0] : (float) 14.024519;
-		$longitude         = ! empty( $coordinates_parts[1] ) ? (float) $coordinates_parts[1] : (float) -60.974876;
-
-		$zoom_level = (int) get_option( 'lpac_general_map_zoom_level', 16 );
-		$zoom_level = apply_filters( 'lpac_general_map_zoom_level', $zoom_level );
-
-		$clickable_icons = get_option( 'lpac_allow_clicking_on_map_icons', 'yes' );
-		$clickable_icons = apply_filters( 'lpac_allow_clicking_on_map_icons', $clickable_icons );
-
-		$background_color = get_option( 'lpac_map_background_color', '#eee' );
-		$background_color = apply_filters( 'lpac_map_background_color', $background_color );
-
-		$fill_in_billing_fields = get_option( 'lpac_autofill_billing_fields', 'yes' );
-		$fill_in_billing_fields = apply_filters( 'lpac_autofill_billing_fields', $fill_in_billing_fields );
+		$options = Functions::get_map_options();
 
 		$data = array(
-			'lpac_map_default_latitude'    => $latitude,
-			'lpac_map_default_longitude'   => $longitude,
-			'lpac_map_zoom_level'          => $zoom_level,
-			'lpac_map_clickable_icons'     => $clickable_icons === 'yes' ? true : false,
-			'lpac_map_background_color'    => $background_color,
-			'lpac_autofill_billing_fields' => $fill_in_billing_fields === 'yes' ? true : false,
+			'lpac_map_default_latitude'    => $options['latitude'],
+			'lpac_map_default_longitude'   => $options['longitude'],
+			'lpac_map_zoom_level'          => $options['zoom_level'],
+			'lpac_map_clickable_icons'     => $options['clickable_icons'] === 'yes' ? true : false,
+			'lpac_map_background_color'    => $options['background_color'],
+			'lpac_autofill_billing_fields' => $options['fill_in_billing_fields'] === 'yes' ? true : false,
 
 		);
 
-		return apply_filters( 'lpac_map_stored_settings', $data );
+		return apply_filters( 'lpac_map_stored_public_settings', $data );
 
-	}
-
-	/**
-	* Detect needed Woocommerce pages.
-	*
-	* Detect if the page is one of which the map is supposed to show.
-	*
-	* @since    1.1.0
-	*
-	* @return bool Whether or not the page is one of our needed pages.
-	*/
-	public function lpac_is_allowed_woocommerce_pages() {
-
-		if ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) || is_checkout() ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -106,17 +72,10 @@ class Frontend {
 
 		$map_options = json_encode( $js_variables );
 
-		/**
-		 * Shipping methods Admin has decided to hide the map for.
-		 */
-		$disallowed_shipping_methods = get_option( 'lpac_wc_shipping_methods', array() );
-		$disallowed_shipping_methods = json_encode( $disallowed_shipping_methods );
-
-		$global_variables = <<<GLOBALVARS
+		$global_variables = <<<JAVASCRIPT
 		// LPAC Map Options
 		var map_options = $map_options;
-		var saved_disallowed_shipping_methods = $disallowed_shipping_methods;
-GLOBALVARS;
+JAVASCRIPT;
 
 		$this->lpac_global_map_settings_js = $global_variables;
 
@@ -129,8 +88,11 @@ GLOBALVARS;
 	 */
 	public function lpac_output_map_on_checkout_page() {
 
-		if ( Functions_Helper::lpac_show_map( 'checkout' ) === false ) {
-			return;
+		// Map div display visibility
+		$display = 'block';
+
+		if ( Map_Visibility_Controller::lpac_show_map( 'checkout' ) === false ) {
+			$display = 'none';
 		}
 
 		$btn_text = __( 'Detect Current Location', 'map-location-picker-at-checkout-for-woocommerce' );
@@ -157,20 +119,20 @@ GLOBALVARS;
 		$after_map_controls_filter = apply_filters( 'lpac_after_map_controls', '', $user_id );
 		$after_map_controls_filter = wp_kses_post( $after_map_controls_filter );
 
-		$markup = <<<MAP
-		<div id="lpac-map-container" class='woocommerce-shipping-fields__field-wrapper'>
+		$markup = <<<HTML
+		<div style="display: $display" id="lpac-map-container" class='woocommerce-shipping-fields__field-wrapper'>
 			$before_map_filter
 			<div class='lpac-map'></div>
 			$after_map_filter
 			<div class='lpac-map-controls'>
 			$before_map_controls_filter
-			<div id="lpac-map-instructions">$instuctions_text</div>
-			<div id="lpac-find-location-btn-wrapper"><button id='lpac-find-location-btn' class="button btn" type='button'>$lpac_find_location_btn_text</button></div>
+			<div id='lpac-map-instructions'>$instuctions_text</div>
+			<div id='lpac-find-location-btn-wrapper'><button id='lpac-find-location-btn' class="button btn" type='button'>$lpac_find_location_btn_text</button></div>
 			<div id='lpac-saved-addresses'><ul>$saved_addresses_area</ul></div>
 			$after_map_controls_filter
 			</div>
 		</div>
-MAP;
+HTML;
 
 		echo apply_filters( 'lpac_map_markup', $markup, $user_id );
 
@@ -193,8 +155,8 @@ MAP;
 			return;
 		}
 
-		$show_on_view_order_page     = Functions_Helper::lpac_show_map( 'lpac_display_map_on_view_order_page' );
-		$show_on_order_received_page = Functions_Helper::lpac_show_map( 'lpac_display_map_on_order_received_page' );
+		$show_on_view_order_page     = Map_Visibility_Controller::lpac_show_map( 'lpac_display_map_on_view_order_page' );
+		$show_on_order_received_page = Map_Visibility_Controller::lpac_show_map( 'lpac_display_map_on_order_received_page' );
 
 		if ( is_wc_endpoint_url( 'view-order' ) && $show_on_view_order_page === false ) {
 			return;
@@ -316,31 +278,6 @@ MAP;
 	}
 
 	/**
-	 * Save the coordinates to the database.
-	 *
-	 * @since    1.0.0
-	 * @param array $order_id The order id.
-	 */
-	public function lpac_save_cords_order_meta( $order_id ) {
-		//TODO move to model class
-		$latitude  = $_POST['lpac_latitude'] ?? '';
-		$longitude = $_POST['lpac_longitude'] ?? '';
-		$map_shown = $_POST['lpac_is_map_shown'] ?? '';
-
-		if ( empty( $latitude ) || empty( $longitude ) ) {
-			return;
-		}
-
-		// If the map was not shown for this order don't save the coordinates.
-		if ( empty( $map_shown ) ) {
-			return;
-		}
-
-		update_post_meta( $order_id, '_lpac_latitude', sanitize_text_field( $_POST['lpac_latitude'] ) );
-		update_post_meta( $order_id, '_lpac_longitude', sanitize_text_field( $_POST['lpac_longitude'] ) );
-	}
-
-	/**
 	 * Output custom height and width for map set by user in settings.
 	 *
 	 * @since    1.0.0
@@ -413,14 +350,14 @@ CUSTOMCSS;
 		}
 
 		$notice_text = esc_html__( 'Hi Admin, some websites might have issues with displaying or using the Google Map. If you\'re having issues then please have a look at your browser console for any errors.' );
-		$additional  = esc_html__( 'Only Admins on your website can see this notice. You can turn it off in the plugin settings if everything works fine.' );
+		$additional  = esc_html__( 'Only Admins on your website can see this notice. You can turn it off in the plugin settings from the "Debug" submenu if everything works fine.' );
 
 		$markup = <<<MARKUP
-		<div class="lpac-admin-notice" style="background: #246df3; color: #ffffff; text-align: center; margin-bottom: 20px; padding: 10px;">
-			<p style="font-size:14px; "><span style="font-weight: bold">LPAC: </span>
+		<div class="lpac-admin-notice" style="background: #246df3; text-align: center; margin-bottom: 20px; padding: 10px;">
+			<p style=" color: #ffffff !important; font-size:14px;"><span style="font-weight: bold">LPAC: </span>
 				$notice_text
 			</p>
-			<p style="font-size:12px; font-weight: bold;" >
+			<p style=" color: #ffffff !important; font-size:12px; font-weight: bold;" >
 				$additional
 			</p>
 		</div>

@@ -32,7 +32,17 @@ class Lpac_Activator {
 		self::lpac_add_default_settings();
 	}
 
+	/**
+	 * Add our default settings to the site DB.
+	 *
+	 * @return void
+	 */
 	private static function lpac_add_default_settings() {
+		$installed_at = get_option( 'lpac_installed_at_version' );
+
+		if ( empty( $installed_at ) ) {
+			add_option( 'lpac_installed_at_version', LPAC_VERSION, '', false );
+		}
 
 	}
 

@@ -28,7 +28,6 @@
 	 * Although scripts in the WordPress core, Plugins and Themes may be
 	 * practising this, we should strive to set a better example in our own work.
 	 */
-	// TODO Can most likely merge this into checkout-page-map.js
 	$( document ).ready(
 
 		function(){

@@ -1,4 +1,4 @@
-(function( $ ) {
+(function ($) {
 	'use strict';
 
 	/**
@@ -29,4 +29,42 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
-})( jQuery );
+	$(function () {
+
+		$("table#lpac-rules tbody").sortable({
+
+			update: function (event, ui) {
+				
+				$('#lpac-rules-saving-success').hide();
+				$('#lpac-rules-saving-failed').hide();
+				$('#lpac-rules-saving').show();
+				const order = $(this).sortable('toArray', { attribute: 'data-id' });
+			
+				wp.ajax.post("lpac_map_visibility_rules_order", { rulesOrder: order })
+					.done(function (response) {
+
+						$('#lpac-rules-saving').hide();
+						$('#lpac-rules-saving-failed').hide();
+						$('#lpac-rules-saving-success').show().delay(1000).fadeOut('slow');;
+
+						// console.log(response);
+
+					})
+					.fail(function (response) {
+
+						$('#lpac-rules-saving').hide();
+						$('#lpac-rules-saving-success').hide();
+						$('#lpac-rules-saving-failed').show();
+
+						// console.log(response);
+
+					});
+
+
+			}
+		});
+
+	});
+
+})(jQuery);
+

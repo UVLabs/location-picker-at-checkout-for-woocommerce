@@ -119,19 +119,29 @@ class Admin_Enqueues
             wp_enqueue_script( $this->plugin_name . '-google-maps-js' );
         }
         
+        $path = ( LPAC_DEBUG ? '' : 'build/' );
         /**
          * This has to be enqueued in the footer so our wp_add_inline_script() function can work.
          * Only run this code on shop order(order details) page in admin area.
          */
+        
         if ( get_current_screen()->id === 'shop_order' ) {
             wp_enqueue_script(
-                $this->plugin_name . '-order-map',
-                LPAC_PLUGIN_ASSETS_PATH_URL . 'admin/js/order-map.js',
+                $this->plugin_name . '-base-map',
+                LPAC_PLUGIN_ASSETS_PATH_URL . 'public/js/maps/' . $path . 'base-map.js',
                 array(),
                 $this->version,
                 true
             );
+            wp_enqueue_script(
+                $this->plugin_name . '-order-map',
+                LPAC_PLUGIN_ASSETS_PATH_URL . 'admin/js/order-map.js',
+                array( $this->plugin_name . '-base-map' ),
+                $this->version,
+                true
+            );
         }
+    
     }
 
 }

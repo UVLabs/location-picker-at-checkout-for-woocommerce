@@ -54,13 +54,6 @@ function get_navigator_coordinates() {
 
 }
 
-/**
- * Setup our conditional hiding of map based on selected shipping methods;
- * 
- * Running this function as soon as the page loads allows map to be hidden quicker than on document ready event.
- */
-lpac_hide_show_map_by_shipping_method();
-
 /** 
 *  Bootstrap the functionality of the map and marker.
 */
@@ -602,48 +595,10 @@ function lpac_fill_in_billing_zipcode(results) {
 }
 
 /**
- * Show or hide the map based ons hipping method selected
+ * Show or hide the map.
  */
-function lpac_hide_show_map_by_shipping_method() {
-
-	const lpacShippingMethods = document.querySelectorAll('#shipping_method .shipping_method');
-
-	if (typeof (lpacShippingMethods) === 'undefined' || lpacShippingMethods === null) {
-		console.log('LPAC: Cannot find shipping methods element, skipping...');
-		return;
-	}
-
-	// This saved_disallowed_shipping_methods option is in the global JS scope
-	// See Lpac\Views\Frontend::lpac_expose_map_settings_js()
-	if (typeof (saved_disallowed_shipping_methods) === 'undefined' || saved_disallowed_shipping_methods === null) {
-		console.log('LPAC: Cannot find chosen disallowed shipping methods, skipping...');
-		return;
-	}
-
-	const disallowed_shipping_methods = saved_disallowed_shipping_methods;
-
-	let show = true;
-
-	loop1:
-	for (const lpacShippingMethod of lpacShippingMethods) {
-
-		// We have to check for the hidden type as well because if only one shipping method is available WC doesn't show radio buttons.
-		if (lpacShippingMethod.checked || lpacShippingMethod.type === 'hidden') {
-
-			loop2:
-			for (const disallowed_shipping_method of disallowed_shipping_methods) {
-
-				if (lpacShippingMethod.value.indexOf(disallowed_shipping_method) >= 0) {
-					show = false;
-					break loop1;
-				}
-
-			}
-
-		}
-
-	}
-
+function changeMapVisibility(show){
+	// console.log('show', show);
 	if (show) {
 		document.querySelector('#lpac-map-container').style.display = "block";
 		document.querySelector('#lpac_is_map_shown').value = 1;
@@ -655,60 +610,27 @@ function lpac_hide_show_map_by_shipping_method() {
 }
 
 /**
- * Detect the shipping method on page load
+ * Ajax call to determine when the map should be shown or hidden.
  * 
- * This function isn't in use. It causes a slight flicker of the map due to the interval checking
- * Function remains in place for debugging purposes.
- * 
+ * See Lpac\Controllers::Map_Visibility_Controller
  */
-function lpac_setup_changed_shipping_method_on_load() {
+function hide_show_map(){
 
-	let stateCheck = setInterval(() => {
-		if (document.readyState === 'complete') {
-			lpac_hide_show_map_by_shipping_method();
-			clearInterval(stateCheck);
-		}
-		console.log('checking..');
-	}, 100);
+	wp.ajax.post( "lpac_to_be_or_not_to_be", {} )
+  	.done(function(response) {
+	
+	const show = Boolean(response);
+	changeMapVisibility(show);
+
+ 	})
+  	.fail(function(response) {
+
+	console.log(response);
+
+  });
+
 
 }
-
-/**
- * Was previously used to change map shown field value. But we're checking
- * to see if the field is empty in Lpac\Views\Frontend::lpac_save_cords_order_meta()
- */
-// function lpac_check_map_visibility(){
-
-// 	var map_div   = document.querySelector( '#lpac-map-container' );
-// 	var map_shown = document.querySelector( '#lpac_is_map_shown' );
-// 	var map_present = true;
-// 	var map_visibility = '';
-
-// 	if( typeof( map_shown ) === 'undefined' || map_shown === null ){
-// 		console.log('LPAC: map_shown object not present, skipping...');
-// 		return;
-// 	}
-
-// 	/**
-// 	 * Detect if map is present and the display property
-// 	 */
-// 	if( typeof( map_div ) === 'undefined' || map_div === null ){
-// 		map_present = false;
-// 	}else{
-// 		map_visibility = map_div.style.display;
-// 	}
-
-// 	if ( map_present === false || map_visibility === 'none' ) {
-
-// 		if ( map_shown ) {
-// 			map_shown.value = 0
-// 		}
-
-// 	} else {
-// 		map_shown.value = 1
-// 	}
-
-// }
 
 /**
  * Detect when shipping methods are changed based on WC custom updated_checkout event.
@@ -720,7 +642,7 @@ function lpac_setup_changed_shipping_method_on_load() {
 	$(document).ready(
 		function () {
 
-			$(document.body).on('updated_checkout', lpac_hide_show_map_by_shipping_method);
+			$(document.body).on('updated_checkout', hide_show_map);
 
 		}
 	);

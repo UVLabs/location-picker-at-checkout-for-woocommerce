@@ -9,4 +9,5 @@ logs
 node_modules
 .parcel-cache
 assets/public/js/maps/build/
+assets/public/js/compat/build/
 assets/pro/public/js/maps/build/

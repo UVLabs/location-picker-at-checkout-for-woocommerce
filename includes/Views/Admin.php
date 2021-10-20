@@ -12,6 +12,8 @@
  */
 namespace Lpac\Views;
 
+use Lpac\Helpers\Functions;
+
 class Admin {
 
 	/**
@@ -48,10 +50,10 @@ class Admin {
 
 		$map_link = apply_filters( 'lpac_map_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
 
-		$markup = <<<LOCATIONMETA
-	<p><strong>$order_meta_text:</strong></p>
-	<p><a href="$map_link" target="_blank"><button style="cursor:pointer" type='button'>$view_on_map_text</button></a></p>
-LOCATIONMETA;
+		$markup = <<<HTML
+		<p><strong>$order_meta_text:</strong></p>
+		<p><a href="$map_link" target="_blank"><button style="cursor:pointer" type='button'>$view_on_map_text</button></a></p>
+HTML;
 
 		echo $markup;
 	}
@@ -104,14 +106,30 @@ LOCATIONMETA;
 			'shipping_address_2' => $shipping_address_2,
 		);
 
+		$options = Functions::get_map_options();
+
+		$data = array(
+			'lpac_map_default_latitude'    => $options['latitude'],
+			'lpac_map_default_longitude'   => $options['longitude'],
+			'lpac_map_zoom_level'          => $options['zoom_level'],
+			'lpac_map_clickable_icons'     => $options['clickable_icons'] === 'yes' ? true : false,
+			'lpac_map_background_color'    => $options['background_color'],
+			'lpac_autofill_billing_fields' => $options['fill_in_billing_fields'] === 'yes' ? true : false,
+
+		);
+
 		$order_location_details = json_encode( $order_location_details );
+		$map_options            = json_encode( $data );
 
-		$global_variables = <<<JS
-	// LPAC Order delivery coordinates
+		$global_variables = <<<JAVASCRIPT
+	// Lpac Order Location Details
 	var locationDetails = $order_location_details;
-JS;
+	// Lpac Map Settings
+	var map_options = $map_options;
+JAVASCRIPT;
 
-		wp_add_inline_script( LPAC_PLUGIN_NAME . '-order-map', $global_variables, 'before' );
+		// Expose JS variables for usage
+		wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_variables, 'before' );
 
 		$map_container = <<<HTML
 			<div id="wrap" style="display: block; text-align: center;">

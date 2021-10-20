@@ -1,6 +1,7 @@
 function lpac_setup_order_received_map() {
 
 	const map = window.lpac_map;
+	const marker = window.lpac_marker;
 	const infowindow = window.lpac_infowindow;
 
 	if (typeof (map) === 'undefined' || map === null) {
@@ -28,14 +29,10 @@ function lpac_setup_order_received_map() {
 		lng: map_options.lpac_map_order_longitude,
 	};
 
-	const marker = new google.maps.Marker(
-		{
-			position: latlng,
-			map: map,
-			cursor: 'default'
-		}
-	);
-
+	marker.setPosition(latlng);
+	marker.setDraggable(false);
+	marker.setCursor('default');
+	
 	infowindow.setContent(`<p> ${map_options.lpac_map_order_shipping_address_1} <br/> ${map_options.lpac_map_order_shipping_address_2} </p>`);
 	infowindow.open(map, marker);
 
