@@ -12,6 +12,7 @@
 namespace Lpac\Views;
 
 use  Lpac\Helpers\Functions as Functions_Helper ;
+use  Lpac\Controllers\Map_Visibility_Controller ;
 class Admin_Settings extends \WC_Settings_Page
 {
     /**
@@ -31,6 +32,9 @@ class Admin_Settings extends \WC_Settings_Page
      */
     public function __construct()
     {
+        if ( !defined( 'ABSPATH' ) ) {
+            exit;
+        }
         $this->id = 'lpac_settings';
         $this->label = __( 'Location Picker at Checkout', 'map-location-picker-at-checkout-for-woocommerce' );
         /**
@@ -57,10 +61,11 @@ class Admin_Settings extends \WC_Settings_Page
     public function lpac_create_plugin_settings_sections()
     {
         $sections = array(
-            'general' => __( 'General', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'display' => __( 'Display', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'debug'   => __( 'Debug', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'premium' => __( 'Premium', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'general'          => __( 'General', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'display'          => __( 'Display', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'visibility_rules' => __( 'Visibility Rules', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'debug'            => __( 'Debug', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'premium'          => __( 'Premium', 'map-location-picker-at-checkout-for-woocommerce' ),
         );
         // TODO: Allow this section once development of premium features are futher ahead.
         if ( lpac_fs()->is_free_plan() ) {
@@ -224,7 +229,7 @@ MARKUP;
             'id'       => 'lpac_display_map_on_order_received_page',
             'type'     => 'checkbox',
             'css'      => 'min-width:300px;',
-            'desc'     => __( 'Enable', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
         );
         $lpac_settings[] = array(
             'name'     => __( 'Show Map on View Order Page', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -232,7 +237,7 @@ MARKUP;
             'id'       => 'lpac_display_map_on_view_order_page',
             'type'     => 'checkbox',
             'css'      => 'min-width:300px;',
-            'desc'     => __( 'Enable', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
         );
         $lpac_settings[] = array(
             'name'     => __( 'Add Map Link to Order Emails?', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -277,40 +282,6 @@ MARKUP;
             'customer_invoice'         => __( 'Customer Invoice', 'map-location-picker-at-checkout-for-woocommerce' ),
         ),
             'css'     => 'min-width:300px;height: 100px',
-        );
-        $lpac_settings[] = array(
-            'name'    => __( 'Hide Map for Shipping Methods', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'class'   => 'wc-enhanced-select',
-            'desc'    => __( 'Hide the map when any of these shipping methods are chosen by the user.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'      => 'lpac_wc_shipping_methods',
-            'type'    => 'multiselect',
-            'options' => Functions_Helper::lpac_get_available_shipping_methods(),
-            'css'     => 'min-width:300px;height: 100px',
-        );
-        $lpac_settings[] = array(
-            'name'    => __( 'Shipping Classes', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'class'   => 'wc-enhanced-select',
-            'desc'    => __( 'Select shipping classes. NOTE: These settings apply if ANY of the items in the cart meets the condition.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'      => 'lpac_wc_shipping_classes',
-            'type'    => 'multiselect',
-            'options' => Functions_Helper::lpac_get_available_shipping_classes(),
-            'css'     => 'min-width:300px;height: 100px',
-        );
-        $lpac_settings[] = array(
-            'name'    => __( 'Show or Hide', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'    => sprintf(
-            /* translators: 1: Line break HTML 2: opening strong tag 3: closing strong tag*/
-            __( 'Should the map be shown or hidden if the order falls within above selected shipping classes? %1$s%1$s Selecting %2$sShow%3$s will display the map %2$sONLY IF%3$s the customer order falls inside the shipping classes selected above. %1$s Selecting %2$sHide%3$s will display the map only if the customer order %2$sDOES NOT%3$s fall inside the shipping classes selected above.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            '<br>',
-            '<strong>',
-            '</strong>'
-        ),
-            'id'      => 'lpac_wc_shipping_classes_show_hide',
-            'type'    => 'radio',
-            'options' => array(
-            'show' => __( 'Show', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'hide' => __( 'Hide', 'map-location-picker-at-checkout-for-woocommerce' ),
-        ),
         );
         $lpac_settings[] = array(
             'name'     => __( 'Housekeeping', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -423,6 +394,74 @@ MARKUP;
     }
     
     /**
+     * House all the plugin settings to do with map visibility rules.
+     *
+     * @return array
+     */
+    private function create_visibility_settings_fields()
+    {
+        $lpac_settings = array();
+        $lpac_settings[] = array(
+            'name' => __( 'LPAC Map Visibility Rules', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'   => 'lpac_map_visibility_settings',
+            'type' => 'title',
+            'desc' => $this->lpac_create_plugin_settings_banner(),
+        );
+        $lpac_settings[] = array(
+            'name'     => __( 'Hide map for Guest orders', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => __( 'Hide the map for customers who aren\'t logged in.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'       => 'lpac_hide_map_for_guests',
+            'type'     => 'checkbox',
+            'css'      => 'max-width:80px;',
+        );
+        $lpac_settings[] = array(
+            'name'    => __( 'Hide Map for Shipping Methods', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'class'   => 'wc-enhanced-select',
+            'desc'    => __( 'Hide the map when any of these shipping methods are chosen by the user.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'      => 'lpac_wc_shipping_methods',
+            'type'    => 'multiselect',
+            'options' => Functions_Helper::lpac_get_available_shipping_methods(),
+            'css'     => 'min-width:300px;height: 100px',
+        );
+        $lpac_settings[] = array(
+            'name'    => __( 'Shipping Classes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'class'   => 'wc-enhanced-select',
+            'desc'    => __( 'Select shipping classes. NOTE: These settings apply if ANY of the items in the cart meets the condition.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'      => 'lpac_wc_shipping_classes',
+            'type'    => 'multiselect',
+            'options' => Functions_Helper::lpac_get_available_shipping_classes(),
+            'css'     => 'min-width:300px;height: 100px',
+        );
+        $lpac_settings[] = array(
+            'name'    => __( 'Show or Hide', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'    => sprintf(
+            /* translators: 1: Line break HTML 2: opening strong tag 3: closing strong tag*/
+            __( 'Should the map be shown or hidden if the order falls within above selected shipping classes? %1$s%1$s Selecting %2$sShow%3$s will display the map %2$sONLY IF%3$s the customer order falls inside the shipping classes selected above. %1$s Selecting %2$sHide%3$s will display the map only if the customer order %2$sDOES NOT%3$s fall inside the shipping classes selected above.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            '<br>',
+            '<strong>',
+            '</strong>'
+        ),
+            'id'      => 'lpac_wc_shipping_classes_show_hide',
+            'type'    => 'radio',
+            'options' => array(
+            'show' => __( 'Show', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'hide' => __( 'Hide', 'map-location-picker-at-checkout-for-woocommerce' ),
+        ),
+        );
+        $lpac_settings[] = array(
+            'name'    => __( 'Show map for coupons', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'class'   => 'wc-enhanced-select',
+            'desc'    => __( 'Show the map whenever any of the selected coupons are applied to the order.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'      => 'lpac_map_show_for_coupons',
+            'type'    => 'multiselect',
+            'options' => Functions_Helper::get_available_coupons(),
+            'css'     => 'min-width:300px;height: 100px',
+        );
+        return $lpac_settings;
+    }
+    
+    /**
      * House all the plugin settings to do with Debugging.
      *
      * @return array
@@ -464,6 +503,80 @@ MARKUP;
     }
     
     /**
+     * Output the table to sort the map visibility rules.
+     *
+     * @return void
+     */
+    private function output_map_visibility_rules_order()
+    {
+        $default_visibility_rules = Map_Visibility_Controller::get_map_visibility_rules();
+        $rules = get_option( 'lpac_map_visibility_rules_order', $default_visibility_rules );
+        /* If new rules were added that have not been arranged yet then show them in the list at the top. */
+        
+        if ( count( $rules ) !== count( $default_visibility_rules ) ) {
+            $new_rules = array_diff_assoc( $default_visibility_rules, $rules );
+            $rules = array_merge( $new_rules, $rules );
+            echo  '<style>' ;
+            foreach ( $new_rules as $key => $value ) {
+                echo  '#' . esc_html( $key ) . '{ background: #FBFF12; }' ;
+            }
+            echo  '</style>' ;
+        }
+        
+        ?>
+		<div>
+			<table id="lpac-rules" class='wc-shipping-zones'>
+				<h4><?php 
+        esc_html_e( 'Use the table below to arrange the map visibility rules by dragging and dropping. The last rule in the the table decides the final visibility state of the map.', 'map-location-picker-at-checkout-for-woocommerce' );
+        ?></h4>
+				<p id="lpac-rules-saving" style="display: none; font-weight: 700;"><?php 
+        esc_html_e( 'Saving...' );
+        ?></p>
+				<p id="lpac-rules-saving-success" style="color: #008000; display: none; font-weight: 700;"><?php 
+        esc_html_e( 'Saved successfully' );
+        ?></p>
+				<p id="lpac-rules-saving-failed" style="color: #d63638; display: none; font-weight: 700;"><?php 
+        esc_html_e( 'An error occurred while saving rules, please try again...' );
+        ?></p>
+			<thead>
+				<tr>
+					<th><span class="woocommerce-help-tip"></span></th>
+					<th><?php 
+        esc_html_e( 'Rules Order', 'map-location-picker-at-checkout-for-woocommerce' );
+        ?></th>
+				</tr>
+			</thead>
+
+			<tbody>
+			
+			<?php 
+        foreach ( $rules as $rule => $rule_name ) {
+            ?>
+			<tr data-id="<?php 
+            echo  esc_attr( $rule ) ;
+            ?>">
+			<td width="1%" class="wc-shipping-zone-sort ui-sortable-handle"></td>
+			<td id="<?php 
+            echo  esc_attr( $rule ) ;
+            ?>">
+				<?php 
+            echo  esc_html( $rule_name ) ;
+            ?>
+			</td>
+			</tr>
+			<?php 
+        }
+        ?>
+
+			</tbody>
+
+		</table>
+		</div>
+
+		<?php 
+    }
+    
+    /**
      * Create the setting options for the plugin.
      *
      * @since    1.0.0
@@ -483,6 +596,16 @@ MARKUP;
         if ( $current_section === 'debug' ) {
             $lpac_settings = $this->lpac_create_debug_setting_fields();
         }
+        
+        if ( $current_section === 'visibility_rules' ) {
+            $lpac_settings = $this->create_visibility_settings_fields();
+            // Add section end lastly
+            $lpac_settings = array_merge( $lpac_settings, array(
+                'type' => 'sectionend',
+                'id'   => 'lpac_map_visibility_settings_section_end',
+            ) );
+        }
+        
         if ( $current_section === 'premium' ) {
         }
         // Custom attributes example
@@ -510,6 +633,10 @@ MARKUP;
     {
         $settings = $this->lpac_create_plugin_settings_fields();
         \WC_Admin_Settings::output_fields( $settings );
+        global  $current_section ;
+        if ( $current_section === 'visibility_rules' ) {
+            $this->output_map_visibility_rules_order();
+        }
     }
     
     /**

@@ -8,3 +8,7 @@
 	margin: 5px;
 	text-align: center;
  }
+
+ #lpac-rules{
+	cursor: move;
+ }

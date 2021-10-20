@@ -73,6 +73,14 @@ class Lpac_Uninstall {
 			'lpac_wc_shipping_methods',
 			'lpac_hide_troubleshooting_admin_checkout_notice',
 			'lpac_dequeue_google_maps',
+			'lpac_hide_map_for_guests',
+			'lpac_wc_shipping_methods',
+			'lpac_map_min_cart_amount',
+			'lpac_map_max_cart_amount',
+			'lpac_map_show_for_coupons',
+			'lpac_map_anchor_points',
+			'lpac_admin_view_order_map_id',
+			'lpac_installed_at_version',
 		);
 
 		foreach ( $option_keys as $key ) {

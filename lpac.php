@@ -9,6 +9,7 @@
  * that starts the plugin.
  *
  * @link              https://uriahsvictor.com
+ * @link              https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce
  * @since             1.0.0
  * @package           Lpac
  *
@@ -16,7 +17,7 @@
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://soaringleads.com
  * Description:       Allow customers to choose their shipping location using a map at checkout.
- * Version:           1.3.2
+ * Version:           1.3.3
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
  * License:           GPL-2.0+
@@ -24,7 +25,7 @@
  * Text Domain:       map-location-picker-at-checkout-for-woocommerce
  * Domain Path:       /languages
  * WC requires at least: 3.0
- * WC tested up to: 5.7
+ * WC tested up to: 5.8
  * Requires PHP: 7.0
  */
 // If this file is called directly, abort.
@@ -72,11 +73,42 @@ if ( function_exists( 'lpac_fs' ) ) {
     lpac_fs()->add_action( 'after_uninstall', array( new Lpac_Uninstall(), 'remove_plugin_settings' ) );
 }
 /**
+ * Check that WooCommerce is active.
+ */
+
+if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+    add_action( 'admin_notices', array( new Lpac\Notices\Admin(), 'lpac_wc_not_active_notice' ) );
+    return;
+}
+
+/**
+ * Check PHP version
+ */
+if ( function_exists( 'phpversion' ) ) {
+    
+    if ( version_compare( phpversion(), '7.0', '<' ) ) {
+        add_action( 'admin_notices', array( new Lpac\Notices\Admin(), 'output_php_version_notice' ) );
+        return;
+    }
+
+}
+/**
+ * Check PHP versions
+ */
+if ( defined( 'PHP_VERSION' ) ) {
+    
+    if ( version_compare( PHP_VERSION, '7.0', '<' ) ) {
+        add_action( 'admin_notices', array( new Lpac\Notices\Admin(), 'output_php_version_notice' ) );
+        return;
+    }
+
+}
+/**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'LPAC_VERSION', '1.3.2' );
+define( 'LPAC_VERSION', '1.3.3' );
 define( 'LPAC_PLUGIN_NAME', 'lpac' );
 define( 'LPAC_PLUGIN_DIR', __DIR__ . '/' );
 define( 'LPAC_PLUGIN_ASSETS_DIR', __DIR__ . '/assets/' );

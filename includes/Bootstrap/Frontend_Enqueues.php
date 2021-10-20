@@ -20,7 +20,7 @@
  */
 namespace Lpac\Bootstrap;
 
-use  Lpac\Helpers\Functions as Functions_Helper ;
+use  Lpac\Controllers\Map_Visibility_Controller ;
 class Frontend_Enqueues
 {
     /**
@@ -117,20 +117,12 @@ class Frontend_Enqueues
         // Only enqueue the Google Map CDN script on the needed pages
         
         if ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) || is_checkout() ) {
-            $show_on_view_order_page = Functions_Helper::lpac_show_map( 'lpac_display_map_on_view_order_page' );
+            $show_on_view_order_page = Map_Visibility_Controller::lpac_show_map( 'lpac_display_map_on_view_order_page' );
             if ( is_wc_endpoint_url( 'view-order' ) && $show_on_view_order_page === false ) {
                 return;
             }
-            $show_on_order_received_page = Functions_Helper::lpac_show_map( 'lpac_display_map_on_order_received_page' );
+            $show_on_order_received_page = Map_Visibility_Controller::lpac_show_map( 'lpac_display_map_on_order_received_page' );
             if ( is_wc_endpoint_url( 'order-received' ) && $show_on_order_received_page === false ) {
-                return;
-            }
-            $show_on_checkout_page = Functions_Helper::lpac_show_map( 'checkout' );
-            /**
-             * is_checkout() also runs on is_wc_endpoint_url( 'order-received' ) so we need to make this if block doesn't
-             * by added the ! conditional
-             */
-            if ( is_checkout() && !is_wc_endpoint_url( 'order-received' ) && $show_on_checkout_page === false ) {
                 return;
             }
             /**
@@ -151,7 +143,7 @@ class Frontend_Enqueues
             /**
              * The following javascript files have to be enqueued in the footer so our wp_add_inline_script() function can work.
              */
-            /**
+            /*
              * Base Map JS, also enqueues google maps JS automatically.
              */
             wp_enqueue_script(
@@ -161,7 +153,6 @@ class Frontend_Enqueues
                 $this->version,
                 true
             );
-            // wp_enqueue_script( $this->plugin_name . '-base-map', LPAC_PLUGIN_ASSETS_PATH_URL . 'public/js/maps/base-map.js', array( $this->plugin_name . '-google-maps-js' ), $this->version, true );
             /**
              * Load order received page map
              */
@@ -197,7 +188,7 @@ class Frontend_Enqueues
                 wp_enqueue_script(
                     $this->plugin_name . '-checkout-page-map',
                     LPAC_PLUGIN_ASSETS_PATH_URL . 'public/js/maps/' . $path . 'checkout-page-map.js',
-                    array( $this->plugin_name . '-base-map' ),
+                    array( $this->plugin_name . '-base-map', 'wp-util' ),
                     $this->version,
                     true
                 );

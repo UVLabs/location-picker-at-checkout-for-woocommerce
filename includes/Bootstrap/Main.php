@@ -32,9 +32,12 @@ use  Lpac\Bootstrap\I18n ;
 use  Lpac\Bootstrap\Admin_Enqueues ;
 use  Lpac\Bootstrap\Frontend_Enqueues ;
 use  Lpac\Controllers\Emails_Controller ;
+use  Lpac\Controllers\Map_Visibility_Controller ;
+use  Lpac\Controllers\Admin_Settings_Controller ;
 use  Lpac\Views\Admin as Admin_Display ;
 use  Lpac\Notices\Admin as Admin_Notices ;
 use  Lpac\Views\Frontend as Frontend_Display ;
+use  Lpac\Compatibility\WooFunnels\Woo_Funnels ;
 /**
 * Class Main.
 *
@@ -79,6 +82,9 @@ class Main
      */
     public function __construct()
     {
+        if ( !defined( 'ABSPATH' ) ) {
+            exit;
+        }
         
         if ( defined( 'LPAC_VERSION' ) ) {
             $this->version = LPAC_VERSION;
@@ -134,10 +140,11 @@ class Main
         $plugin_admin = new Admin_Enqueues();
         $plugin_admin_display = new Admin_Display();
         $admin_notices = new Admin_Notices();
+        $admin_settings_controller = new Admin_Settings_Controller();
+        $controller_map_visibility = new Map_Visibility_Controller();
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         // Notices
-        $this->loader->add_action( 'admin_notices', $admin_notices, 'lpac_wc_not_active_notice' );
         $this->loader->add_action( 'admin_notices', $admin_notices, 'lpac_site_not_https' );
         // Display map on order details page
         $this->loader->add_action(
@@ -149,6 +156,16 @@ class Main
         );
         $this->loader->add_action( 'add_meta_boxes', $plugin_admin_display, 'lpac_create_custom_order_details_metabox' );
         $this->loader->add_action( 'woocommerce_get_settings_pages', $plugin_admin_display, 'lpac_add_settings_tab' );
+        /* Handle map visibility rules ordering table ajax requests in admin settings  */
+        $this->loader->add_action( 'wp_ajax_lpac_map_visibility_rules_order', $controller_map_visibility, 'checkout_map_rules_order_ajax_handler' );
+        /* Sanitize options */
+        $this->loader->add_filter(
+            'woocommerce_admin_settings_sanitize_option_lpac_map_starting_coordinates',
+            $admin_settings_controller,
+            'sanitize_default_map_coordinates',
+            10,
+            3
+        );
     }
     
     /**
@@ -163,6 +180,7 @@ class Main
         $plugin_public = new Frontend_Enqueues();
         $plugin_public_display = new Frontend_Display();
         $controller_emails = new Emails_Controller();
+        $controller_map_visibility = new Map_Visibility_Controller();
         /*
          * If plugin not enabled don't continue
          */
@@ -174,25 +192,45 @@ class Main
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
         $this->loader->add_action( 'wp_head', $plugin_public_display, 'lpac_output_map_custom_styles' );
         /*
-         * Output hidden input fields for latitude and longitude.
-         */
-        $this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public_display, 'lpac_create_lat_and_long_inputs' );
-        /*
          * Output map on checkout page
          */
         $checkout_page_map_location = get_option( 'lpac_checkout_map_orientation', 'woocommerce_before_checkout_billing_form' );
         $checkout_page_map_location = apply_filters( 'lpac_checkout_map_orientation', $checkout_page_map_location );
         $this->loader->add_action( $checkout_page_map_location, $plugin_public_display, 'lpac_output_map_on_checkout_page' );
         /*
+         * WooFunnels compatibility
+         */
+        
+        if ( class_exists( 'WFFN_Core' ) ) {
+            $woofunnels_compatibility = new Woo_Funnels();
+            $this->loader->add_action( 'after_setup_theme', $woofunnels_compatibility, 'create_lpac_fields' );
+            $this->loader->add_filter(
+                'wfacp_get_checkout_fields',
+                $woofunnels_compatibility,
+                'add_lpac_checkout_fields',
+                8
+            );
+            $this->loader->add_filter(
+                'wfacp_get_fieldsets',
+                $woofunnels_compatibility,
+                'add_lpac_checkout_fields_to_fieldsets',
+                7
+            );
+            // Remove map from default position and set it to above the customer information fields.
+            remove_action( $checkout_page_map_location, 'lpac_output_map_on_checkout_page' );
+            $this->loader->add_action( 'woocommerce_checkout_before_customer_details', $plugin_public_display, 'lpac_output_map_on_checkout_page' );
+        }
+        
+        /*
+         * Output hidden input fields for latitude and longitude.
+         */
+        $this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public_display, 'lpac_create_lat_and_long_inputs' );
+        /*
          * Output map on order received and order details pages.
          */
         $this->loader->add_action( 'woocommerce_order_details_after_order_table', $plugin_public_display, 'lpac_output_map_on_order_details_page' );
         /*
-         * Save location coordinates to order meta.
-         */
-        $this->loader->add_action( 'woocommerce_checkout_update_order_meta', $plugin_public_display, 'lpac_save_cords_order_meta' );
-        /*
-         * Validate latitude and longitude fields.
+         * Check if the latitude and longitude fields are filled in based on admin settings.
          */
         $validate_lat_long_fields = get_option( 'lpac_force_map_use', false );
         if ( $validate_lat_long_fields === 'yes' ) {
@@ -221,7 +259,25 @@ class Main
             );
         }
         
+        /*
+         * Adds a notice for admin to checkout page
+         */
         $this->loader->add_action( 'woocommerce_before_checkout_form', $plugin_public_display, 'lpac_add_admin_checkout_notice' );
+        /*
+         * Handles showing or hiding of map. Fires everytime the checkout page is updated.
+         */
+        $this->loader->add_action( 'wp_ajax_nopriv_lpac_to_be_or_not_to_be', $controller_map_visibility, 'checkout_map_visibility_ajax_handler' );
+        $this->loader->add_action( 'wp_ajax_lpac_to_be_or_not_to_be', $controller_map_visibility, 'checkout_map_visibility_ajax_handler' );
+        /*
+         * Add the latitude and longitude to the order meta
+         */
+        $this->loader->add_action(
+            'woocommerce_checkout_update_order_meta',
+            $controller_map_visibility,
+            'validate_map_visibility',
+            10,
+            2
+        );
     }
     
     /**

@@ -64,4 +64,19 @@ class Admin {
 
 	}
 
+	/**
+	 * Output a notice when PHP version is below 7.0.
+	 *
+	 * @return void
+	 */
+	public function output_php_version_notice() {
+		?>
+
+		<div class="notice notice-error is-dismissible">
+		<?php echo sprintf( __( '%1$s%2$sLocation Picker at Checkout for WooCommerce(LPAC) NOTICE:%3$s PHP version too low to use this plugin. Please change to at least PHP 7.0. You can contact your web host for assistance in updating your PHP version.%4$s', 'map-location-picker-at-checkout-for-woocommerce' ), '<p>', '<b>', '</b>', '</p>' ); ?>
+		</div>
+		<?php
+
+	}
+
 }
