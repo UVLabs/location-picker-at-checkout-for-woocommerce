@@ -48,9 +48,9 @@
  /* Google maps info window */
  .woocommerce-page .lpac-map .gm-style-iw-d p{
 	font-size: 1.2em;
-	margin-bottom: 0;
-
+	margin-bottom: 0 !important;
  }
+ 
  .woocommerce-view-order .lpac-map .gm-style-iw-d p, .woocommerce-order-received .lpac-map .gm-style-iw-d p{
 	font-weight: 800;
 	text-align: center;

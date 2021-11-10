@@ -7,7 +7,7 @@
     "parcel": "^2.0.0-rc.0"
   },
   "scripts": {
-    "watch": "parcel watch --no-hmr",
+    "dev": "parcel watch --no-hmr",
     "build": "parcel build"
   },
   "targets": {

@@ -9,7 +9,7 @@ const map = window.lpac_map;
 const marker = window.lpac_marker;
 const infowindow = window.lpac_infowindow;
 
-const geocoder = new google.maps.Geocoder()
+const geocoder = new google.maps.Geocoder();
 
 const find_location_btn = document.querySelector("#lpac-find-location-btn");
 
@@ -24,6 +24,28 @@ if (typeof (find_location_btn) !== 'undefined' && find_location_btn !== null) {
 	console.log('LPAC: Detect location button not present, skipping...')
 }
 
+/**
+ * Removes the plus code from an address if the option is turned on in the plugin's settings.
+ */
+function lpacRemovePlusCode( address ){
+
+	if( ! mapOptions.lpac_remove_address_plus_code ){
+		return address;
+	}
+
+	const firstBlock = address.split(' ', 1);
+
+	if( firstBlock[0].includes('+') ){
+		address = address.replace( firstBlock[0], '' ).trim();
+	}
+
+	return address;
+
+}
+
+/**
+ * Get Lat and Long cords from browser navigator.
+ */
 function get_navigator_coordinates() {
 
 	return new Promise(
@@ -154,8 +176,10 @@ async function lpac_setup_initial_map_marker_position(latlng) {
 
 	marker.setPosition(latlng);
 
-	const detected_address = results[ 0 ].formatted_address;
+	let detected_address = results[ 0 ].formatted_address;
 
+	detected_address = lpacRemovePlusCode( detected_address );
+	
 	infowindow.setContent(detected_address);
 	infowindow.open(map, marker);
 
@@ -192,7 +216,9 @@ function lpac_map_listen_to_clicks() {
 
 			marker.setPosition(event.latLng)
 
-			const detected_address = results[ 0 ].formatted_address;
+			let detected_address = results[ 0 ].formatted_address;
+
+			detected_address = lpacRemovePlusCode(detected_address);
 
 			infowindow.setContent(detected_address);
 			infowindow.open(map, marker);
@@ -228,6 +254,9 @@ function lpac_marker_listen_to_drag() {
 			}
 
 			let moved_to_address = results[ 0 ].formatted_address
+
+			moved_to_address = lpacRemovePlusCode(moved_to_address);
+
 			infowindow.setContent(moved_to_address)
 
 			lpac_fill_in_address_fields(results, moved_to_latlng)
@@ -278,12 +307,12 @@ function lpac_fill_in_address_fields(results, latLng = '') {
 	lpac_fill_in_shipping_state_county(results)
 	lpac_fill_in_shipping_zipcode(results)
 
-	if (typeof (map_options) === 'undefined' || map_options === null) {
-		console.log('LPAC: map_options object not present, skipping...')
+	if (typeof (mapOptions) === 'undefined' || mapOptions === null) {
+		console.log('LPAC: mapOptions object not present, skipping...')
 		return;
 	}
 
-	const lpac_autofill_billing_fields = map_options.lpac_autofill_billing_fields
+	const lpac_autofill_billing_fields = mapOptions.lpac_autofill_billing_fields
 
 	if (lpac_autofill_billing_fields) {
 		lpac_fill_in_billing_country_region(results)
@@ -323,7 +352,9 @@ function lpac_get_full_address(results) {
 		return;
 	}
 
-	const full_address = results[ 0 ].formatted_address
+	let full_address = results[ 0 ].formatted_address;
+
+	full_address = lpacRemovePlusCode(full_address);
 
 	return full_address;
 }
@@ -503,7 +534,7 @@ function lpac_fill_in_shipping_state_county(results) {
 	/*
 	* If we have values in our lpac_get_state_county() function
 	*/
-	if (lpac_get_state_county(results)) {
+	if ( lpac_get_state_county(results) ) {
 
 		/*
 		* This field changes based on the country.
@@ -614,7 +645,7 @@ function changeMapVisibility(show){
  * 
  * See Lpac\Controllers::Map_Visibility_Controller
  */
-function hide_show_map(){
+function lpacHideShowMap(){
 
 	wp.ajax.post( "lpac_to_be_or_not_to_be", {} )
   	.done(function(response) {
@@ -633,8 +664,58 @@ function hide_show_map(){
 }
 
 /**
+ * Set the previous order marker.
+ */
+function lpacSetLastOrderMarker(){
+	
+	// Wait for map to load then add our marker
+	google.maps.event.addListenerOnce( map, 'tilesloaded', function(){
+		
+		if( typeof (lpacLastOrder) === 'undefined' || lpacLastOrder === null ){
+			return;
+		}
+
+		const latlng = {
+			lat: parseFloat(lpacLastOrder.latitude),
+			lng: parseFloat(lpacLastOrder.longitude),
+		}
+
+		let latitude = document.querySelector('#lpac_latitude');
+		let longitude = document.querySelector('#lpac_longitude');
+
+		if (typeof (latitude) === 'undefined' || latitude === null) {
+			console.log('LPAC: Can\'t find latitude and longitude input areas. Can\'t insert location coordinates.');
+		}
+	
+		if (typeof (longitude) === 'undefined' || longitude === null) {
+			console.log('LPAC: Can\'t find latitude and longitude input areas. Can\'t insert location coordinates.');
+		}
+	
+		latitude.value = lpacLastOrder.latitude
+		longitude.value = lpacLastOrder.longitude
+
+		map.setZoom(16);
+		map.setCenter(latlng);
+	
+		marker.setPosition(latlng);
+
+		// Only open the infowindow if we have a shipping address from the last order.
+		if( lpacLastOrder.address ){
+			infowindow.setContent(lpacLastOrder.address);
+			infowindow.open(map, marker);
+		}
+		
+		lpac_marker_listen_to_drag();
+		lpac_map_listen_to_clicks();
+
+	
+	});
+
+}
+
+/**
  * Detect when shipping methods are changed based on WC custom updated_checkout event.
- * This event can't be accessed via vanilla JS but is the most reliable for performing this action. 
+ * This event can't be accessed via vanilla JS because it's triggered by jQuery. 
  */
 (function ($) {
 	'use strict';
@@ -642,8 +723,8 @@ function hide_show_map(){
 	$(document).ready(
 		function () {
 
-			$(document.body).on('updated_checkout', hide_show_map);
-
+			$(document.body).on('updated_checkout', lpacHideShowMap);
+			lpacSetLastOrderMarker();
 		}
 	);
 

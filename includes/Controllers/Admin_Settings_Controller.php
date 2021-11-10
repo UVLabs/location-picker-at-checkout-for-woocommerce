@@ -28,11 +28,11 @@ class Admin_Settings_Controller {
 	 */
 	public function sanitize_default_map_coordinates( $value, $option, $raw_value ) {
 
-		// remove letters from input
-		$value = preg_replace( '/[^0-9,]/', '', $value );
+		// Remove letters from input
+		$value = preg_replace( '/[^0-9,.]/', '', $value );
 
 		$value = sanitize_text_field( $value );
-		$value = trim( $value );
+		$value = trim( $value, ' ,' );
 
 		return $value;
 

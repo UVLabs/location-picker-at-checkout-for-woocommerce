@@ -219,7 +219,7 @@ class Functions {
 	 *
 	 * @return array
 	 */
-	public static function get_map_options() {
+	public static function set_map_options() {
 
 		$starting_coordinates = get_option( 'lpac_map_starting_coordinates', '14.024519,-60.974876' );
 		$starting_coordinates = apply_filters( 'lpac_map_starting_coordinates', $starting_coordinates );
@@ -240,13 +240,17 @@ class Functions {
 		$fill_in_billing_fields = get_option( 'lpac_autofill_billing_fields', 'yes' );
 		$fill_in_billing_fields = apply_filters( 'lpac_autofill_billing_fields', $fill_in_billing_fields );
 
+		$remove_address_plus_code = get_option( 'lpac_remove_address_plus_code', 'no' );
+		$remove_address_plus_code = apply_filters( 'lpac_remove_address_plus_code', $remove_address_plus_code );
+
 		$options = array(
-			'latitude'               => $latitude,
-			'longitude'              => $longitude,
-			'zoom_level'             => $zoom_level,
-			'clickable_icons'        => $clickable_icons,
-			'background_color'       => $background_color,
-			'fill_in_billing_fields' => $fill_in_billing_fields,
+			'latitude'                 => $latitude,
+			'longitude'                => $longitude,
+			'zoom_level'               => $zoom_level,
+			'clickable_icons'          => $clickable_icons,
+			'background_color'         => $background_color,
+			'fill_in_billing_fields'   => $fill_in_billing_fields,
+			'remove_address_plus_code' => $remove_address_plus_code,
 		);
 
 		return apply_filters( 'lpac_map_options', $options );
