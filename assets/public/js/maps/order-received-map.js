@@ -9,14 +9,14 @@ function lpac_setup_order_received_map() {
 		return;
 	}
 
-	if (typeof (map_options) === 'undefined' || map_options === null) {
-		console.log('LPAC: map_options object not present, skipping...')
+	if (typeof (mapOptions) === 'undefined' || mapOptions === null) {
+		console.log('LPAC: mapOptions object not present, skipping...')
 		return;
 	}
 
 	map.setOptions(
 		{
-			center: { lat: map_options.lpac_map_order_latitude, lng: map_options.lpac_map_order_longitude },
+			center: { lat: mapOptions.lpac_map_order_latitude, lng: mapOptions.lpac_map_order_longitude },
 			zoom: 16,
 			draggableCursor: 'default',
 			keyboardShortcuts: false,
@@ -25,16 +25,19 @@ function lpac_setup_order_received_map() {
 	);
 
 	const latlng = {
-		lat: map_options.lpac_map_order_latitude,
-		lng: map_options.lpac_map_order_longitude,
+		lat: mapOptions.lpac_map_order_latitude,
+		lng: mapOptions.lpac_map_order_longitude,
 	};
 
 	marker.setPosition(latlng);
 	marker.setDraggable(false);
 	marker.setCursor('default');
 	
-	infowindow.setContent(`<p> ${map_options.lpac_map_order_shipping_address_1} <br/> ${map_options.lpac_map_order_shipping_address_2} </p>`);
-	infowindow.open(map, marker);
+	// Only open the infowindow if we have a shipping address
+	if( mapOptions.lpac_map_order_shipping_address_1 ){
+		infowindow.setContent(`<p> ${mapOptions.lpac_map_order_shipping_address_1} <br/> ${mapOptions.lpac_map_order_shipping_address_2} </p>`);
+		infowindow.open(map, marker);
+	}
 
 }
 

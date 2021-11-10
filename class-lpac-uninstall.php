@@ -81,6 +81,7 @@ class Lpac_Uninstall {
 			'lpac_map_anchor_points',
 			'lpac_admin_view_order_map_id',
 			'lpac_installed_at_version',
+			'lpac_remove_address_plus_code',
 		);
 
 		foreach ( $option_keys as $key ) {

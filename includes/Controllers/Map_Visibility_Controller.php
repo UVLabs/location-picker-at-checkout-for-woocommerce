@@ -13,7 +13,7 @@
 namespace Lpac\Controllers;
 
 /**
-* Class Map Visibility.
+* Class Map Visibility Controller.
 *
 */
 class Map_Visibility_Controller

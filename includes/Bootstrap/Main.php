@@ -34,6 +34,7 @@ use  Lpac\Bootstrap\Frontend_Enqueues ;
 use  Lpac\Controllers\Emails_Controller ;
 use  Lpac\Controllers\Map_Visibility_Controller ;
 use  Lpac\Controllers\Admin_Settings_Controller ;
+use  Lpac\Controllers\Checkout_Page_Controller ;
 use  Lpac\Views\Admin as Admin_Display ;
 use  Lpac\Notices\Admin as Admin_Notices ;
 use  Lpac\Views\Frontend as Frontend_Display ;
@@ -181,6 +182,7 @@ class Main
         $plugin_public_display = new Frontend_Display();
         $controller_emails = new Emails_Controller();
         $controller_map_visibility = new Map_Visibility_Controller();
+        $controler_checkout_page = new Checkout_Page_Controller();
         /*
          * If plugin not enabled don't continue
          */

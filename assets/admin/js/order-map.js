@@ -33,8 +33,11 @@ function lpacSetupShopOrderMap() {
 	marker.setDraggable(false);
 	marker.setCursor('default');
 
-	infowindow.setContent(`<p> ${locationDetails.shipping_address_1} <br/> ${locationDetails.shipping_address_2} </p>`);
-	infowindow.open(map, marker);
+	// Only open the infowindow if we have a shipping address
+	if( locationDetails.shipping_address_1 ){
+		infowindow.setContent(`<p> ${locationDetails.shipping_address_1} <br/> ${locationDetails.shipping_address_2} </p>`);
+		infowindow.open(map, marker);
+	}
 
 }
 

@@ -33,9 +33,9 @@ if (typeof lpac_pro_js !== 'undefined') {
 }
 
 /**
- * Global map_options variable is set in Lpac\Views\Frontend::lpac_expose_map_settings_js
+ * Global mapOptions variable is set in Lpac\Views\Frontend::setup_global_js_vars
  */
-if ( (typeof (map_options) !== 'undefined' && map_options !== null) || ( typeof (locationDetails) !== 'undefined' && locationDetails !== null ) ) {
+if ( (typeof (mapOptions) !== 'undefined' && mapOptions !== null) || ( typeof (locationDetails) !== 'undefined' && locationDetails !== null ) ) {
 
 	/**
 	* <Global Settings>
@@ -43,11 +43,11 @@ if ( (typeof (map_options) !== 'undefined' && map_options !== null) || ( typeof 
 	const map = new google.maps.Map(
 		document.querySelector(".lpac-map"),
 		{
-			center: { lat: map_options.lpac_map_default_latitude, lng: map_options.lpac_map_default_longitude },
-			zoom: map_options.lpac_map_zoom_level,
+			center: { lat: mapOptions.lpac_map_default_latitude, lng: mapOptions.lpac_map_default_longitude },
+			zoom: mapOptions.lpac_map_zoom_level,
 			streetViewControl: false,
-			clickableIcons: map_options.lpac_map_clickable_icons,
-			backgroundColor: map_options.lpac_map_background_color, //loading background color
+			clickableIcons: mapOptions.lpac_map_clickable_icons,
+			backgroundColor: mapOptions.lpac_map_background_color, //loading background color
 			mapId: map_id,
 		}
 	);
@@ -74,5 +74,5 @@ if ( (typeof (map_options) !== 'undefined' && map_options !== null) || ( typeof 
 	*/
 
 } else {
-	console.log('LPAC: map_options object not present, skipping...')
+	console.log('LPAC: mapOptions object not present, skipping...')
 }

@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, map, geolocation, checkout map, delivery map
 Requires at least: 5.5
 Requires PHP: 7.0
 Tested up to: 5.8
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,20 +15,35 @@ Let WooCommerce customers set their exact location for delivery on Google Maps a
 
 Do you run a WooCommerce store where you need more detailed location information from a customer? If so, then why not let them choose their exact location on Google Maps? 
 
-Location Picker At Checkout for WooCommerce (LPAC) allows store owners to add more flexibility to their WooCommerce store by letting their customers choose exactly where they'd like their product(s) delivered. This plugin is excellent for stores with delivery personnel that ship products to customers within a moderate geographical area. 
+Location Picker At Checkout for WooCommerce(LPAC) allows store owners to add more flexibility to their WooCommerce store by letting their customers choose exactly where they'd like their product(s) delivered. This plugin is excellent for stores with delivery personnel that ship products to customers within a moderate geographical area. It can also work for websites which offer Pickup services such as Private Taxi websites.
 
-Location Picker At Checkout for WooCommerce enables store owners to get more precise location details without having to contact customers via other means for location information or directions. With this plugin, lots of time can be saved by allowing customers to select their exact location on Google Maps at checkout with WooCommerce.
+Location Picker At Checkout for WooCommerce(LPAC) enables store owners to get more precise location details without having to contact customers via other means for location information or directions. With this plugin, lots of time can be saved by allowing customers to select their exact location on Google Maps at checkout with WooCommerce.
 
-### Billing & Shipping Address AutoFill For WooCommerce
+## How Can Location Picker At Checkout for WooCommerce Help Me?
+
+LPAC is a Checkout Location Picker plugin for WooCommerce that is suitable for any website that offers Delivery or Pickups for their customers. A Delivery website example would be an online restaurant, a Pickup website example would be a private taxi website. The plugin adds a Google map on the WooCommerce checkout page that customers can use to select their desired location. 
+
+The plugin makes use of the Google Maps API to carry out it's functions; it can work as any of the following:
+
+### WooCommerce Checkout Map Plugin 
+This plugin adds a Google Map to the checkout page of WooCommerce which customers can use to select their location whether for deliveries or pickups.
+
+### WooCommerce Billing & Shipping Address AutoFill Plugin
 
 This plugin has built-in support for automatically filling in the WooCommerce checkout fields with the information pulled from the Google map. Save users some typing while pulling accurate address information.
+
+### WooCommerce Restaurant & Food Delivery Plugin
+This plugin is excellent for online restaurants or food delivery websites that deliver customer orders after they have been placed.
+
+### WooCommerce Pickup Plugin
+If you ran a website where customers select their location for pickup then Location Picker at Checkout for WooCommerce(LPAC) would be a suitable plugin for your website.
 
 ### Below are a few types of stores that would benefit tremendously from this plugin:
 
 - Online Food Delivery websites
 - Online Supermarkets
 - Online Furniture websites
-- Restaurants doing delivery
+- Restaurants offering delivery via their website
 - Hardware Rental & Delivery websites
 - Car Rental websites
 - Pickup service websites
@@ -50,14 +65,30 @@ This plugin has built-in support for automatically filling in the WooCommerce ch
 - Customizable Map container
 - Automatically translated map buttons based on the website's language (set in WordPress' general settings)
 - Have a feature in mind? Feel free to submit it on the support forum.
+- And More
 
 ### Support for:
 
-- WooFunnels Funnel Builder for WordPress
+- WooFunnels Funnel Builder Plugin for WordPress
 
 ### Configuring Plugin:
 
-Plugin settings are located in WordPress Admin Dashboard->WooCommerce->Location Picker At Checkout
+- The plugin settings are located in **WordPress Admin Dashboard->WooCommerce->Location Picker At Checkout** tab.
+
+### Plugin Documentation
+
+- You can find the plugin documentation [Here >>>](https://lpacwp.com/docs/)
+
+### Feature Requests
+
+- If you have any feature requests in mind then please submit them [Here >>>](https://lpacwp.com/contact/)
+
+### Misc
+
+- Learn more about the plugin and signup for the Pro waiting least [Here >>>](https://lpacwp.com)
+- Assets [Attribution](https://lpacwp.com/attribution/)
+
+This plugin is free software, and the most important features have been kept free and open to use so that all can benefit. If you like the plugin and believe that it's helped grow your business, then please consider [leaving a review](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/reviews/#new-post).
 
 == Installation ==
 
@@ -112,6 +143,14 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 The way in which shipping methods are saved by the plugin has been changed. Please go to WooCommerce->Location Picker at Checkout->Visibility Rules and set the desired shipping methods you'd like the map to be hidden for, then save your changes.
 
 == Changelog ==
+
+= 1.3.4 =
+* [New] Get the customer's last order location and display it on the map at checkout. 
+* [New] Option to remove Plus Code from Google Map addresses. 
+* [Fix] Periods were being stripped from default coordinates input boxes. 
+* [Fix] Wrong text domain for some text strings.
+* [Fix] Blank infowindow was showing on order maps when shipping address was not present.
+* [Info] Plugin has an [Official Website.](https://lpacwp.com) 
 
 = 1.3.3 =
 * [New] Added support for WooFunnels' custom checkout pages. 

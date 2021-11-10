@@ -13,51 +13,9 @@
 namespace Lpac\Views;
 
 use Lpac\Controllers\Map_Visibility_Controller;
-use Lpac\Helpers\Functions;
+use Lpac\Controllers\Checkout_Page_Controller;
 
 class Frontend {
-
-	/**
-	 * Global map settings for JavaScript.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $lpac_global_map_settings_js  Contains the exposed map settings for JS consumption.
-	 */
-	private $lpac_global_map_settings_js;
-
-
-	/**
-	* Initialize the class and set its properties.
-	*
-	* @since    1.0.0
-	*/
-	public function __construct() {
-		$this->lpac_expose_map_settings_js();
-	}
-
-	/**
-	 * Map settings.
-	 *
-	 * @since    1.0.0
-	 */
-	public function lpac_get_map_settings() {
-
-		$options = Functions::get_map_options();
-
-		$data = array(
-			'lpac_map_default_latitude'    => $options['latitude'],
-			'lpac_map_default_longitude'   => $options['longitude'],
-			'lpac_map_zoom_level'          => $options['zoom_level'],
-			'lpac_map_clickable_icons'     => $options['clickable_icons'] === 'yes' ? true : false,
-			'lpac_map_background_color'    => $options['background_color'],
-			'lpac_autofill_billing_fields' => $options['fill_in_billing_fields'] === 'yes' ? true : false,
-
-		);
-
-		return apply_filters( 'lpac_map_stored_public_settings', $data );
-
-	}
 
 	/**
 	 * Exposes map settings to be used in client-side javascript.
@@ -65,19 +23,24 @@ class Frontend {
 	 * @since    1.0.0
 	 * @param      string    $additional   Additional settings to pass to JS.
 	 */
-	private function lpac_expose_map_settings_js( $additional = array() ) {
+	private function setup_global_js_vars( $additional = array() ) {
 
-		$js_variables = $this->lpac_get_map_settings();
-		$js_variables = array_merge( $js_variables, $additional );
+		$controller_checkout_page = new Checkout_Page_Controller;
 
-		$map_options = json_encode( $js_variables );
+		$last_order_location = $controller_checkout_page->get_last_order_location();
+		$map_options         = $controller_checkout_page->get_map_options();
+
+		$map_options = array_merge( $map_options, $additional );
+
+		$map_options         = json_encode( $map_options );
+		$last_order_location = json_encode( $last_order_location );
 
 		$global_variables = <<<JAVASCRIPT
-		// LPAC Map Options
-		var map_options = $map_options;
+		var mapOptions = $map_options;
+		var lpacLastOrder = $last_order_location;
 JAVASCRIPT;
 
-		$this->lpac_global_map_settings_js = $global_variables;
+		return $global_variables;
 
 	}
 
@@ -137,7 +100,8 @@ HTML;
 		echo apply_filters( 'lpac_map_markup', $markup, $user_id );
 
 		// Add inline global JS so that we can use data fetched using PHP inside JS
-		wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $this->lpac_global_map_settings_js, 'before' );
+		$global_js_vars = $this->setup_global_js_vars();
+		wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_js_vars, 'before' );
 
 	}
 
@@ -194,18 +158,17 @@ HTML;
 			'lpac_map_order_shipping_address_2' => $shipping_address_2,
 		);
 
-		$this->lpac_expose_map_settings_js( $user_location_collected_during_order );
-
-		$markup = <<<MAP
+		$markup = <<<HTML
 		<div id="lpac-map-container" class='woocommerce-shipping-fields__field-wrapper'>
 		<div class='lpac-map'></div>
 		</div>
-MAP;
+HTML;
 
 		echo $markup;
 
 		// Add inline global JS so that we can use data fetched using PHP inside JS
-		wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $this->lpac_global_map_settings_js, 'before' );
+		$global_js_vars = $this->setup_global_js_vars( $user_location_collected_during_order );
+		wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_js_vars, 'before' );
 
 	}
 
@@ -314,14 +277,14 @@ MAP;
 
 		}
 
-		$output = <<<CUSTOMCSS
+		$output = <<<HTML
 		<style>
 			.lpac-map{
 				$style
 			}
 		</style>
 		
-CUSTOMCSS;
+HTML;
 
 		echo $output;
 	}

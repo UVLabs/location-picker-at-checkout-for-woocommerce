@@ -50,7 +50,7 @@ class Woo_Funnels {
 	public function create_lpac_fields() {
 
 		$this->map_shown_field = array(
-			'label'      => __( 'Map Shown', 'woocommerce-email-validation' ),
+			'label'      => __( 'Map Shown', 'map-location-picker-at-checkout-for-woocommerce' ),
 			'type'       => 'text',
 			'field_type' => 'billing',
 			'class'      => ( LPAC_DEBUG ) ? array( 'wfacp-col-full' ) : array( 'wfacp-col-full', 'hidden' ),
@@ -59,7 +59,7 @@ class Woo_Funnels {
 		);
 
 		$this->latitude_field = array(
-			'label'      => __( 'Latitude', 'woocommerce-email-validation' ),
+			'label'      => __( 'Latitude', 'map-location-picker-at-checkout-for-woocommerce' ),
 			'type'       => 'text',
 			'field_type' => 'billing',
 			'class'      => ( LPAC_DEBUG ) ? array( 'wfacp-col-full' ) : array( 'wfacp-col-full', 'hidden' ),
@@ -68,7 +68,7 @@ class Woo_Funnels {
 		);
 
 		$this->longitude_field = array(
-			'label'      => __( 'Longitude', 'woocommerce-email-validation' ),
+			'label'      => __( 'Longitude', 'map-location-picker-at-checkout-for-woocommerce' ),
 			'type'       => 'text',
 			'field_type' => 'billing',
 			'class'      => ( LPAC_DEBUG ) ? array( 'wfacp-col-full' ) : array( 'wfacp-col-full', 'hidden' ),

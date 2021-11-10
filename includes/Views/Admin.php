@@ -106,7 +106,7 @@ HTML;
 			'shipping_address_2' => $shipping_address_2,
 		);
 
-		$options = Functions::get_map_options();
+		$options = Functions::set_map_options();
 
 		$data = array(
 			'lpac_map_default_latitude'    => $options['latitude'],
@@ -125,7 +125,7 @@ HTML;
 	// Lpac Order Location Details
 	var locationDetails = $order_location_details;
 	// Lpac Map Settings
-	var map_options = $map_options;
+	var mapOptions = $map_options;
 JAVASCRIPT;
 
 		// Expose JS variables for usage
