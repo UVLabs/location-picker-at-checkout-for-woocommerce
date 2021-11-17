@@ -64,6 +64,105 @@
 			}
 		});
 
+		function toggleAutoDetectOptions(){
+
+			const autoDetectLocation = $('#lpac_auto_detect_location');
+
+			if( ! autoDetectLocation ){
+				return;
+			}
+
+			const autoDetectLocationChecked = autoDetectLocation.is(":checked");
+			const forceMapUse = $('#lpac_force_map_use');
+	
+			// Hide suboptions if feature disabled
+			if( autoDetectLocationChecked ){
+				forceMapUse.closest('tr').hide();
+			}
+	
+			autoDetectLocation.on('click', () => {
+	
+				if( autoDetectLocation.is(':checked') ){
+					forceMapUse.closest('tr').hide();
+				}else{
+					forceMapUse.closest('tr').show();
+				}
+		
+			});
+
+		}
+
+		function toggleMapLinkOrderEmailOptions(){
+
+			const addToEmail = $('#lpac_enable_delivery_map_link_in_email');
+
+			if( ! addToEmail ){
+				return;
+			}
+
+			const addToEmailChecked = addToEmail.is(":checked");
+			const linkType = $('#lpac_email_delivery_map_link_type');
+			const linkLocation = $('#lpac_email_delivery_map_link_location');
+			const selectedEmails = $('#lpac_email_delivery_map_emails');
+	
+			// Hide suboptions if feature disabled
+			if( ! addToEmailChecked ){
+				linkType.closest('tr').hide();
+				linkLocation.closest('tr').hide();
+				selectedEmails.closest('tr').hide();
+			}
+	
+			addToEmail.on('click', () => {
+	
+			if( addToEmail.is(':checked') ){
+				linkType.closest('tr').show();
+				linkLocation.closest('tr').show();
+				selectedEmails.closest('tr').show();
+			}else{
+				linkType.closest('tr').hide();
+				linkLocation.closest('tr').hide();
+				selectedEmails.closest('tr').hide();
+			}
+	
+			});
+
+		}
+
+		function togglePlacesAutoCompleteOptions(){
+
+			const placesAutoComplete = $('#lpac_enable_places_autocomplete');
+
+			if( ! placesAutoComplete ){
+				return;
+			}
+
+			const placesAutoCompleteChecked = placesAutoComplete.is(":checked");
+			const placesAllowedFields = $('#lpac_places_autocomplete_fields');
+			const placesAutoCompleteHideMap = $('#lpac_places_autocomplete_hide_map');
+
+			if( ! placesAutoCompleteChecked ){
+				placesAllowedFields.closest('tr').hide();
+				placesAutoCompleteHideMap.closest('tr').hide();
+			}
+
+			placesAutoComplete.on('click', () => {
+
+			if( placesAutoComplete.is(':checked') ){
+				placesAllowedFields.closest('tr').show();
+				placesAutoCompleteHideMap.closest('tr').show();
+			}else{
+				placesAllowedFields.closest('tr').hide();
+				placesAutoCompleteHideMap.closest('tr').hide();
+			}
+
+			});
+
+		}
+
+		toggleAutoDetectOptions();
+		toggleMapLinkOrderEmailOptions();
+		togglePlacesAutoCompleteOptions();
+
 	});
 
 })(jQuery);

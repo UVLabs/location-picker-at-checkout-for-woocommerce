@@ -17,7 +17,7 @@
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://soaringleads.com
  * Description:       Allow customers to choose their shipping location using a map at checkout.
- * Version:           1.3.4
+ * Version:           1.3.5
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
  * License:           GPL-2.0+
@@ -25,7 +25,7 @@
  * Text Domain:       map-location-picker-at-checkout-for-woocommerce
  * Domain Path:       /languages
  * WC requires at least: 3.0
- * WC tested up to: 5.8
+ * WC tested up to: 5.9
  * Requires PHP: 7.0
  */
 // If this file is called directly, abort.
@@ -108,7 +108,7 @@ if ( defined( 'PHP_VERSION' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'LPAC_VERSION', '1.3.4' );
+define( 'LPAC_VERSION', '1.3.5' );
 define( 'LPAC_PLUGIN_NAME', 'lpac' );
 define( 'LPAC_PLUGIN_DIR', __DIR__ . '/' );
 define( 'LPAC_PLUGIN_ASSETS_DIR', __DIR__ . '/assets/' );
@@ -117,7 +117,13 @@ define( 'LPAC_PLUGIN_PATH_URL', plugin_dir_url( __FILE__ ) );
 define( 'LPAC_GOOGLE_MAPS_LINK', 'https://maps.googleapis.com/maps/api/js?key=' );
 define( 'LPAC_GOOGLE_MAPS_API_KEY', get_option( 'lpac_google_maps_api_key', '' ) );
 $site_locale = get_locale();
-define( 'LPAC_GOOGLE_MAPS_PARAMS', "&language={$site_locale}&libraries=&v=weekly" );
+$google_params = array( "language={$site_locale}", 'v=weekly' );
+$places_autocomplete = get_option( 'lpac_enable_places_autocomplete' );
+if ( !empty($places_autocomplete) ) {
+    array_push( $google_params, 'libraries=places' );
+}
+$google_params = '&' . implode( '&', $google_params );
+define( 'LPAC_GOOGLE_MAPS_PARAMS', $google_params );
 $debug = false;
 if ( function_exists( 'wp_get_environment_type' ) ) {
     /* File will only exist in local installation */

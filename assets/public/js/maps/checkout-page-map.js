@@ -12,6 +12,7 @@ const infowindow = window.lpac_infowindow;
 const geocoder = new google.maps.Geocoder();
 
 const find_location_btn = document.querySelector("#lpac-find-location-btn");
+const places_autocomplete_used = document.querySelector('#lpac_places_autocomplete');
 
 if (typeof (find_location_btn) !== 'undefined' && find_location_btn !== null) {
 	find_location_btn.addEventListener(
@@ -105,6 +106,8 @@ async function lpac_bootstrap_map_functionality(geocoder, map, infowindow) {
 	* Fill in latitude and longitude fields.
 	*/
 	lpac_fill_in_latlng(latlng);
+
+	places_autocomplete_used.value = 0;
 
 }
 
@@ -223,6 +226,7 @@ function lpac_map_listen_to_clicks() {
 			infowindow.setContent(detected_address);
 			infowindow.open(map, marker);
 
+			places_autocomplete_used.value = 0;
 		});
 
 }
@@ -253,13 +257,14 @@ function lpac_marker_listen_to_drag() {
 				return;
 			}
 
-			let moved_to_address = results[ 0 ].formatted_address
+			let moved_to_address = results[ 0 ].formatted_address;
 
 			moved_to_address = lpacRemovePlusCode(moved_to_address);
 
-			infowindow.setContent(moved_to_address)
+			infowindow.setContent(moved_to_address);
 
-			lpac_fill_in_address_fields(results, moved_to_latlng)
+			lpac_fill_in_address_fields(results, moved_to_latlng);
+			places_autocomplete_used.value = 0;
 
 		}
 
@@ -301,11 +306,7 @@ function lpac_fill_in_address_fields(results, latLng = '') {
 
 	lpac_fill_in_latlng(latLng)
 
-	lpac_fill_in_shipping_country_region(results)
-	lpac_fill_in_shipping_full_address(results)
-	lpac_fill_in_shipping_town_city(results)
-	lpac_fill_in_shipping_state_county(results)
-	lpac_fill_in_shipping_zipcode(results)
+	lpac_fill_in_shipping_fields( results );
 
 	if (typeof (mapOptions) === 'undefined' || mapOptions === null) {
 		console.log('LPAC: mapOptions object not present, skipping...')
@@ -315,13 +316,35 @@ function lpac_fill_in_address_fields(results, latLng = '') {
 	const lpac_autofill_billing_fields = mapOptions.lpac_autofill_billing_fields
 
 	if (lpac_autofill_billing_fields) {
-		lpac_fill_in_billing_country_region(results)
-		lpac_fill_in_billing_full_address(results)
-		lpac_fill_in_billing_town_city(results)
-		lpac_fill_in_billing_state_county(results)
-		lpac_fill_in_billing_zipcode(results)
+		lpac_fill_in_billing_fields( results );
 	}
 
+}
+
+/**
+ * Fill in all shipping fields.
+ * 
+ * @param {array} results 
+ */
+function lpac_fill_in_shipping_fields( results ){
+	lpac_fill_in_shipping_country_region(results)
+	lpac_fill_in_shipping_full_address(results)
+	lpac_fill_in_shipping_town_city(results)
+	lpac_fill_in_shipping_state_county(results)
+	lpac_fill_in_shipping_zipcode(results)
+}
+
+/**
+ * Fill in all billing fields.
+ * 
+ * @param {array} results 
+ */
+function lpac_fill_in_billing_fields( results ){
+	lpac_fill_in_billing_country_region(results)
+	lpac_fill_in_billing_full_address(results)
+	lpac_fill_in_billing_town_city(results)
+	lpac_fill_in_billing_state_county(results)
+	lpac_fill_in_billing_zipcode(results)
 }
 
 /*
@@ -660,7 +683,6 @@ function lpacHideShowMap(){
 
   });
 
-
 }
 
 /**
@@ -672,6 +694,11 @@ function lpacSetLastOrderMarker(){
 	google.maps.event.addListenerOnce( map, 'tilesloaded', function(){
 		
 		if( typeof (lpacLastOrder) === 'undefined' || lpacLastOrder === null ){
+			return;
+		}
+
+		// If no coordinates exist don't try to plot the location on the map
+		if( ! lpacLastOrder.latitude || ! lpacLastOrder.longitude ){
 			return;
 		}
 
@@ -714,6 +741,110 @@ function lpacSetLastOrderMarker(){
 }
 
 /**
+ * Places AutoComplete feature.
+ * 
+ * https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete
+ * 
+ * @returns 
+ */
+function addPlacesAutoComplete(){
+
+	// Return if feature not enabled
+	if( ! mapOptions.lpac_enable_places_autocomplete ){
+		return;
+	}
+
+	// Hide map if option is turned on.
+	if( mapOptions.lpac_places_autocomplete_hide_map ){
+		changeMapVisibility(false);
+	}
+
+	const fields = mapOptions.lpac_places_autocomplete_fields;
+
+	fields.forEach(fieldID => {
+
+		const field = document.querySelector('#' + fieldID);
+
+		/* 
+		* If field doesn't exist bail.
+		* This might happen if user sets shipping destination to "Force shipping to the customer billing address" so the shipping fields wouldn't exist.
+		*/
+		if( !field ){
+			return;
+		}
+
+		const options = {
+			// componentRestrictions: { country: ["us", "ca"] }, // TODO let users control this
+			fields: ["address_components", "formatted_address", "geometry"],
+			types: ["address"],
+		}
+
+		const autoComplete = new google.maps.places.Autocomplete(field, options);
+
+		/* Bind the map's bounds (viewport) property to the autocomplete object,
+		so that the autocomplete requests use the current map bounds for the
+		bounds option in the request. */
+		autoComplete.bindTo("bounds", map);
+
+		autoComplete.addListener("place_changed", () => {
+		
+			const results = [autoComplete.getPlace()];
+
+			const latlng = {
+				lat: parseFloat( results[0].geometry.location.lat() ),
+				lng: parseFloat(  results[0].geometry.location.lng() ),
+			}
+
+			if( fieldID.includes('shipping') ){
+
+				if( mapOptions.lpac_places_fill_shipping_fields ){
+					lpac_fill_in_shipping_fields(results);
+				}
+
+				lpac_fill_in_latlng(latlng);
+
+				map.setCenter(latlng);
+				marker.setPosition(latlng);
+				map.setZoom(16);
+				infowindow.setContent(results[0].formatted_address);
+				infowindow.open(map, marker);
+				places_autocomplete_used.value = 1;
+				// Add event listeners to map
+				lpac_marker_listen_to_drag();
+				lpac_map_listen_to_clicks();
+			}else{
+				
+				if( mapOptions.lpac_places_fill_shipping_fields ){
+					lpac_fill_in_billing_fields(results);
+				}
+
+				/*
+				* When Shipping destination is set as "Force shipping to the customer billing address" in WooCommerce->Shipping->Shipping Options
+				* We would want to adjust the map as needed.
+				*/
+				if( mapOptions.lpac_wc_shipping_destination_setting  === 'billing_only'){
+					lpac_fill_in_latlng(latlng);
+					map.setCenter(latlng);
+					marker.setPosition(latlng);
+					map.setZoom(16);
+					infowindow.setContent(results[0].formatted_address);
+					infowindow.open(map, marker);
+					places_autocomplete_used.value = 1;
+					// Add event listeners to map
+					lpac_marker_listen_to_drag();
+					lpac_map_listen_to_clicks();
+				}
+
+			}
+
+		})
+
+	});
+
+}
+addPlacesAutoComplete();
+
+/**
  * Detect when shipping methods are changed based on WC custom updated_checkout event.
  * This event can't be accessed via vanilla JS because it's triggered by jQuery. 
  */
@@ -722,9 +853,18 @@ function lpacSetLastOrderMarker(){
 
 	$(document).ready(
 		function () {
+			// Prevents ajax call in lpacHideShowMap from overriding our lpac_places_autocomplete_hide_map option.
+			if( ! mapOptions.lpac_places_autocomplete_hide_map ){
+				$(document.body).on('updated_checkout', lpacHideShowMap);
+			}
+			
+			// If the auto detect location feature is turned on, then detect the location but don't output the last order details.
+			if( mapOptions.lpac_auto_detect_location ){
+				lpac_bootstrap_map_functionality(geocoder, map, infowindow)
+			}else{
+				lpacSetLastOrderMarker();
+			}
 
-			$(document.body).on('updated_checkout', lpacHideShowMap);
-			lpacSetLastOrderMarker();
 		}
 	);
 

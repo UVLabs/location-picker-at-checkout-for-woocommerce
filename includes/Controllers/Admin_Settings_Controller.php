@@ -6,7 +6,7 @@
 * Created on:      19/10/2021 (d/m/y)
 *
 * @link    https://uriahsvictor.com
-* @since   1.3.3
+* @since   1.3.4
 * @package Lpac
 */
 

@@ -35,8 +35,12 @@ class Admin {
 	 */
 	public function lpac_display_lpac_admin_order_meta( $order ) {
 
-		$latitude  = get_post_meta( $order->get_id(), '_lpac_latitude', true );
-		$longitude = get_post_meta( $order->get_id(), '_lpac_longitude', true );
+		$latitude                 = get_post_meta( $order->get_id(), '_lpac_latitude', true );
+		$longitude                = get_post_meta( $order->get_id(), '_lpac_longitude', true );
+		$places_autocomplete_used = get_post_meta( $order->get_id(), '_places_autocomplete', true );
+
+		/* translators: 1: Dashicons outbound link icon*/
+		$learn_more = sprintf( __( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
 
 		/**
 		 * If we have no values for these options bail.
@@ -45,14 +49,20 @@ class Admin {
 			return;
 		}
 
-		$order_meta_text  = __( 'Customer Location', 'map-location-picker-at-checkout-for-woocommerce' );
-		$view_on_map_text = __( 'View on Map', 'map-location-picker-at-checkout-for-woocommerce' );
+		$order_meta_text  = esc_html( __( 'Customer Location', 'map-location-picker-at-checkout-for-woocommerce' ) );
+		$view_on_map_text = esc_html( __( 'View on Map', 'map-location-picker-at-checkout-for-woocommerce' ) );
+
+		$places_autocomplete_used_text = '';
+		if ( ! empty( $places_autocomplete_used ) ) {
+			$places_autocomplete_used_text = sprintf( esc_html( __( 'It looks like this customer used the Places Autocomplete feature. The coordinates on the map might be an approximation. %s' ) ), "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/#accuracy-of-places-autocomplete' target='_blank'> $learn_more </a>" );
+		}
 
 		$map_link = apply_filters( 'lpac_map_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
 
 		$markup = <<<HTML
 		<p><strong>$order_meta_text:</strong></p>
 		<p><a href="$map_link" target="_blank"><button style="cursor:pointer" type='button'>$view_on_map_text</button></a></p>
+		<p style="font-size: 12px">$places_autocomplete_used_text</p>
 HTML;
 
 		echo $markup;

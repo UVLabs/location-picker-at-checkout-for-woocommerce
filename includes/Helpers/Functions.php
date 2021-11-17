@@ -243,14 +243,31 @@ class Functions {
 		$remove_address_plus_code = get_option( 'lpac_remove_address_plus_code', 'no' );
 		$remove_address_plus_code = apply_filters( 'lpac_remove_address_plus_code', $remove_address_plus_code );
 
+		$enable_places_search            = get_option( 'lpac_enable_places_autocomplete', 'no' );
+		$places_search_fields            = get_option( 'lpac_places_autocomplete_fields', array() );
+		$places_search_fields            = apply_filters( 'lpac_places_autocomplete_fields', $places_search_fields );
+		$places_autocomplete_hide_map    = get_option( 'lpac_places_autocomplete_hide_map', 'no' );
+		$places_fill_shipping_fields     = apply_filters( 'lpac_places_fill_shipping_fields', true );
+		$places_fill_billing_fields      = apply_filters( 'lpac_places_fill_billing_fields', true );
+		$wc_shipping_destination_setting = get_option( 'woocommerce_ship_to_destination' );
+
+		$auto_detect_location = get_option( 'lpac_auto_detect_location', 'no' );
+
 		$options = array(
-			'latitude'                 => $latitude,
-			'longitude'                => $longitude,
-			'zoom_level'               => $zoom_level,
-			'clickable_icons'          => $clickable_icons,
-			'background_color'         => $background_color,
-			'fill_in_billing_fields'   => $fill_in_billing_fields,
-			'remove_address_plus_code' => $remove_address_plus_code,
+			'latitude'                        => $latitude,
+			'longitude'                       => $longitude,
+			'zoom_level'                      => $zoom_level,
+			'clickable_icons'                 => $clickable_icons,
+			'background_color'                => $background_color,
+			'fill_in_billing_fields'          => $fill_in_billing_fields,
+			'remove_address_plus_code'        => $remove_address_plus_code,
+			'enable_places_search'            => $enable_places_search,
+			'places_search_fields'            => $places_search_fields,
+			'places_autocomplete_hide_map'    => $places_autocomplete_hide_map,
+			'places_fill_shipping_fields'     => $places_fill_shipping_fields,
+			'places_fill_billing_fields'      => $places_fill_billing_fields,
+			'auto_detect_location'            => $auto_detect_location,
+			'wc_shipping_destination_setting' => $wc_shipping_destination_setting,
 		);
 
 		return apply_filters( 'lpac_map_options', $options );

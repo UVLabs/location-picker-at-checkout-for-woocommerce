@@ -198,6 +198,12 @@ HTML;
 			'class'    => ( LPAC_DEBUG ) ? array( 'form-row-wide' ) : array( 'form-row-wide', 'hidden' ),
 		);
 
+		$fields['billing']['lpac_places_autocomplete'] = array(
+			'label'    => __( 'Places Autocomplete', 'map-location-picker-at-checkout-for-woocommerce' ),
+			'required' => false,
+			'class'    => ( LPAC_DEBUG ) ? array( 'form-row-wide' ) : array( 'form-row-wide', 'hidden' ),
+		);
+
 		return $fields;
 	}
 
@@ -312,19 +318,36 @@ HTML;
 			return;
 		}
 
+		$learn_more  = esc_html__( 'Learn More', 'map-location-picker-at-checkout-for-woocommerce' );
+		$api_key     = get_option( 'lpac_google_maps_api_key' );
 		$notice_text = esc_html__( 'Hi Admin, some websites might have issues with displaying or using the Google Map. If you\'re having issues then please have a look at your browser console for any errors.' );
 		$additional  = esc_html__( 'Only Admins on your website can see this notice. You can turn it off in the plugin settings from the "Debug" submenu if everything works fine.' );
 
-		$markup = <<<MARKUP
+		if ( empty( $api_key ) ) {
+
+			$no_api_key = sprintf( esc_html__( 'You have not entered a Google Maps API Key! The plugin will not function how it should until you have entered the key. Please read the following doc for instructions on obtaining a Google Maps API Key %s' ), "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/' target='_blank'>$learn_more >></a>" );
+
+			$no_api_key_markup = <<<HTML
+			<div class="lpac-admin-notice" style="background: #246df3; text-align: center; margin-bottom: 20px; padding: 10px;">
+			<p style=" color: #ffffff !important; font-size:14px;"><span style="font-weight: bold">Location Picker at Checkout: </span>
+				$no_api_key
+			</p>
+			</div>
+HTML;
+
+			echo $no_api_key_markup;
+		}
+
+		$markup = <<<HTML
 		<div class="lpac-admin-notice" style="background: #246df3; text-align: center; margin-bottom: 20px; padding: 10px;">
-			<p style=" color: #ffffff !important; font-size:14px;"><span style="font-weight: bold">LPAC: </span>
+			<p style=" color: #ffffff !important; font-size:14px;"><span style="font-weight: bold">Location Picker at Checkout: </span>
 				$notice_text
 			</p>
 			<p style=" color: #ffffff !important; font-size:12px; font-weight: bold;" >
 				$additional
 			</p>
 		</div>
-MARKUP;
+HTML;
 
 		echo $markup;
 
