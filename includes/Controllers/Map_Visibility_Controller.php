@@ -96,26 +96,6 @@ class Map_Visibility_Controller
     }
     
     /**
-     * Validate the Map's visibility setting to prevent manipulations via the DOM.
-     *
-     * @return void
-     */
-    public function validate_map_visibility( $order_id, $data )
-    {
-        $show = self::lpac_show_map( 'checkout' );
-        $map_shown = $data['lpac_is_map_shown'] ?? '';
-        
-        if ( $show === false || empty($map_shown) ) {
-            \Lpac\Models\Save_Location_Details::save_order_meta_cords( $order_id, '', '' );
-            return;
-        }
-        
-        $lat = $data['lpac_latitude'] ?? '';
-        $long = $data['lpac_longitude'] ?? '';
-        \Lpac\Models\Save_Location_Details::save_order_meta_cords( $order_id, $lat, $long );
-    }
-    
-    /**
      * Default map visibility rules and order.
      *
      * @return array

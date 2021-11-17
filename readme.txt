@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, map, geolocation, checkout map, delivery map
 Requires at least: 5.5
 Requires PHP: 7.0
 Tested up to: 5.8
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,11 +21,12 @@ Location Picker At Checkout for WooCommerce(LPAC) enables store owners to get mo
 
 ## How Can Location Picker At Checkout for WooCommerce Help Me?
 
-LPAC is a Checkout Location Picker plugin for WooCommerce that is suitable for any website that offers Delivery or Pickups for their customers. A Delivery website example would be an online restaurant, a Pickup website example would be a private taxi website. The plugin adds a Google map on the WooCommerce checkout page that customers can use to select their desired location. 
+LPAC is a Checkout Location Picker plugin for WooCommerce that is suitable for any website that offers Delivery or Pickups for their customers. A Delivery website example would be an online restaurant, a Pickup website example would be a private taxi website. The plugin adds a Google map on the WooCommerce checkout page that customers can use to select their desired location. Alternatively, the plugin can be set up to also allow it to automatically detect the customer's location on checkout page load and allow them to make any corrections. 
 
 The plugin makes use of the Google Maps API to carry out it's functions; it can work as any of the following:
 
 ### WooCommerce Checkout Map Plugin 
+
 This plugin adds a Google Map to the checkout page of WooCommerce which customers can use to select their location whether for deliveries or pickups.
 
 ### WooCommerce Billing & Shipping Address AutoFill Plugin
@@ -33,10 +34,16 @@ This plugin adds a Google Map to the checkout page of WooCommerce which customer
 This plugin has built-in support for automatically filling in the WooCommerce checkout fields with the information pulled from the Google map. Save users some typing while pulling accurate address information.
 
 ### WooCommerce Restaurant & Food Delivery Plugin
+
 This plugin is excellent for online restaurants or food delivery websites that deliver customer orders after they have been placed.
 
 ### WooCommerce Pickup Plugin
+
 If you ran a website where customers select their location for pickup then Location Picker at Checkout for WooCommerce(LPAC) would be a suitable plugin for your website.
+
+### WooCommerce Autocomplete Checkout Address Plugin
+
+Though the primary focus of the plugin is to allow customers to select accurate locations by using a map. Location Picker at Checkout for WooCommerce also allows store owners to enable the Places autocomplete feature on their checkout address fields. This feature shows customers address predictions as they type in their address. When a customer clicks the desired address from the dropdown, it can also automatically fill in the rest of the checkout fields.
 
 ### Below are a few types of stores that would benefit tremendously from this plugin:
 
@@ -52,7 +59,7 @@ If you ran a website where customers select their location for pickup then Locat
 
 ### Features:
 
-- Detect current location of customer
+- Detect current location of customer at checkout (Automatically or on click of a button)
 - Allow customers to pick their exact location using Google Maps
 - Autofill checkout fields with information pulled from Google Maps
 - Show/Hide Map based on Shipping Method
@@ -62,6 +69,7 @@ If you ran a website where customers select their location for pickup then Locat
 - Include a QR Code or button link to the customer's selected location in the WooCommerce order emails.
 - "View on map" button to allow admin to view exact location for delivery of any order.
 - Customers can see the delivery location they selected on past orders.
+- Option to turn on Places Autocomplete feature. [Learn More](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/)
 - Customizable Map container
 - Automatically translated map buttons based on the website's language (set in WordPress' general settings)
 - Have a feature in mind? Feel free to submit it on the support forum.
@@ -103,7 +111,7 @@ Alternatively, install this plugin by searching for it from the plugins area of 
 
 = The map doesn't show =
 
-Ensure that you have setup the plugin with your API key by going to WordPress Dashboard->WooCommerce->Location Picker At Checkout. See [this doc](https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key) for getting your API key. If you've entered your API key and the map still doesn't show, then please have a look at your  [browser console](https://balsamiq.com/support/faqs/browserconsole/#apple-safari) for any errors relating to the map, you can submit an issue thread on the plugin's [support forum](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/)
+Ensure that you have setup the plugin with your API key by going to WordPress Dashboard->WooCommerce->Location Picker At Checkout. See [this doc](https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/) for getting your API key. If you've entered your API key and the map still doesn't show, then please have a look at your  [browser console](https://balsamiq.com/support/faqs/browserconsole/#apple-safari) for any errors relating to the map, you can submit an issue thread on the plugin's [support forum](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/)
 
 = Nothing happens when I click on the map =
 
@@ -111,11 +119,11 @@ These sorts of issues are usually due to a JavaScript issue on the website. Chec
 
 = Map says "For development purposes only" =
 
-This message shows when you have not finished setting up the map correctly inside the Google Cloud Console. Please make sure you've followed all the steps from the [setup guide](https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key) including the "Setting up Billing & Google Monthly Credit" section.
+This message shows when you have not finished setting up the map correctly inside the Google Cloud Console. Please make sure you've followed all the steps from the [setup guide](https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/) including the "Setting up Billing & Google Monthly Credit" section.
 
 = Do I need to pay to use this plugin? =
 
-No! The plugin is free to use. The Google Maps APIs it uses, however, do require you to setup an account on Google's Cloud Console. The process is easy and requires you also attaching a billing method to your account. Google provides a $200 monthly credit for usage of their APIs so you don't have to worry about paying anything unless you receive alot of orders on your store (upwards of 15,000 orders in a month). See [this step](https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce/wiki/Getting-Your-API-Key#setting-up-billing--google-monthly-credit) in the setup guide for more details about how this works.
+No! The plugin is free to use. The Google Maps APIs it uses, however, do require you to setup an account on Google's Cloud Console. The process is easy and requires you also attaching a billing method to your account. Google provides a $200 monthly credit for usage of their APIs so you don't have to worry about paying anything unless you receive alot of orders on your store (upwards of 15,000 orders in a month). See [this step](https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/#important-setting-up-billing-google-monthly-credit) in the setup guide for more details about how this works.
 
 = Why are the plugin settings not in my language? = 
 
@@ -143,6 +151,11 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 The way in which shipping methods are saved by the plugin has been changed. Please go to WooCommerce->Location Picker at Checkout->Visibility Rules and set the desired shipping methods you'd like the map to be hidden for, then save your changes.
 
 == Changelog ==
+
+= 1.3.5 =
+* [New] Added Places Autocomplete feature [Learn More](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/). 
+* [New] New option in General Settings to allow plugin to immediately request the customer location on checkout page load.  [Learn More](https://lpacwp.com/docs/getting-started/plugin-settings/general-settings/#detect-customer-location-on-checkout-page-load). 
+* [Info] Tested on WC 5.9.
 
 = 1.3.4 =
 * [New] Get the customer's last order location and display it on the map at checkout. 

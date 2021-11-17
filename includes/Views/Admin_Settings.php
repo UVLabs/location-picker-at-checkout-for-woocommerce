@@ -107,7 +107,7 @@ class Admin_Settings extends \WC_Settings_Page
         
         if ( empty(get_option( 'lpac_google_maps_api_key', '' )) ) {
             $no_api_key = __( 'You need an API Key to use Google Maps. Please see this document for how to get it ', 'map-location-picker-at-checkout-for-woocommerce' );
-            $no_api_key .= "<a href='https://lpacwp.com/docs/getting-started/getting-your-google-maps-api-key/' target='_blank'>{$here}</a>";
+            $no_api_key .= "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/' target='_blank'>{$here}</a>";
             $no_api_key .= $external_icon;
         } else {
             $no_api_key = '';
@@ -181,10 +181,18 @@ MARKUP;
         $lpac_settings[] = array(
             'name'     => __( 'Google Maps API Key', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc_tip' => __( 'Enter the API key from Google cloud console.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'     => __( 'Enter the API key you copied from the Google Cloud Console. <a href="https://lpacwp.com/docs/getting-started/getting-your-google-maps-api-key/" target="_blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'     => __( 'Enter the API key you copied from the Google Cloud Console. <a href="https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/" target="_blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'       => 'lpac_google_maps_api_key',
             'type'     => 'text',
             'css'      => 'min-width:300px;',
+        );
+        $lpac_settings[] = array(
+            'name'     => __( 'Detect Customer Location on Checkout Page Load', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => sprintf( __( 'Enabling this option will have the plugin immediately try to detect the customer location when the checkout page loads. NOTE: This can negatively impact customer experiences. Think carefully before enabling this option. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/general-settings/#detect-customer-location-on-checkout-page-load' target='_blank'>{$learn_more}</a>" ),
+            'id'       => 'lpac_auto_detect_location',
+            'type'     => 'checkbox',
+            'css'      => 'max-width:80px;',
         );
         $lpac_settings[] = array(
             'name'     => __( 'Force Use of Map', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -296,6 +304,34 @@ MARKUP;
             'customer_invoice'         => __( 'Customer Invoice', 'map-location-picker-at-checkout-for-woocommerce' ),
         ),
             'css'     => 'min-width:300px;height: 100px',
+        );
+        $lpac_settings[] = array(
+            'name'     => __( 'Enable Places Autocomplete Feature', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => sprintf( __( 'Allows customers to begin typing an address and receive suggestions from Google. NOTE: This is not as reliable as allowing customers to select their location on the map. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/' target='blank'>{$learn_more}</a>" ),
+            'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'       => 'lpac_enable_places_autocomplete',
+            'type'     => 'checkbox',
+            'css'      => 'min-width:300px;',
+        );
+        $lpac_settings[] = array(
+            'name'    => __( 'Allowed Places AutoComplete Fields', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'    => __( 'Select the input fields where the places autocomplete should be allowed.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'      => 'lpac_places_autocomplete_fields',
+            'type'    => 'multiselect',
+            'options' => array(
+            'billing_address_1'  => __( 'Billing Address 1', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'shipping_address_1' => __( 'Shipping Address 1', 'map-location-picker-at-checkout-for-woocommerce' ),
+        ),
+            'css'     => 'min-width:300px;',
+            'class'   => 'wc-enhanced-select',
+        );
+        $lpac_settings[] = array(
+            'name'     => __( 'Hide Map When Using Places Autocomplete', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => __( 'Hide the map when using the Places Autocomplete feature.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'       => 'lpac_places_autocomplete_hide_map',
+            'type'     => 'checkbox',
+            'css'      => 'min-width:300px;',
         );
         $lpac_settings[] = array(
             'name'     => __( 'Housekeeping', 'map-location-picker-at-checkout-for-woocommerce' ),

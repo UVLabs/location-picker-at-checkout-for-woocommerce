@@ -21,7 +21,6 @@ use Lpac\Helpers\Functions;
 */
 class Checkout_Page_Controller {
 
-
 	/**
 	 * Map settings.
 	 *
@@ -32,13 +31,20 @@ class Checkout_Page_Controller {
 		$options = Functions::set_map_options();
 
 		$data = array(
-			'lpac_map_default_latitude'     => $options['latitude'],
-			'lpac_map_default_longitude'    => $options['longitude'],
-			'lpac_map_zoom_level'           => $options['zoom_level'],
-			'lpac_map_clickable_icons'      => $options['clickable_icons'] === 'yes' ? true : false,
-			'lpac_map_background_color'     => $options['background_color'],
-			'lpac_autofill_billing_fields'  => $options['fill_in_billing_fields'] === 'yes' ? true : false,
-			'lpac_remove_address_plus_code' => $options['remove_address_plus_code'] === 'yes' ? true : false,
+			'lpac_map_default_latitude'            => $options['latitude'],
+			'lpac_map_default_longitude'           => $options['longitude'],
+			'lpac_map_zoom_level'                  => $options['zoom_level'],
+			'lpac_map_clickable_icons'             => $options['clickable_icons'] === 'yes' ? true : false,
+			'lpac_map_background_color'            => $options['background_color'],
+			'lpac_autofill_billing_fields'         => $options['fill_in_billing_fields'] === 'yes' ? true : false,
+			'lpac_remove_address_plus_code'        => $options['remove_address_plus_code'] === 'yes' ? true : false,
+			'lpac_enable_places_autocomplete'      => $options['enable_places_search'] === 'yes' ? true : false,
+			'lpac_places_autocomplete_fields'      => $options['places_search_fields'],
+			'lpac_places_autocomplete_hide_map'    => $options['places_autocomplete_hide_map'] === 'yes' ? true : false,
+			'lpac_places_fill_shipping_fields'     => $options['places_fill_shipping_fields'],
+			'lpac_places_fill_billing_fields'      => $options['places_fill_billing_fields'],
+			'lpac_auto_detect_location'            => $options['auto_detect_location'] === 'yes' ? true : false,
+			'lpac_wc_shipping_destination_setting' => $options['wc_shipping_destination_setting'],
 		);
 
 		return apply_filters( 'lpac_map_stored_public_settings', $data );

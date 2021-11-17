@@ -39,6 +39,7 @@ use  Lpac\Views\Admin as Admin_Display ;
 use  Lpac\Notices\Admin as Admin_Notices ;
 use  Lpac\Views\Frontend as Frontend_Display ;
 use  Lpac\Compatibility\WooFunnels\Woo_Funnels ;
+use  Lpac\Models\Location_Details ;
 /**
 * Class Main.
 *
@@ -183,6 +184,7 @@ class Main
         $controller_emails = new Emails_Controller();
         $controller_map_visibility = new Map_Visibility_Controller();
         $controler_checkout_page = new Checkout_Page_Controller();
+        $model_location_details = new Location_Details();
         /*
          * If plugin not enabled don't continue
          */
@@ -271,12 +273,22 @@ class Main
         $this->loader->add_action( 'wp_ajax_nopriv_lpac_to_be_or_not_to_be', $controller_map_visibility, 'checkout_map_visibility_ajax_handler' );
         $this->loader->add_action( 'wp_ajax_lpac_to_be_or_not_to_be', $controller_map_visibility, 'checkout_map_visibility_ajax_handler' );
         /*
-         * Add the latitude and longitude to the order meta
+         * Validate checkout map details and then add the latitude and longitude to the order meta.
          */
         $this->loader->add_action(
             'woocommerce_checkout_update_order_meta',
-            $controller_map_visibility,
+            $model_location_details,
             'validate_map_visibility',
+            10,
+            2
+        );
+        /*
+         * Add places autocomplete order meta.
+         */
+        $this->loader->add_action(
+            'woocommerce_checkout_update_order_meta',
+            $model_location_details,
+            'save_places_autocomplete',
             10,
             2
         );
