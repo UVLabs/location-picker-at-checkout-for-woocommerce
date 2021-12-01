@@ -64,13 +64,11 @@ class Admin_Settings extends \WC_Settings_Page
             'general'          => __( 'General', 'map-location-picker-at-checkout-for-woocommerce' ),
             'display'          => __( 'Display', 'map-location-picker-at-checkout-for-woocommerce' ),
             'visibility_rules' => __( 'Visibility Rules', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'debug'            => __( 'Debug', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'export'           => '',
             'premium'          => __( 'Premium', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'debug'            => __( 'Debug', 'map-location-picker-at-checkout-for-woocommerce' ),
         );
-        // TODO: Allow this section once development of premium features are futher ahead.
-        if ( lpac_fs()->is_free_plan() ) {
-            unset( $sections['premium'] );
-        }
+        unset( $sections['export'] );
         return apply_filters( 'woocommerce_get_sections_' . LPAC_PLUGIN_NAME, $sections );
     }
     
@@ -86,7 +84,7 @@ class Admin_Settings extends \WC_Settings_Page
         if ( empty($sections) || 1 === sizeof( $sections ) ) {
             return;
         }
-        echo  '<ul class="subsubsub">' ;
+        echo  '<ul id="lpac-submenu" class="subsubsub">' ;
         $array_keys = array_keys( $sections );
         foreach ( $sections as $id => $label ) {
             echo  '<li><a href="' . admin_url( 'admin.php?page=wc-settings&tab=' . $this->id . '&section=' . sanitize_title( $id ) ) . '" class="' . (( $current_section == $id ? 'current' : '' )) . '">' . $label . '</a> ' . (( end( $array_keys ) == $id ? '' : '|' )) . ' </li>' ;
@@ -100,7 +98,7 @@ class Admin_Settings extends \WC_Settings_Page
      * @since    1.2.0
      * @return mixed $markup The markup for the banner.
      */
-    private function lpac_create_plugin_settings_banner()
+    public function lpac_create_plugin_settings_banner()
     {
         $here = __( 'HERE', 'map-location-picker-at-checkout-for-woocommerce' );
         $external_icon = '<strong><span style="text-decoration: none" class="dashicons dashicons-external"></span></strong>';
@@ -123,15 +121,15 @@ class Admin_Settings extends \WC_Settings_Page
         $translate_plugin = __( 'Plugin settings not in your Language? Help translate it ', 'map-location-picker-at-checkout-for-woocommerce' );
         $translate_plugin .= "<a href='hhttps://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
         $translate_plugin .= $external_icon;
-        $markup = <<<MARKUP
-\t\t<div style="background: #fff; border-radius: 5px; margin-bottom: 20px; padding: 30px; text-align:center;">
+        $markup = <<<HTML
+\t\t<div class="lpac-banner">
 \t\t<h2>{$title}</h2>
 \t\t<p>{$no_api_key}</p>
 \t\t<p>{$documentation}</p>
 \t\t<p>{$issues}</p>
 \t\t<p>{$translate_plugin}</p>
 \t\t</div>
-MARKUP;
+HTML;
         return $markup;
     }
     
@@ -150,7 +148,7 @@ MARKUP;
             'desc' => $this->lpac_create_plugin_settings_banner(),
         );
         $plugin_enabled = get_option( 'lpac_enabled' );
-        /* translators: 1: Dashicons outbound link icon*/
+        /* translators: 1: Dashicons outbound link icon */
         $learn_more = sprintf( __( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
         /*
          * If the option doesn't exist then this is most likely a new install, so set the checkbox to checked by default.
@@ -204,8 +202,8 @@ MARKUP;
         );
         $lpac_settings[] = array(
             'name'        => __( 'Default Coordinates', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc_tip'    => __( 'Enter the default latitude and logitude that will be fetched every time the map loads.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'        => __( 'Enter the default latitude and logitude that will be fetched every time the map loads. You can find the coordinates for a location <a href="https://www.latlong.net/" target="_blank">here >></a>. Be sure to include the comma when adding your coordinates above.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip'    => __( 'Enter the default latitude and longitude that will be fetched every time the map loads.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'        => __( 'Enter the default latitude and longitude that will be fetched every time the map loads. You can find the coordinates for a location <a href="https://www.latlong.net/" target="_blank">here >></a>. Be sure to include the comma when adding your coordinates above.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'          => 'lpac_map_starting_coordinates',
             'placeholder' => '14.024519,-60.974876',
             'type'        => 'text',
@@ -270,13 +268,14 @@ MARKUP;
         );
         $lpac_settings[] = array(
             'name'     => __( 'Link Type', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc_tip' => __( 'Add either a button to Google Maps or a QR Code to the order emails.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'     => __( 'QR Codes are saved to your uploads directory at: <code>/wp-content/uploads/lpac-qr-codes/year/month/day/order_id.jpg</code>', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => __( 'Add either a button to Google Maps, a QR Code or Static Map to the order emails.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'     => sprintf( __( 'The Static Map option requires enabling a special Google Maps API. Please read the following doc to %1$s %2$s QR Codes are saved to your uploads directory at: <code>/wp-content/uploads/lpac/qr-codes/year/month/day/order_id.jpg</code>', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/enabling-google-static-map-api/' target='blank'>{$learn_more}</a>", '<br/>' ),
             'id'       => 'lpac_email_delivery_map_link_type',
             'type'     => 'select',
             'options'  => array(
-            'button'  => __( 'Button', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'qr_code' => __( 'QR Code', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'button'     => __( 'Button', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'qr_code'    => __( 'QR Code', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'static_map' => __( 'Static Map', 'map-location-picker-at-checkout-for-woocommerce' ),
         ),
             'css'      => 'min-width:300px;',
         );
@@ -297,11 +296,12 @@ MARKUP;
             'id'      => 'lpac_email_delivery_map_emails',
             'type'    => 'multiselect',
             'options' => array(
-            'new_order'                => __( 'New Order', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'customer_on_hold_order'   => __( 'Order on Hold', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'customer_note'            => __( 'Customer Note', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'customer_completed_order' => __( 'Completed Order', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'customer_invoice'         => __( 'Customer Invoice', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'new_order'                 => __( 'New Order (Admin)', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'customer_processing_order' => __( 'Processing Order', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'customer_on_hold_order'    => __( 'Order on Hold', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'customer_note'             => __( 'Customer Note', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'customer_completed_order'  => __( 'Completed Order', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'customer_invoice'          => __( 'Customer Invoice', 'map-location-picker-at-checkout-for-woocommerce' ),
         ),
             'css'     => 'min-width:300px;height: 100px',
         );
@@ -648,9 +648,6 @@ MARKUP;
         if ( $current_section === 'display' ) {
             $lpac_settings = $this->lpac_create_display_setting_fields();
         }
-        if ( $current_section === 'debug' ) {
-            $lpac_settings = $this->lpac_create_debug_setting_fields();
-        }
         
         if ( $current_section === 'visibility_rules' ) {
             $lpac_settings = $this->create_visibility_settings_fields();
@@ -662,6 +659,30 @@ MARKUP;
         }
         
         if ( $current_section === 'premium' ) {
+            // TODO Add premium purchase link
+            // if ( lpac_fs()->is_not_paying() ) {
+            // 	echo '<section><h1>' . __('Awesome Professional Features', 'lpac') . '</h1>';
+            // 	echo '<a href="' . lpac_fs()->get_upgrade_url() . '">' . __('Upgrade Now!', 'lpac') . '</a>';
+            // 	echo '</section>';
+            // }
+            
+            if ( lpac_fs()->is_not_paying() ) {
+                /* translators: 1: HTML break element */
+                $signup_text = sprintf( __( 'Custom Maps, Custom Marker Icons, Saved Addresses, More Visibility Rules, Shipping Cost by Distance, Export Order Locations and more. %s Sign up to the waiting list for 10%% off at launch.', 'map-location-picker-at-checkout-for-woocommerce' ), '<br/><br/>' );
+                $learn_more = sprintf( __( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
+                $markup = <<<HTML
+\t\t\t\t<div class="lpac-banner">
+\t\t\t\t\t<p style="font-size: 18px"><strong>{$signup_text}</strong></p>
+\t\t\t\t\t<br/>
+\t\t\t\t\t<p><a class="lpac-button" href="https://lpacwp.com/pro-waiting-list/" target="_blank">{$learn_more}</a></p>
+\t\t\t\t</div>
+HTML;
+                echo  $markup ;
+            }
+        
+        }
+        if ( $current_section === 'debug' ) {
+            $lpac_settings = $this->lpac_create_debug_setting_fields();
         }
         // Custom attributes example
         // https://woocommerce.github.io/code-reference/files/woocommerce-includes-admin-wc-meta-box-functions.html#source-view.146

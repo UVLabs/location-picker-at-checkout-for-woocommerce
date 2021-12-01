@@ -85,15 +85,17 @@ class Lpac_Uninstall {
 			'lpac_enable_places_autocomplete',
 			'lpac_places_autocomplete_fields',
 			'lpac_auto_detect_location',
+			'lpac_export_date_from',
+			'lpac_export_date_to',
 		);
 
 		foreach ( $option_keys as $key ) {
 			delete_option( $key );
 		}
 
-		$lpac_qr_codes_directory = wp_upload_dir()['basedir'] . '/' . 'lpac-qr-codes';
+		$lpac_directory = wp_upload_dir()['basedir'] . '/lpac';
 
-		( new WP_Filesystem_Direct( '' ) )->delete( $lpac_qr_codes_directory, true, 'd' );
+		( new WP_Filesystem_Direct( '' ) )->delete( $lpac_directory, true, 'd' );
 
 	}
 

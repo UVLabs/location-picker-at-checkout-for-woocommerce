@@ -3,14 +3,12 @@
 /**
 * Handles saving of location details to the databse.
 *
-* description.
-*
 * Author:          Uriahs Victor
 * Created on:      16/10/2021 (d/m/y)
 *
 * @link    https://uriahsvictor.com
 * @since   ..
-* @package package
+* @package Lpac/Models
 */
 namespace Lpac\Models;
 

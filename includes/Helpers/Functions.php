@@ -75,7 +75,7 @@ class Functions {
 
 		$qr_code_resource_base = wp_upload_dir()[ $base ];
 
-		$qr_code_resource_locator = $qr_code_resource_base . '/' . 'lpac-qr-codes' . '/' . date( 'Y' ) . '/' . date( 'm' ) . '/' . date( 'd' ) . '/';
+		$qr_code_resource_locator = $qr_code_resource_base . '/lpac/qr-codes/' . date( 'Y' ) . '/' . date( 'm' ) . '/' . date( 'd' ) . '/';
 
 		return $qr_code_resource_locator;
 

@@ -12,3 +12,24 @@
  #lpac-rules{
 	cursor: move;
  }
+
+ .lpac-button, .lpac-button:hover{
+	background: #f04e23;
+	border-radius: 3px;
+	color: #fff; 
+	padding: 10px; 
+	text-decoration: none;
+ }
+
+ .lpac-banner{
+	background: #fff; 
+	border-radius: 5px; 
+	margin-bottom: 20px; 
+	padding: 30px; 
+	text-align:center;
+ }
+
+ #lpac_export_btn{
+	cursor: pointer;
+	padding: 10px;
+ }

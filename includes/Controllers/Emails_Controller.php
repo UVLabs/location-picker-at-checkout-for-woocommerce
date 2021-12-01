@@ -25,15 +25,47 @@ use Lpac\Helpers\QR_Code_Generator as QR_Code_Generator;
 class Emails_Controller {
 
 	/**
+	 * Outputs a Button or QR Code inside order emails.
+	 *
+	 * @since    1.1.0
+	 */
+	public function add_delivery_location_link_to_email( $order, $sent_to_admin, $plain_text, $email ) {
+
+		$allowed_emails = get_option( 'lpac_email_delivery_map_emails', array() );
+
+		// If the current email ID is not in our list of allowed emails then bail.
+		if ( ! in_array( $email->id, $allowed_emails ) ) {
+			return;
+		}
+
+		$latitude  = get_post_meta( $order->get_id(), '_lpac_latitude', true );
+		$longitude = get_post_meta( $order->get_id(), '_lpac_longitude', true );
+		$map_link  = apply_filters( 'lpac_email_map_link_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
+
+		$map_link_type = get_option( 'lpac_email_delivery_map_link_type' );
+
+		if ( $map_link_type === 'button' ) {
+			$this->create_delivery_location_link_button( $map_link );
+		} elseif ( $map_link_type === 'qr_code' ) {
+			$this->create_delivery_location_link_qrcode( $map_link, $order->get_id() );
+		} elseif ( $map_link_type === 'static_map' ) {
+			$this->create_delivery_location_static_map( $map_link, $latitude, $longitude );
+		} else {
+			$this->create_delivery_location_link_button( $map_link );
+		}
+
+	}
+
+	/**
 	 * Create map location button link in email.
 	 *
 	 * @param string $link The link to google maps.
 	 * @since    1.1.0
 	 */
-	public function lpac_create_delivery_location_link_button( $link ) {
+	private function create_delivery_location_link_button( $link ) {
 
 		$button_text = __( 'Delivery Location', 'map-location-picker-at-checkout-for-woocommerce' );
-		$button_text = apply_filters( 'lpac_map_location_link_button_text', $button_text );
+		$button_text = apply_filters( 'lpac_email_map_location_link_button_text', $button_text );
 		$base_color  = get_option( 'woocommerce_email_base_color' );
 		$text_color  = wc_light_or_dark( $base_color, '#202020', '#ffffff' );
 		$p_styles    = 'text-align: center; margin: 20px 0 40px 0 !important;';
@@ -54,7 +86,7 @@ HTML;
 	 * @param int $order_id The current order id.
 	 * @since    1.1.0
 	 */
-	public function lpac_create_delivery_location_link_qrcode( $link, $order_id ) {
+	private function create_delivery_location_link_qrcode( $link, $order_id ) {
 
 		$options = array(
 			'qr_code_data'           => $link,
@@ -68,38 +100,60 @@ HTML;
 		QR_Code_Generator::lpac_generate_qr_code( $options, $order_id );
 
 		/*
-		* https://example.com/wp-content/uploads/lpac-qr-codes/Y/m/d/order_id.jpg
+		* https://example.com/wp-content/uploads/lpac/qr-codes/Y/m/d/order_id.jpg
 		*/
-		$qr_code_link = Functions_Helper::lpac_get_qr_codes_directory( 'baseurl' ) . $order_id . '.jpg';
+		$qr_code_link           = Functions_Helper::lpac_get_qr_codes_directory( 'baseurl' ) . $order_id . '.jpg';
+		$delivery_location_text = __( 'Delivery Location', 'map-location-picker-at-checkout-for-woocommerce' );
+		$delivery_location_text = apply_filters( 'lpac_email_map_location_link_button_text', $delivery_location_text );
 
-		echo "<p style='text-align: center'><img style='display: block !important; margin: 30px auto !important; text-align: center !important;' src='{$qr_code_link}'/></p>";
+		echo "<div style='text-align: center !important'>
+				<img style='display: block !important; margin: 0 auto !important; text-align: center !important;' src='{$qr_code_link}'/>
+				 <p style='text-align: center !important; font-size: 20px; margin-bottom: 40px'>{$delivery_location_text}</p>
+			</div>";
 
 	}
 
 	/**
-	 * Outputs a Button or QR Code inside order emails.
+	 * Adds a Static Google Map to the order email.
 	 *
-	 * @since    1.1.0
+	 * @param mixed $latitude
+	 * @param mixed $longitude
+	 * @return void
+	 * @since 1.4.0
 	 */
-	public function lpac_add_delivery_location_link_to_email( $order, $sent_to_admin, $plain_text, $email ) {
+	private function create_delivery_location_static_map( $map_link, $latitude, $longitude ) {
 
-		$allowed_emails = get_option( 'lpac_email_delivery_map_emails', array() );
+		$center       = $latitude . ',' . $longitude;
+		$center       = sanitize_text_field( apply_filters( 'lpac_email_static_map_center', $center ) );
+		$zoom         = sanitize_text_field( apply_filters( 'lpac_email_static_map_zoom', 16 ) );
+		$size         = sanitize_text_field( apply_filters( 'lpac_email_static_map_size', '600x300' ) );
+		$map_type     = sanitize_text_field( apply_filters( 'lpac_email_static_map_type', 'roadmap' ) );
+		$marker_color = sanitize_text_field( apply_filters( 'lpac_email_static_map_marker_color', 'red' ) );
+		$marker_label = sanitize_text_field( apply_filters( 'lpac_email_static_map_marker_label', '' ) );
+		$api_key      = sanitize_text_field( apply_filters( 'lpac_email_static_map_api_key', get_option( 'lpac_google_maps_api_key', '' ) ) );
 
-		if ( ! in_array( $email->id, $allowed_emails ) ) {
-			return;
+		$full_link = sprintf(
+			'https://maps.googleapis.com/maps/api/staticmap?center=%1$s&zoom=%2$s&size=%3$s&maptype=%4$s&markers=color:%5$s|label:%6$s|%1$s&key=%7$s',
+			$center,
+			$zoom,
+			$size,
+			$map_type,
+			$marker_color,
+			$marker_label,
+			$api_key
+		);
+
+		$width  = '';
+		$height = '';
+
+		if ( ! empty( $size ) ) {
+			$size_parts = explode( 'x', $size );
+			$width      = $size_parts[0];
+			$height     = $size_parts[1];
 		}
 
-		$latitude  = get_post_meta( $order->get_id(), '_lpac_latitude', true );
-		$longitude = get_post_meta( $order->get_id(), '_lpac_longitude', true );
-		$map_link  = apply_filters( 'lpac_map_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
-
-		$map_link_type = get_option( 'lpac_email_delivery_map_link_type' );
-
-		if ( $map_link_type === 'button' ) {
-			$this->lpac_create_delivery_location_link_button( $map_link );
-		} else {
-			$this->lpac_create_delivery_location_link_qrcode( $map_link, $order->get_id() );
-		}
+		$image = "<a href='$map_link' target='_blank'><img style='display: block !important; margin-bottom: 40px !important; margin-left: auto !important; margin-right: auto !important; postition: relative !important;' src='$full_link' width='$width' height='$height'/></a>";
+		echo $image;
 
 	}
 

@@ -151,4 +151,31 @@ HTML;
 
 	}
 
+	/**
+	 * Create a custom button that can be used on the plugin's settings page.
+	 *
+	 * @param array $value
+	 * @return void
+	 */
+	public function create_customer_wc_settings_button( $value ) {
+
+		$btn_class   = $value['class'];
+		$btn_id      = $value['id'];
+		$btn_text    = $value['value'];
+		$name        = $value['name'];
+		$description = $value['desc'];
+
+		$markup = <<<HTML
+				<tr valign='top'>
+				<th scope='row' class='titledesc'>$name</th>
+				<td>
+					<button id="$btn_id" class="$btn_class">$btn_text</button>
+					<p class="description">$description</p>
+				</td>
+				</tr>
+HTML;
+		echo $markup;
+
+	}
+
 }
