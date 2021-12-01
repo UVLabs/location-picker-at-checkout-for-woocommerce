@@ -60,9 +60,6 @@ class QR_Code_Generator {
 
 		$writer = new PngWriter();
 
-		$qr_code_label = __( 'Delivery Location', 'map-location-picker-at-checkout-for-woocommerce' );
-		$qr_code_label = apply_filters( 'lpac_map_location_link_button_text', $qr_code_label );
-
 		/*
 		* Create QR Code
 		*/
@@ -75,13 +72,15 @@ class QR_Code_Generator {
 			->setForegroundColor( new Color( $fr, $fg, $fb ) )
 			->setBackgroundColor( new Color( $br, $bg, $bb ) );
 
-		$label = Label::create( $qr_code_label )
-		->setFont( new NotoSans( 18 ) );
+		// Label fonts are too big. We delete them on dist.
+		// $label = Label::create( $qr_code_label )
+		// ->setFont( new NotoSans( 18 ) );
 
 		// $label = Label::create( $qr_code_label )
 		// ->setFont( new OpenSans( 18 ) );
 
-		$result = $writer->write( $qr_code, null, $label );
+		// Its possible to add logo to QR code.
+		$result = $writer->write( $qr_code );
 
 		$image = $result->saveToFile( $path_with_filename );
 
@@ -104,13 +103,14 @@ class QR_Code_Generator {
 
 		if ( ! empty( $upload_dir['basedir'] ) ) {
 
-			$qr_codes_dir = $upload_dir['basedir'] . '/' . 'lpac-qr-codes' . '/' . date( 'Y' ) . '/' . date( 'm' ) . '/' . date( 'd' ) . '/';
+			$qr_codes_dir = $upload_dir['basedir'] . '/lpac/qr-codes/' . date( 'Y' ) . '/' . date( 'm' ) . '/' . date( 'd' ) . '/';
+			$qr_codes_dir = apply_filters( 'lpac_qrcodes_path', $qr_codes_dir );
 
 			if ( ! file_exists( $qr_codes_dir ) ) {
 				wp_mkdir_p( $qr_codes_dir );
 			}
 
-			return apply_filters( 'lpac_qrcodes_path', $qr_codes_dir );
+			return $qr_codes_dir;
 		}
 
 		return $qr_codes_dir;

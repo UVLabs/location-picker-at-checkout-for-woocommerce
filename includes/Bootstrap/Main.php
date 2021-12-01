@@ -140,7 +140,7 @@ class Main
     private function define_admin_hooks()
     {
         $plugin_admin = new Admin_Enqueues();
-        $plugin_admin_display = new Admin_Display();
+        $plugin_admin_view = new Admin_Display();
         $admin_notices = new Admin_Notices();
         $admin_settings_controller = new Admin_Settings_Controller();
         $controller_map_visibility = new Map_Visibility_Controller();
@@ -151,16 +151,16 @@ class Main
         // Display map on order details page
         $this->loader->add_action(
             'woocommerce_admin_order_data_after_shipping_address',
-            $plugin_admin_display,
+            $plugin_admin_view,
             'lpac_display_lpac_admin_order_meta',
             10,
             1
         );
-        $this->loader->add_action( 'add_meta_boxes', $plugin_admin_display, 'lpac_create_custom_order_details_metabox' );
-        $this->loader->add_action( 'woocommerce_get_settings_pages', $plugin_admin_display, 'lpac_add_settings_tab' );
+        $this->loader->add_action( 'add_meta_boxes', $plugin_admin_view, 'lpac_create_custom_order_details_metabox' );
+        $this->loader->add_action( 'woocommerce_get_settings_pages', $plugin_admin_view, 'lpac_add_settings_tab' );
         /* Handle map visibility rules ordering table ajax requests in admin settings  */
         $this->loader->add_action( 'wp_ajax_lpac_map_visibility_rules_order', $controller_map_visibility, 'checkout_map_rules_order_ajax_handler' );
-        /* Sanitize options */
+        /* Sanitize default map coordinates */
         $this->loader->add_filter(
             'woocommerce_admin_settings_sanitize_option_lpac_map_starting_coordinates',
             $admin_settings_controller,
@@ -168,6 +168,8 @@ class Main
             10,
             3
         );
+        /* Custom button created for WooCommerce settings */
+        $this->loader->add_action( 'woocommerce_admin_field_button', $plugin_admin_view, 'create_customer_wc_settings_button' );
     }
     
     /**
@@ -257,7 +259,7 @@ class Main
             $this->loader->add_action(
                 $email_map_link_location,
                 $controller_emails,
-                'lpac_add_delivery_location_link_to_email',
+                'add_delivery_location_link_to_email',
                 20,
                 4
             );

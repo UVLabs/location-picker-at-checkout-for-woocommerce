@@ -1,15 +1,15 @@
 === Location Picker at Checkout for WooCommerce ===
 Contributors: uriahs-victor
 Donate link: https://uriahsvictor.com
-Tags: woocommerce, location picker, map, geolocation, checkout map, delivery map, google map
+Tags: woocommerce, location picker, checkout map, geolocation, google map, map, delivery map
 Requires at least: 5.5
 Requires PHP: 7.0
 Tested up to: 5.8
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Let WooCommerce customers set their exact location for delivery on Google Maps at checkout.
+Let WooCommerce customers set their exact location for delivery or pickup on Google Maps at checkout.
 
 == Description ==
 
@@ -59,19 +59,19 @@ Though the primary focus of the plugin is to allow customers to select accurate 
 
 ### Features:
 
-- Detect current location of customer at checkout (Automatically or on click of a button)
-- Allow customers to pick their exact location using Google Maps
-- Autofill checkout fields with information pulled from Google Maps
-- Show/Hide Map based on Shipping Method
-- Show/Hide Map based on Shipping Class
-- Show Map based on Coupon Code
-- Hide Map for Guest Checkout
-- Include a QR Code or button link to the customer's selected location in the WooCommerce order emails.
-- "View on map" button to allow admin to view exact location for delivery of any order.
-- Customers can see the delivery location they selected on past orders.
-- Option to turn on Places Autocomplete feature. [Learn More](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/)
-- Customizable Map container
-- Automatically translated map buttons based on the website's language (set in WordPress' general settings)
+- Detect current location of customer at checkout (Automatically or on click of a button) [FREE]
+- Allow customers to pick their exact location using Google Maps [FREE]
+- Autofill checkout fields with information pulled from Google Maps [FREE]
+- Show/Hide Map based on Shipping Method [FREE]
+- Show/Hide Map based on Shipping Class [FREE]
+- Show Map based on Coupon Code [FREE]
+- Hide Map for Guest Checkout [FREE]
+- Include a QR Code, Static Map or Button link to the customer's selected location in the WooCommerce order emails. [FREE]
+- "View on map" button to allow admin to view exact location for delivery of any order. [FREE]
+- Customers can see the delivery location they selected on past orders. [FREE]
+- Option to turn on Places Autocomplete feature. [Learn More](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/) [FREE]
+- Customizable Map container [FREE]
+- Automatically translated map buttons based on the website's language (set in WordPress' general settings) [FREE]
 - Have a feature in mind? Feel free to submit it on the support forum.
 - And More
 
@@ -147,10 +147,17 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 
 == Upgrade Notice ==
 
-= 1.3.3 =
-The way in which shipping methods are saved by the plugin has been changed. Please go to WooCommerce->Location Picker at Checkout->Visibility Rules and set the desired shipping methods you'd like the map to be hidden for, then save your changes.
+= 1.4.0 =
+The save location of QR codes have been changed. Links to QR codes in past order emails will stop working after updating, but QR codes in new orders will work fine.
 
 == Changelog ==
+
+= 1.4.0 =
+* [Change] BREAKING CHANGE: The save location of QR codes created for orders have been changed. Links to QR codes in past order emails will stop working after updating, but QR codes in new orders will work fine.
+* [New] Added a new Static Map option to the list of link types that can be added to customer emails. (QR Code, Button, Static Map)
+* [New] Added "Processing Order" email option to the list of emails the map link can be added to.
+* [Dev] Reduced plugin size by removing dedicated font files for Qr codes.
+* [Info] Static Maps require enabling of an extra Google Map API endpoint. [Please see here for instructions](https://lpacwp.com/docs/getting-started/google-cloud-console/enabling-google-static-map-api/).
 
 = 1.3.5 =
 * [New] Added Places Autocomplete feature [Learn More](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/). 
