@@ -157,19 +157,47 @@ HTML;
 	 * @param array $value
 	 * @return void
 	 */
-	public function create_customer_wc_settings_button( $value ) {
+	public function create_custom_wc_settings_button( $value ) {
 
-		$btn_class   = $value['class'];
-		$btn_id      = $value['id'];
-		$btn_text    = $value['value'];
+		$class       = $value['class'];
+		$id          = $value['id'];
+		$text        = $value['value'];
 		$name        = $value['name'];
 		$description = $value['desc'];
+
+		$custom_attributes = $value['custom_attributes'] ?? '';
+		$disabled          = $custom_attributes['disabled'] ?? '';
 
 		$markup = <<<HTML
 				<tr valign='top'>
 				<th scope='row' class='titledesc'>$name</th>
 				<td>
-					<button id="$btn_id" class="$btn_class">$btn_text</button>
+					<button id="$id" class="$class" $disabled>$text</button>
+					<p class="description">$description</p>
+				</td>
+				</tr>
+HTML;
+		echo $markup;
+
+	}
+
+	/**
+	 * Create a custom hr element that can be used on the plugin's settings page.
+	 *
+	 * @param array $value
+	 * @return void
+	 */
+	public function create_custom_wc_settings_hr( $value ) {
+
+		$class       = $value['class'];
+		$name        = $value['name'];
+		$description = $value['desc'];
+
+		$markup = <<<HTML
+				<tr valign='top'>
+				<th scope='row' class="titledesc $class">$name</th>
+				<td>
+					<hr/>
 					<p class="description">$description</p>
 				</td>
 				</tr>

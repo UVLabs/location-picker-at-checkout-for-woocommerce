@@ -741,7 +741,7 @@ function lpacSetLastOrderMarker(){
 }
 
 /**
- * Places AutoComplete feature.
+ * Places Autocomplete feature.
  * 
  * https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete
  * 
@@ -774,9 +774,18 @@ function addPlacesAutoComplete(){
 		}
 
 		const options = {
-			// componentRestrictions: { country: ["us", "ca"] }, // TODO let users control this
 			fields: ["address_components", "formatted_address", "geometry"],
 			types: ["address"],
+		}
+
+		/* 
+		* Add country restrictions set in pro plugin settings 
+		* lpac_pro_js is in global scope
+		*/
+		if( typeof (lpac_pro_js) !== 'undefined' && lpac_pro_js !== null){
+			options.componentRestrictions = {
+				country: lpac_pro_js.places_autocomplete_restrictions
+			}
 		}
 
 		const autoComplete = new google.maps.places.Autocomplete(field, options);
@@ -792,7 +801,7 @@ function addPlacesAutoComplete(){
 
 			const latlng = {
 				lat: parseFloat( results[0].geometry.location.lat() ),
-				lng: parseFloat(  results[0].geometry.location.lng() ),
+				lng: parseFloat( results[0].geometry.location.lng() ),
 			}
 
 			if( fieldID.includes('shipping') ){
@@ -814,7 +823,7 @@ function addPlacesAutoComplete(){
 				lpac_map_listen_to_clicks();
 			}else{
 				
-				if( mapOptions.lpac_places_fill_shipping_fields ){
+				if( mapOptions.lpac_places_fill_billing_fields ){
 					lpac_fill_in_billing_fields(results);
 				}
 
@@ -822,7 +831,7 @@ function addPlacesAutoComplete(){
 				* When Shipping destination is set as "Force shipping to the customer billing address" in WooCommerce->Shipping->Shipping Options
 				* We would want to adjust the map as needed.
 				*/
-				if( mapOptions.lpac_wc_shipping_destination_setting  === 'billing_only'){
+				if( mapOptions.lpac_wc_shipping_destination_setting  === 'billing_only' || ( fields.length === 1 && fields.includes('billing_address_1') ) ){
 					lpac_fill_in_latlng(latlng);
 					map.setCenter(latlng);
 					marker.setPosition(latlng);

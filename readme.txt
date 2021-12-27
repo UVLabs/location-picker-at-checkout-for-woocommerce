@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, checkout map, geolocation, google map, map, 
 Requires at least: 5.5
 Requires PHP: 7.0
 Tested up to: 5.8
-Stable tag: 1.3.5
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,16 @@ Though the primary focus of the plugin is to allow customers to select accurate 
 - Option to turn on Places Autocomplete feature. [Learn More](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/) [FREE]
 - Customizable Map container [FREE]
 - Automatically translated map buttons based on the website's language (set in WordPress' general settings) [FREE]
+- Custom Google Maps designs [Pro]
+- Custom Marker Icons [Pro]
+- Export Order Locations [Pro]
+- Multiple Customer Saved Addresses [Pro]
+- Shipping cost by distance [Pro]
+- Show/Hide Map based on Shipping Zone [Pro]
+- Hide Map until a minimum cart total is reached [Pro]
+- Hide Map when a maximum cart total is reached [Pro]
+- More Map Visibility Rules [Pro]
+- Restrict Places Autocomplete feature to selected countries [Pro]
 - Have a feature in mind? Feel free to submit it on the support forum.
 - And More
 
@@ -93,7 +103,7 @@ Though the primary focus of the plugin is to allow customers to select accurate 
 
 ### Misc
 
-- Learn more about the plugin and signup for the Pro waiting least [Here >>>](https://lpacwp.com)
+- Learn more about the plugin or Purchase the PRO version [Here >>>](https://lpacwp.com)
 - Assets [Attribution](https://lpacwp.com/attribution/)
 
 This plugin is free software, and the most important features have been kept free and open to use so that all can benefit. If you like the plugin and believe that it's helped grow your business, then please consider [leaving a review](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/reviews/#new-post).
@@ -151,6 +161,16 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 The save location of QR codes have been changed. Links to QR codes in past order emails will stop working after updating, but QR codes in new orders will work fine.
 
 == Changelog ==
+
+= 1.4.1 =
+* [New PRO] Export Order Locations.
+* [New PRO] Custom Google Map Designs.
+* [New PRO] Custom Google Map Marker Icon.
+* [New PRO] Customer Saved Addresses.
+* [New PRO] Restrict Places Autocomplete to a specific country.
+* [New PRO] Shipping cost by distance.
+* [New] PRO version has been released! Dummy PRO options can be seen in the LPAC settings.
+* [Fix] Coordinates were not being retrieved when only "Billing Address 1" was selected for the Places Autocomplete field.
 
 = 1.4.0 =
 * [Change] BREAKING CHANGE: The save location of QR codes created for orders have been changed. Links to QR codes in past order emails will stop working after updating, but QR codes in new orders will work fine.

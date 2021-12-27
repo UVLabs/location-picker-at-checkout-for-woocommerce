@@ -16,7 +16,7 @@ if (typeof lpac_pro_js !== 'undefined') {
 
 		if( x_anchor.length == 0 ){
 			// Likely values to make the anchor appear ideal.
-			// The x axis anchor is usually half of the image width, the y is usally 3px over the image width
+			// The x axis anchor is usually half of the image width, the y is usually 3px over the image height
 			x_anchor = marker_icon_width / 2;
 			y_anchor = marker_icon_height + 3;
 		}

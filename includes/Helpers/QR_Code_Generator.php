@@ -21,9 +21,12 @@ use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Label\Font\NotoSans;
+use Lpac\Traits\Upload_Folders;
 // use Endroid\QrCode\Label\Font\OpenSans;
 
 class QR_Code_Generator {
+
+	use Upload_Folders;
 
 	/**
 	 * Creates a QR code
@@ -33,9 +36,11 @@ class QR_Code_Generator {
 	 *
 	 * @since    1.1.0
 	 */
-	public static function lpac_generate_qr_code( $options, $order_id ) {
+	public function lpac_generate_qr_code( $options, $order_id ) {
 
-		$path = self::lpac_qr_codes_directory();
+		$folder_name = 'qr-codes';
+
+		$path = $this->create_upload_folder( $folder_name );
 
 		if ( empty( $path ) ) {
 			error_log( 'Location Picker At Checkout for WooCommerce: QR Code directory path returned empty. See Lpac_Qr_Code_Generator::lpac_generate_qr_code()' );
@@ -88,32 +93,6 @@ class QR_Code_Generator {
 		// $image_base64 = $result->getDataUri();
 
 		// return $image_base64;
-
-	}
-
-	/**
-	 * Creates a QR code
-	 *
-	 * @since    1.1.0
-	 */
-	public static function lpac_qr_codes_directory() {
-
-		$upload_dir   = wp_upload_dir();
-		$qr_codes_dir = '';
-
-		if ( ! empty( $upload_dir['basedir'] ) ) {
-
-			$qr_codes_dir = $upload_dir['basedir'] . '/lpac/qr-codes/' . date( 'Y' ) . '/' . date( 'm' ) . '/' . date( 'd' ) . '/';
-			$qr_codes_dir = apply_filters( 'lpac_qrcodes_path', $qr_codes_dir );
-
-			if ( ! file_exists( $qr_codes_dir ) ) {
-				wp_mkdir_p( $qr_codes_dir );
-			}
-
-			return $qr_codes_dir;
-		}
-
-		return $qr_codes_dir;
 
 	}
 

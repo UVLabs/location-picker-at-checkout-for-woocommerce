@@ -168,8 +168,9 @@ class Main
             10,
             3
         );
-        /* Custom button created for WooCommerce settings */
-        $this->loader->add_action( 'woocommerce_admin_field_button', $plugin_admin_view, 'create_customer_wc_settings_button' );
+        /* Custom elements created for WooCommerce settings */
+        $this->loader->add_action( 'woocommerce_admin_field_button', $plugin_admin_view, 'create_custom_wc_settings_button' );
+        $this->loader->add_action( 'woocommerce_admin_field_hr', $plugin_admin_view, 'create_custom_wc_settings_hr' );
     }
     
     /**
