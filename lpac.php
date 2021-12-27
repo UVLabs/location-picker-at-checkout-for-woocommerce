@@ -17,7 +17,7 @@
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://soaringleads.com
  * Description:       Allow customers to choose their shipping location using a map at checkout.
- * Version:           1.4.0
+ * Version:           1.4.1-lite
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
  * License:           GPL-2.0+
@@ -32,6 +32,45 @@
 if ( !defined( 'WPINC' ) ) {
     die;
 }
+/*
+* Check if the Free version is installed and show notice about deactivating it.
+* We're checking the plugin folder so this can only be ran for the PRO plugin.
+*/
+$plugin_folder = basename( dirname( __FILE__ ) );
+
+if ( $plugin_folder === 'map-location-picker-at-checkout-for-woocommerce-pro' ) {
+    /**
+     * Deactivate free version if active.
+     */
+    if ( !function_exists( 'get_plugins' ) || !function_exists( 'deactivate_plugins' ) ) {
+        include ABSPATH . '/wp-admin/includes/plugin.php';
+    }
+    $plugins = get_plugins();
+    
+    if ( array_key_exists( 'map-location-picker-at-checkout-for-woocommerce/lpac.php', $plugins ) && array_key_exists( 'map-location-picker-at-checkout-for-woocommerce-pro/lpac.php', $plugins ) ) {
+        add_action( 'admin_notices', function () {
+            ?>
+				<div class="notice notice-error is-dismissible">
+					<?php 
+            /* translators: 1: Opening <p> HTML element 2: Opening <strong> HTML element 3: Closing <strong> HTML element 4: Closing <p> HTML element  */
+            echo  sprintf(
+                __( '%1$s%2$sLocation Picker at Checkout for WooCommerce(LPAC) NOTICE:%3$s You need to deactivate and delete the free version of the plugin before using the PRO version. Your current settings will remain in place.%4$s', 'map-location-picker-at-checkout-for-woocommerce' ),
+                '<p>',
+                '<strong>',
+                '</strong>',
+                '</p>'
+            ) ;
+            ?>
+				</div>
+				<?php 
+        } );
+        deactivate_plugins( 'map-location-picker-at-checkout-for-woocommerce/lpac.php', true );
+        return;
+    }
+
+}
+
+// Composer autoload
 require dirname( __FILE__ ) . '/vendor/autoload.php';
 
 if ( !function_exists( 'lpac_fs' ) ) {
@@ -49,11 +88,11 @@ if ( !function_exists( 'lpac_fs' ) ) {
                 'type'           => 'plugin',
                 'public_key'     => 'pk_da07de47a2bdd9391af9020cc646d',
                 'is_premium'     => false,
-                'premium_suffix' => 'Pro',
+                'premium_suffix' => 'PRO',
                 'has_addons'     => false,
                 'has_paid_plans' => true,
                 'menu'           => array(
-                'first-path' => 'plugins.php',
+                'first-path' => 'admin.php?page=wc-settings&tab=lpac_settings',
             ),
                 'is_live'        => true,
             ) );
@@ -69,9 +108,12 @@ if ( !function_exists( 'lpac_fs' ) ) {
 }
 
 include __DIR__ . '/class-lpac-uninstall.php';
+
 if ( function_exists( 'lpac_fs' ) ) {
     lpac_fs()->add_action( 'after_uninstall', array( new Lpac_Uninstall(), 'remove_plugin_settings' ) );
+    lpac_fs()->add_filter( 'show_deactivation_subscription_cancellation', '__return_false' );
 }
+
 /**
  * Check that WooCommerce is active.
  */
@@ -108,7 +150,7 @@ if ( defined( 'PHP_VERSION' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'LPAC_VERSION', '1.4.0' );
+define( 'LPAC_VERSION', '1.4.1' );
 define( 'LPAC_PLUGIN_NAME', 'lpac' );
 define( 'LPAC_PLUGIN_DIR', __DIR__ . '/' );
 define( 'LPAC_PLUGIN_ASSETS_DIR', __DIR__ . '/assets/' );
@@ -136,22 +178,26 @@ define( 'LPAC_DEBUG', $debug );
  * The code that runs during plugin activation.
  * This action is documented in includes/class-lpac-activator.php
  */
-function activate_lpac()
-{
-    require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-activator.php';
-    Lpac_Activator::activate();
-}
+if ( !function_exists( 'activate_lpac' ) ) {
+    function activate_lpac()
+    {
+        require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-activator.php';
+        Lpac_Activator::activate();
+    }
 
+}
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-lpac-deactivator.php
  */
-function deactivate_lpac()
-{
-    require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-deactivator.php';
-    Lpac_Deactivator::deactivate();
-}
+if ( !function_exists( 'deactivate_lpac' ) ) {
+    function deactivate_lpac()
+    {
+        require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-deactivator.php';
+        Lpac_Deactivator::deactivate();
+    }
 
+}
 register_activation_hook( __FILE__, 'activate_lpac' );
 register_deactivation_hook( __FILE__, 'deactivate_lpac' );
 /**

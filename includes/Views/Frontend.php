@@ -68,6 +68,12 @@ JAVASCRIPT;
 
 		$saved_addresses_area = apply_filters( 'lpac_saved_addresses', '', $user_id );
 		$saved_addresses_area = wp_kses_post( $saved_addresses_area );
+		$edit_saved_addresses = '';
+
+		if ( ! empty( $saved_addresses_area ) ) {
+			$account_link         = get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) . 'edit-address/';
+			$edit_saved_addresses = sprintf( esc_html__( '%1$sEdit Saved Addresses%2$s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='$account_link' target='_blank'>", '</a>' );
+		}
 
 		$before_map_filter = apply_filters( 'lpac_before_map', '', $user_id );
 		$before_map_filter = wp_kses_post( $before_map_filter );
@@ -91,7 +97,12 @@ JAVASCRIPT;
 			$before_map_controls_filter
 			<div id='lpac-map-instructions'>$instuctions_text</div>
 			<div id='lpac-find-location-btn-wrapper'><button id='lpac-find-location-btn' class="button btn" type='button'>$lpac_find_location_btn_text</button></div>
-			<div id='lpac-saved-addresses'><ul>$saved_addresses_area</ul></div>
+			<div id='lpac-saved-addresses'>
+				<ul>
+					$saved_addresses_area
+				</ul>
+				<p id='edit-saved-addresses'>$edit_saved_addresses</p>
+			</div>
 			$after_map_controls_filter
 			</div>
 		</div>
@@ -281,6 +292,10 @@ HTML;
 
 			$style = "height: {$checkout_map_height}px !important; width: {$checkout_map_width}% !important; ";
 
+		}
+
+		if ( empty( $style ) ) {
+			return;
 		}
 
 		$output = <<<HTML

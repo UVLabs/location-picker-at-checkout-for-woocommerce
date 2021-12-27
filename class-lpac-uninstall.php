@@ -33,6 +33,20 @@ class Lpac_Uninstall {
 	*/
 	public static function remove_plugin_settings() {
 
+		/**
+		 * If the free version and PRO version exist then don't delete the settings.
+		 * This ensures that users do not accidentally delete their settings when installing PRO plugin.
+		 */
+		if ( ! function_exists( 'get_plugins' ) ) {
+			include ABSPATH . '/wp-admin/includes/plugin.php';
+		}
+
+		$plugins = get_plugins();
+
+		if ( array_key_exists( 'map-location-picker-at-checkout-for-woocommerce/lpac.php', $plugins ) && array_key_exists( 'map-location-picker-at-checkout-for-woocommerce-pro/lpac.php', $plugins ) ) {
+			return;
+		}
+
 		$should_delete_settings = get_option( 'lpac_delete_settings_on_uninstall' );
 
 		if ( $should_delete_settings !== 'yes' ) {
@@ -84,9 +98,17 @@ class Lpac_Uninstall {
 			'lpac_remove_address_plus_code',
 			'lpac_enable_places_autocomplete',
 			'lpac_places_autocomplete_fields',
+			'lpac_places_autocomplete_hide_map',
 			'lpac_auto_detect_location',
 			'lpac_export_date_from',
 			'lpac_export_date_to',
+			'lpac_places_autocomplete_country_restrictions',
+			'lpac_distance_matrix_api_key',
+			'lpac_distance_matrix_store_origin_cords',
+			'lpac_distance_matrix_cost_per_unit',
+			'lpac_distance_matrix_distance_unit',
+			'lpac_distance_matrix_travel_mode',
+			'lpac_distance_matrix_shipping_methods',
 		);
 
 		foreach ( $option_keys as $key ) {

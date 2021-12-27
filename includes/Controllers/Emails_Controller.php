@@ -14,7 +14,8 @@
 namespace Lpac\Controllers;
 
 use Lpac\Helpers\Functions as Functions_Helper;
-use Lpac\Helpers\QR_Code_Generator as QR_Code_Generator;
+use Lpac\Helpers\QR_Code_Generator;
+use Lpac\Traits\Upload_Folders;
 
 /**
 * Class emails.
@@ -23,6 +24,7 @@ use Lpac\Helpers\QR_Code_Generator as QR_Code_Generator;
 *
 */
 class Emails_Controller {
+	use Upload_Folders;
 
 	/**
 	 * Outputs a Button or QR Code inside order emails.
@@ -40,7 +42,13 @@ class Emails_Controller {
 
 		$latitude  = get_post_meta( $order->get_id(), '_lpac_latitude', true );
 		$longitude = get_post_meta( $order->get_id(), '_lpac_longitude', true );
-		$map_link  = apply_filters( 'lpac_email_map_link_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
+
+		// If we have no results return.
+		if ( empty( $latitude ) or empty( $longitude ) ) {
+			return;
+		}
+
+		$map_link = apply_filters( 'lpac_email_map_link_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
 
 		$map_link_type = get_option( 'lpac_email_delivery_map_link_type' );
 
@@ -49,7 +57,7 @@ class Emails_Controller {
 		} elseif ( $map_link_type === 'qr_code' ) {
 			$this->create_delivery_location_link_qrcode( $map_link, $order->get_id() );
 		} elseif ( $map_link_type === 'static_map' ) {
-			$this->create_delivery_location_static_map( $map_link, $latitude, $longitude );
+			$this->create_delivery_location_static_map( $order->get_id(), $map_link, $latitude, $longitude );
 		} else {
 			$this->create_delivery_location_link_button( $map_link );
 		}
@@ -88,6 +96,9 @@ HTML;
 	 */
 	private function create_delivery_location_link_qrcode( $link, $order_id ) {
 
+		$folder_name = 'qr-codes';
+
+		// TODO allow controlling of these figures
 		$options = array(
 			'qr_code_data'           => $link,
 			'qr_code_foreground_rgb' => '0,0,0',
@@ -97,17 +108,17 @@ HTML;
 		/*
 		* Generate and save QR Code
 		*/
-		QR_Code_Generator::lpac_generate_qr_code( $options, $order_id );
+		( new QR_Code_Generator )->lpac_generate_qr_code( $options, $order_id );
 
 		/*
-		* https://example.com/wp-content/uploads/lpac/qr-codes/Y/m/d/order_id.jpg
+		* https://example.com/wp-content/uploads/lpac/qr-codes/order_id.jpg
 		*/
-		$qr_code_link           = Functions_Helper::lpac_get_qr_codes_directory( 'baseurl' ) . $order_id . '.jpg';
+		$qr_code_link           = $this->get_resource_url( $folder_name, $order_id, '.jpg' );
 		$delivery_location_text = __( 'Delivery Location', 'map-location-picker-at-checkout-for-woocommerce' );
 		$delivery_location_text = apply_filters( 'lpac_email_map_location_link_button_text', $delivery_location_text );
 
 		echo "<div style='text-align: center !important'>
-				<img style='display: block !important; margin: 0 auto !important; text-align: center !important;' src='{$qr_code_link}'/>
+				<a href='$link' target='_blank'><img style='display: block !important; margin: 0 auto !important; text-align: center !important;' src='{$qr_code_link}'/></a>
 				 <p style='text-align: center !important; font-size: 20px; margin-bottom: 40px'>{$delivery_location_text}</p>
 			</div>";
 
@@ -121,7 +132,9 @@ HTML;
 	 * @return void
 	 * @since 1.4.0
 	 */
-	private function create_delivery_location_static_map( $map_link, $latitude, $longitude ) {
+	private function create_delivery_location_static_map( $order_id, $map_link, $latitude, $longitude ) {
+
+		$folder_name = 'static-maps';
 
 		$center       = $latitude . ',' . $longitude;
 		$center       = sanitize_text_field( apply_filters( 'lpac_email_static_map_center', $center ) );
@@ -143,6 +156,18 @@ HTML;
 			$api_key
 		);
 
+		$save_path = $this->create_upload_folder( $folder_name );
+
+		$file_name = $save_path . $order_id . '.jpg';
+
+		$image = file_put_contents( $file_name, file_get_contents( $full_link ) );
+
+		if ( empty( $image ) ) {
+			return;
+		}
+
+		$image_src = $this->get_resource_url( $folder_name, $order_id, '.jpg' );
+
 		$width  = '';
 		$height = '';
 
@@ -152,7 +177,7 @@ HTML;
 			$height     = $size_parts[1];
 		}
 
-		$image = "<a href='$map_link' target='_blank'><img style='display: block !important; margin-bottom: 40px !important; margin-left: auto !important; margin-right: auto !important; postition: relative !important;' src='$full_link' width='$width' height='$height'/></a>";
+		$image = "<a href='$map_link' target='_blank'><img style='display: block !important; margin-bottom: 40px !important; margin-left: auto !important; margin-right: auto !important; postition: relative !important;' src='$image_src' width='$width' height='$height'/></a>";
 		echo $image;
 
 	}

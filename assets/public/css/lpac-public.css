@@ -56,3 +56,10 @@
 	text-align: center;
  }
 
+ #lpac-saved-addresses ul{
+	margin-left: 0;
+ }
+
+ #edit-saved-addresses{
+	font-size: 16px;
+ }
