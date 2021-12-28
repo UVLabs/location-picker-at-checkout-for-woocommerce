@@ -95,6 +95,7 @@ class Lpac_Uninstall {
 			'lpac_map_anchor_points',
 			'lpac_admin_view_order_map_id',
 			'lpac_installed_at_version',
+			'lpac_first_install_date',
 			'lpac_remove_address_plus_code',
 			'lpac_enable_places_autocomplete',
 			'lpac_places_autocomplete_fields',

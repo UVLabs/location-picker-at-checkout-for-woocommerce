@@ -36,8 +36,8 @@ class Location_Details {
 			return;
 		}
 
-		$lat  = $data['lpac_latitude'] ?? '';
-		$long = $data['lpac_longitude'] ?? '';
+		$lat  = (float) $data['lpac_latitude'] ?? (float) 0.0;
+		$long = (float) $data['lpac_longitude'] ?? (float) 0.0;
 
 		$this->save_order_meta_cords( $order_id, $lat, $long );
 
