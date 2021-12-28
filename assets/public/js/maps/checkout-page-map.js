@@ -670,7 +670,7 @@ function changeMapVisibility(show){
  */
 function lpacHideShowMap(){
 
-	wp.ajax.post( "lpac_to_be_or_not_to_be", {} )
+	wp.ajax.post( "lpac_checkout_map_visibility", {} )
   	.done(function(response) {
 	
 	const show = Boolean(response);
@@ -866,7 +866,7 @@ addPlacesAutoComplete();
 			if( ! mapOptions.lpac_places_autocomplete_hide_map ){
 				$(document.body).on('updated_checkout', lpacHideShowMap);
 			}
-			
+
 			// If the auto detect location feature is turned on, then detect the location but don't output the last order details.
 			if( mapOptions.lpac_auto_detect_location ){
 				lpac_bootstrap_map_functionality(geocoder, map, infowindow)

@@ -15,9 +15,9 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Location Picker At Checkout For WooCommerce
- * Plugin URI:        https://soaringleads.com
+ * Plugin URI:        https://lpacwp.com
  * Description:       Allow customers to choose their shipping location using a map at checkout.
- * Version:           1.4.1-lite
+ * Version:           1.4.2-lite
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
  * License:           GPL-2.0+
@@ -32,6 +32,35 @@
 if ( !defined( 'WPINC' ) ) {
     die;
 }
+if ( !defined( 'LPAC_VERSION' ) ) {
+    define( 'LPAC_VERSION', '1.4.2' );
+}
+/**
+ * The code that runs during plugin activation.
+ * This action is documented in includes/class-lpac-activator.php
+ */
+if ( !function_exists( 'activate_lpac' ) ) {
+    function activate_lpac()
+    {
+        require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-activator.php';
+        Lpac_Activator::activate();
+    }
+
+}
+/**
+ * The code that runs during plugin deactivation.
+ * This action is documented in includes/class-lpac-deactivator.php
+ */
+if ( !function_exists( 'deactivate_lpac' ) ) {
+    function deactivate_lpac()
+    {
+        require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-deactivator.php';
+        Lpac_Deactivator::deactivate();
+    }
+
+}
+register_activation_hook( __FILE__, 'activate_lpac' );
+register_deactivation_hook( __FILE__, 'deactivate_lpac' );
 /*
 * Check if the Free version is installed and show notice about deactivating it.
 * We're checking the plugin folder so this can only be ran for the PRO plugin.
@@ -54,7 +83,7 @@ if ( $plugin_folder === 'map-location-picker-at-checkout-for-woocommerce-pro' ) 
 					<?php 
             /* translators: 1: Opening <p> HTML element 2: Opening <strong> HTML element 3: Closing <strong> HTML element 4: Closing <p> HTML element  */
             echo  sprintf(
-                __( '%1$s%2$sLocation Picker at Checkout for WooCommerce(LPAC) NOTICE:%3$s You need to deactivate and delete the free version of the plugin before using the PRO version. Your current settings will remain in place.%4$s', 'map-location-picker-at-checkout-for-woocommerce' ),
+                __( '%1$s%2$sLocation Picker at Checkout for WooCommerce(LPAC) NOTICE:%3$s You need to deactivate and DELETE the free version of the plugin before using the PRO version. Your current settings will remain in place.%4$s', 'map-location-picker-at-checkout-for-woocommerce' ),
                 '<p>',
                 '<strong>',
                 '</strong>',
@@ -150,7 +179,6 @@ if ( defined( 'PHP_VERSION' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'LPAC_VERSION', '1.4.1' );
 define( 'LPAC_PLUGIN_NAME', 'lpac' );
 define( 'LPAC_PLUGIN_DIR', __DIR__ . '/' );
 define( 'LPAC_PLUGIN_ASSETS_DIR', __DIR__ . '/assets/' );
@@ -174,32 +202,6 @@ if ( function_exists( 'wp_get_environment_type' ) ) {
     }
 }
 define( 'LPAC_DEBUG', $debug );
-/**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-lpac-activator.php
- */
-if ( !function_exists( 'activate_lpac' ) ) {
-    function activate_lpac()
-    {
-        require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-activator.php';
-        Lpac_Activator::activate();
-    }
-
-}
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-lpac-deactivator.php
- */
-if ( !function_exists( 'deactivate_lpac' ) ) {
-    function deactivate_lpac()
-    {
-        require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-deactivator.php';
-        Lpac_Deactivator::deactivate();
-    }
-
-}
-register_activation_hook( __FILE__, 'activate_lpac' );
-register_deactivation_hook( __FILE__, 'deactivate_lpac' );
 /**
  * Begins execution of the plugin.
  *

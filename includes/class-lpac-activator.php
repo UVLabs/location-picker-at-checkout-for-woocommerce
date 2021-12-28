@@ -38,8 +38,16 @@ class Lpac_Activator {
 	 * @return void
 	 */
 	private static function lpac_add_default_settings() {
-		$installed_at = get_option( 'lpac_installed_at_version' );
 
+		$installed_at = get_option( 'lpac_installed_at_version' );
+		$install_date = get_option( 'lpac_first_install_date' );
+
+		// Create date timestamp when plugin was first installed.
+		if ( empty( $install_date ) ) {
+			add_option( 'lpac_first_install_date', time(), '', 'yes' );
+		}
+
+		// Create entry for plugin first install version.
 		if ( empty( $installed_at ) ) {
 			add_option( 'lpac_installed_at_version', LPAC_VERSION, '', false );
 		}

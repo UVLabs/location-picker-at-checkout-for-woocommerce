@@ -273,8 +273,8 @@ class Main
         /*
          * Handles showing or hiding of map. Fires everytime the checkout page is updated.
          */
-        $this->loader->add_action( 'wp_ajax_nopriv_lpac_to_be_or_not_to_be', $controller_map_visibility, 'checkout_map_visibility_ajax_handler' );
-        $this->loader->add_action( 'wp_ajax_lpac_to_be_or_not_to_be', $controller_map_visibility, 'checkout_map_visibility_ajax_handler' );
+        $this->loader->add_action( 'wp_ajax_nopriv_lpac_checkout_map_visibility', $controller_map_visibility, 'checkout_map_visibility_ajax_handler' );
+        $this->loader->add_action( 'wp_ajax_lpac_checkout_map_visibility', $controller_map_visibility, 'checkout_map_visibility_ajax_handler' );
         /*
          * Validate checkout map details and then add the latitude and longitude to the order meta.
          */
