@@ -15,6 +15,9 @@ mkdir -p artifact
 composer install --no-dev
 composer dumpautoload
 
+# Run Prettier
+npm run format
+
 # Sync dist folder
 rsync -acvP --delete --exclude-from=".distignore-github-lite" ./ "./dist"
 

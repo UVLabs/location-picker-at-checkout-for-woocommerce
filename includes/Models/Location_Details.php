@@ -32,7 +32,14 @@ class Location_Details {
 
 		$map_shown = $data['lpac_is_map_shown'] ?? '';
 
-		if ( $show === false || empty( $map_shown ) ) {
+		if ( $show === false ) {
+			return;
+		}
+
+		// If we're hiding the map using the places autocomplete feature then we need to ALLOW the coordinates to be saved.
+		$places_autocomplete_hidemap = get_option( 'lpac_places_autocomplete_hide_map' );
+
+		if ( empty( $map_shown ) && $places_autocomplete_hidemap !== 'yes' ) {
 			return;
 		}
 

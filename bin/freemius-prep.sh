@@ -19,8 +19,11 @@ composer dumpautoload
 rm "vendor/endroid/qr-code/assets/noto_sans.otf"
 rm "vendor/endroid/qr-code/assets/open_sans.ttf"
 
+# Run Prettier
+npm run format
+
 # Build our JS files with parcel
-npm run-script build
+npm run build
 
 # Sync dist folder
 rsync -acvP --delete --exclude-from=".distignore" ./ "./dist"

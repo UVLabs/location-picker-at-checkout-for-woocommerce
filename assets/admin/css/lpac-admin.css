@@ -2,53 +2,55 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
- .post-type-shop_order .lpac-map .gm-style-iw-d p{
-	font-size: 1.2em;
-	font-weight: 800;
-	margin: 5px;
-	text-align: center;
- }
+.post-type-shop_order .lpac-map .gm-style-iw-d p {
+  font-size: 1.2em;
+  font-weight: 800;
+  margin: 5px;
+  text-align: center;
+}
 
- #lpac-rules{
-	cursor: move;
- }
+#lpac-rules {
+  cursor: move;
+}
 
- .lpac-button, .lpac-button:hover{
-	background: #f04e23;
-	border-radius: 3px;
-	color: #fff; 
-	padding: 10px; 
-	text-decoration: none;
- }
+.lpac-button,
+.lpac-button:hover {
+  background: #f04e23;
+  border-radius: 3px;
+  color: #fff;
+  padding: 10px;
+  text-decoration: none;
+}
 
- .lpac-banner{
-	background: #fff; 
-	border-radius: 5px; 
-	margin-bottom: 20px; 
-	padding: 30px; 
-	text-align:center;
- }
+.lpac-banner {
+  background: #fff;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  padding: 30px;
+  text-align: center;
+}
 
- #lpac_export_btn{
-	cursor: pointer;
-	padding: 10px;
- }
+#lpac_export_btn {
+  cursor: pointer;
+  padding: 10px;
+}
 
- hr{
-	border-top: 8px solid #dcdcde !important;
- }
+hr {
+  border-top: 8px solid #dcdcde !important;
+}
 
- .titledesc.premium-subsection, .titledesc.premium-dummy-subsection{
-	 font-size: 18px;
- }
+.titledesc.premium-subsection,
+.titledesc.premium-dummy-subsection {
+  font-size: 18px;
+}
 
- .premium-subsection:before{
-	 font-size: 20px;
-	 margin-right: 5px;
-	 color: gold;
- }
+.premium-subsection:before {
+  font-size: 20px;
+  margin-right: 5px;
+  color: gold;
+}
 
-.premium-dummy-subsection:before{
-	font-size: 20px;
-	margin-right: 5px;
+.premium-dummy-subsection:before {
+  font-size: 20px;
+  margin-right: 5px;
 }

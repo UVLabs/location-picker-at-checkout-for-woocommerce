@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, checkout map, geolocation, google map, map, 
 Requires at least: 5.5
 Requires PHP: 7.0
 Tested up to: 5.8
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -154,6 +154,8 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 7. Map view of the customer delivery location on shop order page (in the WordPress dashboard)
 8. Delivery location button inside email (goes to customer selected location when clicked)
 9. Delivery location QR Code inside email (goes to customer selected location when scanned)
+10. Custom map and custom map marker (PRO)
+11. Multiple saved addresses feature for customers (PRO)
 
 == Upgrade Notice ==
 
@@ -161,6 +163,12 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 The save location of QR codes have been changed. Links to QR codes in past order emails will stop working after updating, but QR codes in new orders will work fine.
 
 == Changelog ==
+
+= 1.4.3 =
+* [New PRO] Option to change the type of results returned by the Places Autocomplete API (Geocode, Address, Establishment, Regions, Cities)
+* [Fix] Console error when Billing City field was not present on checkout page.
+* [Fix] Coordinates for Places Autocomplete feature were not saving when "Hide Map When Using Places Autocomplete" option was enabled.
+* [Info] Tested on WC 6.0
 
 = 1.4.2 =
 * [Fix] Checkout process would halt unless a location was selected by a customer regardless of "Force Map use" option status.

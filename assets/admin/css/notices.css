@@ -1,0 +1,75 @@
+.lpac-admin-notice .dashicons {
+  color: #ffffff;
+}
+
+.lpac-admin-notice {
+  background: #fff;
+  border: 1px solid #fca503;
+  border-left-width: 4px;
+  box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
+  display: block;
+  margin-bottom: 20px;
+  margin-top: 30px;
+  min-height: 68px;
+  padding: 10px 40px 40px 150px;
+  position: relative;
+}
+
+.lpac-notice-logo {
+  clear: both;
+  content: "";
+  display: block;
+  background-image: url("../../img/logo.png");
+  background-size: 110px 110px;
+  background-repeat: no-repeat;
+  background-position: 0 45%;
+  width: 130px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 5px;
+}
+
+.lpac-notice-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.lpac-notice-body {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 10px 0 30px 0;
+}
+
+li#lpac-notice-cta a {
+  background: #078f31;
+}
+
+li#lpac-notice-dismiss a {
+  background: #ff0000;
+}
+
+.lpac-notice-body li a {
+  /* background: #F04E23; */
+  padding: 10px;
+  border-radius: 2px;
+  text-decoration: none;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.lpac-notice-body li {
+  float: left;
+  margin-right: 10px;
+}
+
+@media screen and (max-width: 415px) {
+  .lpac-notice-body li {
+    float: none;
+  }
+
+  #lpac-notice-dismiss {
+    margin-top: 25px;
+  }
+}

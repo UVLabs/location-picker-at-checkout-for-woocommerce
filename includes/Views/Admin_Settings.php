@@ -181,7 +181,7 @@ HTML;
             'desc'        => __( 'Enter the API key you copied from the Google Cloud Console. <a href="https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs" target="blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'          => 'lpac_google_maps_api_key',
             'placeholder' => 'AIzaSyD8seU-lym435g...',
-            'type'        => 'password',
+            'type'        => ( LPAC_DEBUG ? 'text' : 'password' ),
             'css'         => 'min-width:300px;',
         );
         $lpac_settings[] = array(
@@ -760,6 +760,18 @@ HTML;
             'type'              => 'multiselect',
             'options'           => array(),
             'css'               => 'height:40px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'Places Autocomplete Type', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Select the type of address you would like the Places Autocomplete API to return.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'type'              => 'select',
+            'options'           => array(
+            'address' => __( 'Precise Address', 'map-location-picker-at-checkout-for-woocommerce' ),
+        ),
+            'css'               => 'max-width:180px;',
             'custom_attributes' => array(
             'disabled' => 'disabled',
         ),
