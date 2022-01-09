@@ -104,6 +104,7 @@ class Lpac_Uninstall {
 			'lpac_export_date_from',
 			'lpac_export_date_to',
 			'lpac_places_autocomplete_country_restrictions',
+			'lpac_places_autocomplete_type',
 			'lpac_distance_matrix_api_key',
 			'lpac_distance_matrix_store_origin_cords',
 			'lpac_distance_matrix_cost_per_unit',
@@ -115,6 +116,8 @@ class Lpac_Uninstall {
 		foreach ( $option_keys as $key ) {
 			delete_option( $key );
 		}
+
+		delete_metadata( 'user', 0, 'lpac_dismissed_notices', '', true );
 
 		$lpac_directory = wp_upload_dir()['basedir'] . '/lpac';
 

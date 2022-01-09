@@ -10,6 +10,9 @@ node_modules
 .distignore
 .distignore-github-lite
 .gitignore
+.husky
+.prettierignore
+.prettierrc.json
 todo.txt
 artifact
 dist

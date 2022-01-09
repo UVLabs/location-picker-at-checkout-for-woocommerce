@@ -77,6 +77,13 @@ class Admin_Enqueues
             $this->version,
             'all'
         );
+        wp_enqueue_style(
+            $this->plugin_name . '-notices',
+            LPAC_PLUGIN_ASSETS_PATH_URL . 'admin/css/notices.css',
+            array(),
+            $this->version,
+            'all'
+        );
     }
     
     /**

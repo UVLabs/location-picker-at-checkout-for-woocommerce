@@ -37,6 +37,8 @@ use  Lpac\Controllers\Admin_Settings_Controller ;
 use  Lpac\Controllers\Checkout_Page_Controller ;
 use  Lpac\Views\Admin as Admin_Display ;
 use  Lpac\Notices\Admin as Admin_Notices ;
+use  Lpac\Notices\Notice ;
+use  Lpac\Notices\Loader as Notices_Loader ;
 use  Lpac\Views\Frontend as Frontend_Display ;
 use  Lpac\Compatibility\WooFunnels\Woo_Funnels ;
 use  Lpac\Models\Location_Details ;
@@ -141,6 +143,8 @@ class Main
     {
         $plugin_admin = new Admin_Enqueues();
         $plugin_admin_view = new Admin_Display();
+        $notice = new Notice();
+        $notices_loader = new Notices_Loader();
         $admin_notices = new Admin_Notices();
         $admin_settings_controller = new Admin_Settings_Controller();
         $controller_map_visibility = new Map_Visibility_Controller();
@@ -148,6 +152,9 @@ class Main
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         // Notices
         $this->loader->add_action( 'admin_notices', $admin_notices, 'lpac_site_not_https' );
+        $this->loader->add_action( 'admin_notices', $notices_loader, 'load_notices' );
+        /* Notices Ajax dismiss method */
+        $this->loader->add_action( 'wp_ajax_lpac_dismiss_notice', $notice, 'dismiss_notice' );
         // Display map on order details page
         $this->loader->add_action(
             'woocommerce_admin_order_data_after_shipping_address',

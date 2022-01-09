@@ -4,26 +4,37 @@
   "description": "WooCommerce plugin to allow customers to choose their location at checkout.",
   "dependencies": {},
   "devDependencies": {
-    "parcel": "^2.0.0-rc.0"
+    "parcel": "^2.0.0-rc.0",
+    "prettier": "2.5.1",
+    "husky": "^7.0.0"
   },
   "scripts": {
     "dev": "parcel watch --no-hmr",
-    "build": "parcel build"
+    "build": "parcel build",
+    "format": "prettier --write ./assets/**/* --no-error-on-unmatched-pattern",
+    "prepare": "husky install"
   },
   "targets": {
     "lite-maps": {
-      "source": ["./assets/public/js/maps/base-map.js", "./assets/public/js/maps/checkout-page-map.js", "./assets/public/js/maps/order-received-map.js", "./assets/public/js/maps/order-details-map.js"],
+      "source": [
+        "./assets/public/js/maps/base-map.js",
+        "./assets/public/js/maps/checkout-page-map.js",
+        "./assets/public/js/maps/order-received-map.js",
+        "./assets/public/js/maps/order-details-map.js"
+      ],
       "sourceMap": false,
       "distDir": "./assets/public/js/maps/build/"
     },
     "pro-maps": {
-      "source": ["./assets/pro/public/js/maps/checkout-page-map-pro.js"],
+      "source": [
+        "./assets/pro/public/js/maps/checkout-page-map-pro.js"
+      ],
       "sourceMap": false,
       "distDir": "./assets/pro/public/js/maps/build/"
     }
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "outputFormat" : "global",
+  "outputFormat": "global",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce.git"
