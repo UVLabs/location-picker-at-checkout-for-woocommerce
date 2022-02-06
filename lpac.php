@@ -17,7 +17,7 @@
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://lpacwp.com
  * Description:       Allow customers to choose their shipping location using a map at checkout.
- * Version:           1.4.3-lite
+ * Version:           1.4.4-lite
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
  * License:           GPL-2.0+
@@ -33,7 +33,7 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 if ( !defined( 'LPAC_VERSION' ) ) {
-    define( 'LPAC_VERSION', '1.4.3' );
+    define( 'LPAC_VERSION', '1.4.4' );
 }
 /**
  * The code that runs during plugin activation.

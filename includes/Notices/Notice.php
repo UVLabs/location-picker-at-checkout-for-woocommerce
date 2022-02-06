@@ -64,8 +64,12 @@ class Notice {
 
 		$dismissed_notices = $this->get_dismissed_notices();
 
+		if ( ! is_array( $dismissed_notices ) ) {
+			return; // Bail if received value type is unexpected.
+		}
+
 		# Bail if this notice has been dismissed
-		if ( in_array( $notice_id, $dismissed_notices ) ) {
+		if ( in_array( $notice_id, $dismissed_notices, true ) ) {
 			return;
 		}
 
