@@ -1,4 +1,5 @@
 function lpacSetupShopOrderMap() {
+  /** These values are coming from the base-map.js enqueued from our maps folder */
   const map = window.lpac_map;
   const marker = window.lpac_marker;
   const infowindow = window.lpac_infowindow;

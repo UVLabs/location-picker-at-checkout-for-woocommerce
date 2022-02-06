@@ -113,7 +113,7 @@ HTML;
 		/*
 		* https://example.com/wp-content/uploads/lpac/qr-codes/order_id.jpg
 		*/
-		$qr_code_link           = $this->get_resource_url( $folder_name, $order_id, '.jpg' );
+		$qr_code_link           = $this->get_resource_url( $folder_name, $order_id );
 		$delivery_location_text = __( 'Delivery Location', 'map-location-picker-at-checkout-for-woocommerce' );
 		$delivery_location_text = apply_filters( 'lpac_email_map_location_link_button_text', $delivery_location_text );
 
@@ -166,7 +166,7 @@ HTML;
 			return;
 		}
 
-		$image_src = $this->get_resource_url( $folder_name, $order_id, '.jpg' );
+		$image_src = $this->get_resource_url( $folder_name, $order_id );
 
 		$width  = '';
 		$height = '';
