@@ -3,7 +3,7 @@ Contributors: uriahs-victor
 Donate link: https://uriahsvictor.com
 Tags: woocommerce, location picker, checkout map, geolocation, google map, map, delivery map
 Requires at least: 5.5
-Requires PHP: 7.0
+Requires PHP: 7.3
 Tested up to: 5.9
 Stable tag: 1.4.4
 License: GPLv2 or later
@@ -163,6 +163,10 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 The save location of QR codes have been changed. Links to QR codes in past order emails will stop working after updating, but QR codes in new orders will work fine.
 
 == Changelog ==
+
+= 1.4.5 =
+* [Fix] The frontend maps required base script file would on some websites not be enqueued in time to be used as a handle for `wp_add_inline_script()` function . Fallback to Jquery core script handle in those cases.
+* [Change] Set minimum required PHP version to 7.3
 
 = 1.4.4 =
 * [Fix] Error caused when dismissed notices returns a string.

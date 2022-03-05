@@ -112,7 +112,12 @@ HTML;
 
 		// Add inline global JS so that we can use data fetched using PHP inside JS
 		$global_js_vars = $this->setup_global_js_vars();
-		wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_js_vars, 'before' );
+
+		$added = wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_js_vars, 'before' );
+		// On some websites our basemap might not enqueue in time. In those cases fall back to default wp jquery handle.
+		if ( empty( $added ) ) {
+			wp_add_inline_script( 'jquery-core', $global_js_vars, 'before' );
+		}
 
 	}
 
@@ -179,7 +184,12 @@ HTML;
 
 		// Add inline global JS so that we can use data fetched using PHP inside JS
 		$global_js_vars = $this->setup_global_js_vars( $user_location_collected_during_order );
-		wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_js_vars, 'before' );
+
+		$added = wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_js_vars, 'before' );
+		// On some websites our basemap might not enqueue in time. In those cases fall back to default wp jquery handle.
+		if ( empty( $added ) ) {
+			wp_add_inline_script( 'jquery-core', $global_js_vars, 'before' );
+		}
 
 	}
 

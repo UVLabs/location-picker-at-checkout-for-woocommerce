@@ -722,6 +722,13 @@ function lpacSetLastOrderMarker() {
  * @returns
  */
 function addPlacesAutoComplete() {
+  if (typeof mapOptions === "undefined" || mapOptions === null) {
+    console.log(
+      "LPAC: mapOptions object not present. This shouldn't be happening here. Contact Support."
+    );
+    return;
+  }
+
   // Return if feature not enabled
   if (!mapOptions.lpac_enable_places_autocomplete) {
     return;

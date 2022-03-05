@@ -10,7 +10,7 @@
         "wp-coding-standards/wpcs": "2.3"
     },
     "require": {
-        "freemius/wordpress-sdk": "2.4.2",
+        "freemius/wordpress-sdk": "2.4.3",
         "endroid/qr-code": "4.3.5"
     },
     "autoload":{
