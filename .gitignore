@@ -11,3 +11,4 @@ node_modules
 assets/public/js/maps/build/
 assets/public/js/compat/build/
 assets/pro/public/js/maps/build/
+assets/pro/admin/js/build/

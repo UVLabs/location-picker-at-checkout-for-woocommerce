@@ -196,11 +196,11 @@ class Map_Visibility_Controller
      */
     private static function guests_orders( $show )
     {
-        /*
-         * Get the shipping classes IDs selected by the admin.
-         */
         $hide_for_guests = get_option( 'lpac_hide_map_for_guests', 'no' );
-        if ( $hide_for_guests === 'yes' ) {
+        if ( $hide_for_guests === 'no' ) {
+            $show = true;
+        }
+        if ( $hide_for_guests === 'yes' && !is_user_logged_in() ) {
             $show = false;
         }
         return $show;

@@ -11,7 +11,8 @@
     },
     "require": {
         "freemius/wordpress-sdk": "2.4.3",
-        "endroid/qr-code": "4.3.5"
+        "endroid/qr-code": "4.3.5",
+        "mjaschen/phpgeo": "4.0"
     },
     "autoload":{
         "psr-4": {

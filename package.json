@@ -31,6 +31,14 @@
       ],
       "sourceMap": false,
       "distDir": "./assets/pro/public/js/maps/build/"
+    },
+    "pro-admin": {
+      "source": [
+        "./assets/pro/admin/js/draw-shipping-zones.js",
+        "./assets/pro/admin/js/lpac-admin-pro.js"
+      ],
+      "sourceMap": false,
+      "distDir": "./assets/pro/admin/js/build/"
     }
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",

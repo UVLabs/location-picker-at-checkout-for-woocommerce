@@ -15,6 +15,10 @@ namespace Lpac\Notices;
 use Lpac\Notices\Notice;
 use Lpac\Traits\Plugin_Info;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 /**
 * Class Upsells_Notices.
 */

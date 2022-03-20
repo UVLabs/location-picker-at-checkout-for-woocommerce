@@ -281,8 +281,8 @@ HTML;
 			$order_received_map_height = get_option( 'lpac_order_received_page_map_height', 400 );
 			$order_received_map_width  = get_option( 'lpac_order_received_page_map_width', 100 );
 
-			$style = "height: {$order_received_map_height}px !important; width: {$order_received_map_width}% !important; ";
-
+			$style        = "height: {$order_received_map_height}px !important; width: {$order_received_map_width}% !important; ";
+			$style_mobile = "height: {$order_received_map_height}px !important; width: 100% !important; ";
 		}
 
 		if ( is_wc_endpoint_url( 'view-order' ) ) {
@@ -290,8 +290,8 @@ HTML;
 			$view_order_map_height = get_option( 'lpac_view_order_page_map_height', 400 );
 			$view_order_map_width  = get_option( 'lpac_view_order_page_map_width', 100 );
 
-			$style = "height: {$view_order_map_height}px !important; width: {$view_order_map_width}% !important; ";
-
+			$style        = "height: {$view_order_map_height}px !important; width: {$view_order_map_width}% !important; ";
+			$style_mobile = "height: {$view_order_map_height}px !important; width: 100% !important; ";
 		}
 
 		// We have to set the condition for !is_wc_endpoint_url() or else this setting would also apply to the order-received page
@@ -300,8 +300,8 @@ HTML;
 			$checkout_map_height = get_option( 'lpac_checkout_page_map_height', 400 );
 			$checkout_map_width  = get_option( 'lpac_checkout_page_map_width', 100 );
 
-			$style = "height: {$checkout_map_height}px !important; width: {$checkout_map_width}% !important; ";
-
+			$style        = "height: {$checkout_map_height}px !important; width: {$checkout_map_width}%; ";
+			$style_mobile = "height: {$checkout_map_height}px !important; width: 100% !important; ";
 		}
 
 		if ( empty( $style ) ) {
@@ -312,6 +312,12 @@ HTML;
 		<style>
 			.lpac-map{
 				$style
+			}
+
+			@media screen and (max-width: 960px ){
+				.lpac-map{
+					$style_mobile
+				}
 			}
 		</style>
 		

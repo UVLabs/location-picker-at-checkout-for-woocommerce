@@ -111,6 +111,13 @@ class Lpac_Uninstall {
 			'lpac_distance_matrix_distance_unit',
 			'lpac_distance_matrix_travel_mode',
 			'lpac_distance_matrix_shipping_methods',
+			'lpac_shipping_cost_by_region_enabled',
+			'lpac_shipping_regions',
+			'lpac_shipping_regions_shipping_methods',
+			'lpac_show_shipping_regions_on_checkout_map',
+			'lpac_show_shipping_regions_cost_on_checkout_map',
+			'lpac_show_shipping_regions_name_on_checkout_map',
+			'lpac_shipping_regions_default_background_color',
 		);
 
 		foreach ( $option_keys as $key ) {
