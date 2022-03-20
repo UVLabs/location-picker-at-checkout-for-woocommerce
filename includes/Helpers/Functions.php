@@ -171,14 +171,14 @@ class Functions {
 			return array();
 		}
 
-		$shipping_methods = array_column( $zones, 'shipping_methods' );
-
-		$flatten = array_merge( ...$shipping_methods );
+		$shipping_methods = array_column( $zones, 'shipping_methods', 'id' );
 
 		$normalized_shipping_methods = array();
 
-		foreach ( $flatten as $key => $class ) {
-			$normalized_shipping_methods[ $class->instance_id ] = $class->title . ' (ID: ' . $class->instance_id . ')';
+		foreach ( $shipping_methods as $key => $class ) {
+			foreach ( $class as $class_key => $class_properties ) {
+				$normalized_shipping_methods[ $class_properties->instance_id ] = $class_properties->title . ' (' . __( 'Zone name: ', 'woocommerce' ) . $zones[ $key ]['zone_name'] . ') [ID: ' . $class_properties->instance_id . ']';
+			}
 		}
 
 		return $normalized_shipping_methods;

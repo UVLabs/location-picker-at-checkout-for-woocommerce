@@ -699,16 +699,35 @@ function lpacSetLastOrderMarker() {
     longitude.value = lpacLastOrder.longitude;
 
     map.setZoom(16);
-    map.setCenter(latlng);
 
     marker.setPosition(latlng);
 
     // Only open the infowindow if we have a shipping address from the last order.
     if (lpacLastOrder.address) {
       infowindow.setContent(lpacLastOrder.address);
-      infowindow.open(map, marker);
+      /**
+       * Check if plotting is complete before opening the info window.
+       * This is because everytime an infowindow opens it focuses the map view on that infowindow.
+       * This can cause the map to pan to the info window of the last plotted region instead of the last order location.
+       * So here we're making sure that plotting all regions is complete(if option is turned on) and then opening the last order details infowindow.
+       */
+      if (
+        typeof lpac_pro_js !== "undefined" &&
+        lpac_pro_js !== null &&
+        lpac_pro_js.shippingRegions.showShippingRegions
+      ) {
+        var intrval = setInterval(function () {
+          if (typeof window.lpacRegionsPlottingComplete !== "undefined") {
+            infowindow.open(map, marker);
+            map.setCenter(latlng);
+            clearInterval(intrval);
+          }
+        }, 100);
+      } else {
+        infowindow.open(map, marker);
+        map.setCenter(latlng);
+      }
     }
-
     lpac_marker_listen_to_drag();
     lpac_map_listen_to_clicks();
   });

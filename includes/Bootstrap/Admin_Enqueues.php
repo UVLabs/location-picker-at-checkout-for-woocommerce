@@ -59,17 +59,6 @@ class Admin_Enqueues
      */
     public function enqueue_styles()
     {
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Lpac_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Lpac_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
         wp_enqueue_style(
             $this->plugin_name,
             LPAC_PLUGIN_ASSETS_PATH_URL . 'admin/css/lpac-admin.css',
@@ -93,24 +82,20 @@ class Admin_Enqueues
      */
     public function enqueue_scripts()
     {
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Lpac_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Lpac_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-        wp_enqueue_script(
-            $this->plugin_name,
-            LPAC_PLUGIN_ASSETS_PATH_URL . 'admin/js/lpac-admin.js',
-            array( 'jquery' ),
-            $this->version,
-            false
-        );
+        $query_string = $_SERVER['QUERY_STRING'];
+        $lite_assets_path_url = constant( 'LPAC_PLUGIN_ASSETS_PATH_URL' );
+        $path = ( LPAC_DEBUG ? '' : 'build/' );
+        $is_lpac_settings = strpos( $query_string, 'wc-settings&tab=lpac_settings' );
+        // Only load the admin scripts on the WooCommerce settings page of LPAC
+        if ( $is_lpac_settings ) {
+            wp_enqueue_script(
+                $this->plugin_name,
+                $lite_assets_path_url . 'admin/js/lpac-admin.js',
+                array( 'jquery' ),
+                $this->version,
+                false
+            );
+        }
         /**
          * Register Google Map Script
          */
@@ -126,7 +111,12 @@ class Admin_Enqueues
             wp_enqueue_script( $this->plugin_name . '-google-maps-js' );
         }
         
-        $path = ( LPAC_DEBUG ? '' : 'build/' );
+        $global_variables = <<<JAVASCRIPT
+\t\t// Lpac Map Settings
+\t\tvar lpacAssetsFolderPath = "{$lite_assets_path_url}";
+JAVASCRIPT;
+        // Expose JS variables for usage.
+        wp_add_inline_script( $this->plugin_name, $global_variables, 'before' );
         /**
          * This has to be enqueued in the footer so our wp_add_inline_script() function can work.
          * Only run this code on shop order(order details) page in admin area.
@@ -135,14 +125,14 @@ class Admin_Enqueues
         if ( get_current_screen()->id === 'shop_order' ) {
             wp_enqueue_script(
                 $this->plugin_name . '-base-map',
-                LPAC_PLUGIN_ASSETS_PATH_URL . 'public/js/maps/' . $path . 'base-map.js',
+                $lite_assets_path_url . 'public/js/maps/' . $path . 'base-map.js',
                 array(),
                 $this->version,
                 true
             );
             wp_enqueue_script(
                 $this->plugin_name . '-order-map',
-                LPAC_PLUGIN_ASSETS_PATH_URL . 'admin/js/order-map.js',
+                $lite_assets_path_url . 'admin/js/order-map.js',
                 array( $this->plugin_name . '-base-map' ),
                 $this->version,
                 true

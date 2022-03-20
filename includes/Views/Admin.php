@@ -206,4 +206,31 @@ HTML;
 
 	}
 
+	/**
+	 * Create a custom hr element that can be used on the plugin's settings page.
+	 *
+	 * @param array $value
+	 * @return void
+	 */
+	public function create_custom_wc_settings_div( $value ) {
+
+		$class       = $value['class'];
+		$name        = $value['name'];
+		$description = $value['desc'];
+		$css         = $value['css'];
+
+		$markup = <<<HTML
+				<tr valign='top'>
+				<th scope='row' class="titledesc">$name</th>
+				<td>
+					<div class="$class" style="$css"></div>
+					<!-- <hr/> -->
+					<p class="description">$description</p>
+				</td>
+				</tr>
+HTML;
+		echo $markup;
+
+	}
+
 }

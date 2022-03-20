@@ -178,6 +178,14 @@ class Main
         /* Custom elements created for WooCommerce settings */
         $this->loader->add_action( 'woocommerce_admin_field_button', $plugin_admin_view, 'create_custom_wc_settings_button' );
         $this->loader->add_action( 'woocommerce_admin_field_hr', $plugin_admin_view, 'create_custom_wc_settings_hr' );
+        $this->loader->add_action( 'woocommerce_admin_field_div', $plugin_admin_view, 'create_custom_wc_settings_div' );
+        $this->loader->add_filter(
+            'plugin_action_links',
+            $this,
+            'add_plugin_action_links',
+            999999,
+            2
+        );
     }
     
     /**
@@ -346,6 +354,21 @@ class Main
     public function get_version()
     {
         return $this->version;
+    }
+    
+    /**
+     * Add action Links for plugin
+     * @param array $plugin_actions
+     * @param string $plugin_file
+     * @return array
+     */
+    public function add_plugin_action_links( $plugin_actions, $plugin_file )
+    {
+        $new_actions = array();
+        if ( LPAC_BASE_FILE . '/lpac.php' === $plugin_file ) {
+            $new_actions['lpac_wc_settings'] = sprintf( __( '<a href="%s">Settings</a>', 'map-location-picker-at-checkout-for-woocommerce' ), esc_url( admin_url( 'admin.php?page=wc-settings&tab=lpac_settings' ) ) );
+        }
+        return array_merge( $new_actions, $plugin_actions );
     }
 
 }

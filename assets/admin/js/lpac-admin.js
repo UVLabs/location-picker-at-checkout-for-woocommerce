@@ -160,8 +160,26 @@
       });
     }
 
+    /**
+     * Set a dummy image for Shipping Regions feature.
+     */
+    function setShippingRegionsDummyMapImage() {
+      const mapDiv = $(".lpac-map");
+
+      if (mapDiv && mapDiv.children().length == 0) {
+        mapDiv.css(
+          "background-image",
+          `url( ${lpacAssetsFolderPath}img/map.png )`
+        );
+        mapDiv.css("background-size", "contain");
+        mapDiv.css("background-repeat", "no-repeat");
+        mapDiv.addClass("dummy-map");
+      }
+    }
+
     toggleAutoDetectOptions();
     toggleMapLinkOrderEmailOptions();
     togglePlacesAutoCompleteOptions();
+    setShippingRegionsDummyMapImage();
   });
 })(jQuery);

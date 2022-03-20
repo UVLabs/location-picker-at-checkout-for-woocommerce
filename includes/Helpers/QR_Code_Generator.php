@@ -22,7 +22,6 @@ use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Label\Font\NotoSans;
 use Lpac\Traits\Upload_Folders;
-// use Endroid\QrCode\Label\Font\OpenSans;
 
 class QR_Code_Generator {
 

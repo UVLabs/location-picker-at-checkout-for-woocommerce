@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, checkout map, geolocation, google map, map, 
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 5.9
-Stable tag: 1.4.4
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,9 +33,17 @@ This plugin adds a Google Map to the checkout page of WooCommerce which customer
 
 This plugin has built-in support for automatically filling in the WooCommerce checkout fields with the information pulled from the Google map. Save users some typing while pulling accurate address information.
 
+### WooCommerce Shipping Zones (Regions) by Drawing Plugin
+
+LPAC comes with a PREMIUM Shipping Zones by Drawing feature for WooCommerce which lets store owners draw custom shipping regions. Drawn shipping regions can have a name, price and background color. It's also possible to display the shipping regions on the checkout page's google map so customers can see the cost for shipping to different regions.
+
+During checkout, if a customer location falls within a shipping region, the cost set for that shipping region will automatically be set as the shipping fee for the customer.
+
+Create as many shipping zones and draw as many shipping regions as you like. LPAC will automatically set the cost of the shipping method once a customer falls within those drawn regions.
+
 ### WooCommerce Restaurant & Food Delivery Plugin
 
-This plugin is excellent for online restaurants or food delivery websites that deliver customer orders after they have been placed.
+LPAC is excellent for online restaurants or food delivery websites that deliver customer orders after they have been placed.
 
 ### WooCommerce Pickup Plugin
 
@@ -76,7 +84,8 @@ Though the primary focus of the plugin is to allow customers to select accurate 
 - Custom Marker Icons [Pro]
 - Export Order Locations [Pro]
 - Multiple Customer Saved Addresses [Pro]
-- Shipping cost by distance [Pro]
+- Shipping Cost by Region [Pro]
+- Shipping Cost by Distance [Pro]
 - Show/Hide Map based on Shipping Zone [Pro]
 - Hide Map until a minimum cart total is reached [Pro]
 - Hide Map when a maximum cart total is reached [Pro]
@@ -156,6 +165,8 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 9. Delivery location QR Code inside email (goes to customer selected location when scanned)
 10. Custom map and custom map marker (PRO)
 11. Multiple saved addresses feature for customers (PRO)
+12. Shipping Cost by Region (aka Shipping Zones by Drawing) feature (PRO)
+13. Shipping Cost applied to custom shipping method for a previously drawn shipping region (PRO)
 
 == Upgrade Notice ==
 
@@ -163,6 +174,15 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 The save location of QR codes have been changed. Links to QR codes in past order emails will stop working after updating, but QR codes in new orders will work fine.
 
 == Changelog ==
+
+= 1.5.0 = 
+* [New PRO] Create Shipping Regions by drawing them! Set custom price and name for regions that you ship to. The shipping method cost will automatically update if a customer falls within a region you've created.
+* [Fix] Various script errors that appeared in admin javascript console when not on LPAC settings pages.
+* [Fix] The hide map for guests visibility logic was returning the wrong value.
+* [Change] Rearranged some plugin options on LPAC's settings page.
+
+= 1.4.6 = 
+* [Fix PRO] Shipping Cost by Distance feature was only taking effect if Save Customer Addresses feature was turned on.
 
 = 1.4.5 =
 * [Fix] The frontend maps required base script file would on some websites not be enqueued in time to be used as a handle for `wp_add_inline_script()` function . Fallback to Jquery core script handle in those cases.

@@ -54,3 +54,9 @@ hr {
   font-size: 20px;
   margin-right: 5px;
 }
+
+@media screen and (max-width: 960px) {
+  .lpac-map.dummy-map {
+    height: 150px !important;
+  }
+}
