@@ -98,6 +98,8 @@ Though the primary focus of the plugin is to allow customers to select accurate 
 
 - WooFunnels Funnel Builder Plugin for WordPress
 
+#### Location Picker at Checkout is the last WooCommerce checkout map plugin you'll need.
+
 ### Configuring Plugin:
 
 - The plugin settings are located in **WordPress Admin Dashboard->WooCommerce->Location Picker At Checkout** tab.
@@ -174,6 +176,9 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 The save location of QR codes have been changed. Links to QR codes in past order emails will stop working after updating, but QR codes in new orders will work fine.
 
 == Changelog ==
+
+= 1.5.1 = 
+* [Change] Rearranged some plugin options on LPAC's settings page.
 
 = 1.5.0 = 
 * [New PRO] Create Shipping Regions by drawing them! Set custom price and name for regions that you ship to. The shipping method cost will automatically update if a customer falls within a region you've created.
