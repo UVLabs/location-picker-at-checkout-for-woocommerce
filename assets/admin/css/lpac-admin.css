@@ -39,11 +39,6 @@ hr {
   border-top: 8px solid #dcdcde !important;
 }
 
-.titledesc.premium-subsection,
-.titledesc.premium-dummy-subsection {
-  font-size: 18px;
-}
-
 .premium-subsection:before {
   font-size: 20px;
   margin-right: 5px;

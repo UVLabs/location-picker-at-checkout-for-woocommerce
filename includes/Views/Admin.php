@@ -195,7 +195,7 @@ HTML;
 
 		$markup = <<<HTML
 				<tr valign='top'>
-				<th scope='row' class="titledesc $class">$name</th>
+				<th scope='row' class="titledesc $class" style='font-size: 18px'>$name</th>
 				<td>
 					<hr/>
 					<p class="description">$description</p>
