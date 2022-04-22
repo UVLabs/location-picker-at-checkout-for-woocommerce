@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, checkout map, geolocation, google map, map, 
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 5.9
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,7 +31,7 @@ This plugin adds a Google Map to the checkout page of WooCommerce which customer
 
 ### WooCommerce Billing & Shipping Address AutoFill Plugin
 
-This plugin has built-in support for automatically filling in the WooCommerce checkout fields with the information pulled from the Google map. Save users some typing while pulling accurate address information.
+LPAC can work as a checkout address autofill for WooCommerce making it a full-featured autocomplete address and location picker for WooCommerce plugin. It can automatically fill in the WooCommerce checkout fields with the information pulled from the Google map or from the Google Places API. Save users some typing while pulling accurate address information.
 
 ### WooCommerce Shipping Zones (Regions) by Drawing Plugin
 
@@ -41,6 +41,14 @@ During checkout, if a customer location falls within a shipping region, the cost
 
 Create as many shipping zones and draw as many shipping regions as you like. LPAC will automatically set the cost of the shipping method once a customer falls within those drawn regions.
 
+Optionally, set LPAC to only allow customers to place an order if their geolocation falls within shipping zones/regions that you draw.
+
+### WooCommerce Shipping Cost by Distance Plugin
+
+LPAC is a robust WooCommerce checkout location picker plugin that also allows you to calculate the shipping cost for a customer's order based on how far away that customer is from your location. Simply set the cost per Kilometer or Mile and let LPAC do the rest.
+
+Optionally, set LPAC to only allow customers to place an order if their geolocation falls within a maximum distance that you have set for shipping.
+
 ### WooCommerce Restaurant & Food Delivery Plugin
 
 LPAC is excellent for online restaurants or food delivery websites that deliver customer orders after they have been placed.
@@ -49,7 +57,7 @@ LPAC is excellent for online restaurants or food delivery websites that deliver 
 
 If you ran a website where customers select their location for pickup then Location Picker at Checkout for WooCommerce(LPAC) would be a suitable plugin for your website.
 
-### WooCommerce Autocomplete Checkout Address Plugin
+### WooCommerce Autocomplete/Autofill Checkout Address Plugin
 
 Though the primary focus of the plugin is to allow customers to select accurate locations by using a map. Location Picker at Checkout for WooCommerce also allows store owners to enable the Places autocomplete feature on their checkout address fields. This feature shows customers address predictions as they type in their address. When a customer clicks the desired address from the dropdown, it can also automatically fill in the rest of the checkout fields.
 
@@ -176,6 +184,12 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 The save location of QR codes have been changed. Links to QR codes in past order emails will stop working after updating, but QR codes in new orders will work fine.
 
 == Changelog ==
+
+= 1.5.2 = 
+* [New PRO] Feature to prevent shipping to customers who's location do not fall inside your drawn shipping regions. [Learn More](https://lpacwp.com/docs/getting-started/plugin-settings/shipping/#cost-by-region)
+* [New PRO] Feature to prevent shipping to customers who's location is beyond your maximum set shipping distance. [Learn More](https://lpacwp.com/docs/getting-started/plugin-settings/shipping/#cost-by-distance)
+* [Fix PRO] Last order location was not showing on the map.
+* [Change] Edit some doc links in plugin settings to match changes on docs site.
 
 = 1.5.1 = 
 * [Change] Rearranged some plugin options on LPAC's settings page.

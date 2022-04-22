@@ -714,6 +714,7 @@ function lpacSetLastOrderMarker() {
       if (
         typeof lpac_pro_js !== "undefined" &&
         lpac_pro_js !== null &&
+        lpac_pro_js.shippingRegions.enabled &&
         lpac_pro_js.shippingRegions.showShippingRegions
       ) {
         var intrval = setInterval(function () {
