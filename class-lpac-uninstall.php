@@ -118,6 +118,13 @@ class Lpac_Uninstall {
 			'lpac_show_shipping_regions_cost_on_checkout_map',
 			'lpac_show_shipping_regions_name_on_checkout_map',
 			'lpac_shipping_regions_default_background_color',
+			'lpac_ship_only_to_drawn_regions',
+			'lpac_no_shipping_method_available_text',
+			'lpac_no_shipping_method_selected_error',
+			'lpac_limit_shipping_distance',
+			'lpac_max_shipping_distance',
+			'lpac_distance_cost_no_shipping_method_available_text',
+			'lpac_distance_cost_no_shipping_method_selected_error',
 		);
 
 		foreach ( $option_keys as $key ) {

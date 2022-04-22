@@ -232,7 +232,8 @@ HTML;
 	 * Check if the latitude or longitude inputs are filled in.
 	 *
 	 * @since    1.1.0
-	 * @param array $order_id The order id.
+	 * @param array $fields The fields array.
+	 * @param object $errors The errors object.
 	 *
 	 * @return void
 	 */

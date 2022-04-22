@@ -204,6 +204,7 @@ HTML;
             'id'       => 'lpac_force_map_use',
             'type'     => 'checkbox',
             'css'      => 'max-width:80px;',
+            'default'  => 'yes',
         );
         $lpac_settings[] = array(
             'name'        => __( 'Default Coordinates', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -239,6 +240,7 @@ HTML;
             'id'       => 'lpac_remove_address_plus_code',
             'type'     => 'checkbox',
             'css'      => 'min-width:300px;',
+            'default'  => 'yes',
         );
         $lpac_settings[] = array(
             'name'     => __( 'Autofill Billing fields', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -255,6 +257,7 @@ HTML;
             'type'     => 'checkbox',
             'css'      => 'min-width:300px;',
             'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'default'  => 'yes',
         );
         $lpac_settings[] = array(
             'name'     => __( 'Show Map on View Order Page', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -263,6 +266,7 @@ HTML;
             'type'     => 'checkbox',
             'css'      => 'min-width:300px;',
             'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'default'  => 'yes',
         );
         $lpac_settings[] = array(
             'name'  => 'Emails',
@@ -363,7 +367,7 @@ HTML;
         $learn_more = sprintf( __( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
         $dummy_general_pro_settings[] = array(
             'name'              => __( 'Restrict Places Autocomplete Countries (PRO)', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'              => sprintf( __( 'Select the countries you would like addresses to be pulled from when using the Places Autocomplete feature. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/pro-features/?utm_source=morefeaturestab&utm_medium=lpacdashboard&utm_campaign=prodocs#places-autocomplete' target='blank'>{$learn_more}</a>" ),
+            'desc'              => sprintf( __( 'Select the countries you would like addresses to be pulled from when using the Places Autocomplete feature. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/general-settings/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=prodocs#places-autocomplete-feature' target='blank'>{$learn_more}</a>" ),
             'desc_tip'          => __( 'Use this feature if you only want to show address results from a specific country or countries.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'type'              => 'multiselect',
             'options'           => array(),
@@ -387,7 +391,7 @@ HTML;
         $dummy_general_pro_settings[] = array(
             'name'  => 'Saved Addresses',
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
-            'desc'  => sprintf( __( 'Allow customers to save different addresses for later use. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/pro-features/?utm_source=morefeaturestab&utm_medium=lpacdashboard&utm_campaign=prodocs#saved-addresses' target='blank'>{$learn_more}</a>" ),
+            'desc'  => sprintf( __( 'Allow customers to save different addresses for later use. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/general-settings/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=prodocs#saved-addresses' target='blank'>{$learn_more}</a>" ),
             'type'  => 'hr',
             'id'    => 'test',
         );
@@ -439,20 +443,20 @@ HTML;
             'css'      => 'min-width:300px;',
         );
         $lpac_settings[] = array(
-            'name'        => __( 'Checkout Page Map Width (in %)', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc_tip'    => __( 'Enter the width of map you\'d like.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'          => 'lpac_checkout_page_map_width',
-            'placeholder' => '100',
-            'default'     => 100,
-            'type'        => 'number',
-            'css'         => 'max-width:80px;',
-        );
-        $lpac_settings[] = array(
             'name'        => __( 'Checkout Page Map Height (in px)', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc_tip'    => __( 'Enter the height of map you\'d like.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'          => 'lpac_checkout_page_map_height',
             'placeholder' => '400',
             'default'     => 400,
+            'type'        => 'number',
+            'css'         => 'max-width:80px;',
+        );
+        $lpac_settings[] = array(
+            'name'        => __( 'Checkout Page Map Width (in %)', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip'    => __( 'Enter the width of map you\'d like.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'          => 'lpac_checkout_page_map_width',
+            'placeholder' => '100',
+            'default'     => 100,
             'type'        => 'number',
             'css'         => 'max-width:80px;',
         );
@@ -466,7 +470,7 @@ HTML;
             'css'         => 'max-width:80px;',
         );
         $lpac_settings[] = array(
-            'name'        => __( 'Order Received Page Map Width (in px)', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'name'        => __( 'Order Received Page Map Width (in %)', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc_tip'    => __( 'Enter the width of map you\'d like.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'          => 'lpac_order_received_page_map_width',
             'placeholder' => '100',
@@ -484,7 +488,7 @@ HTML;
             'css'         => 'max-width:80px;',
         );
         $lpac_settings[] = array(
-            'name'        => __( 'View Order Page Map Width (in px)', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'name'        => __( 'View Order Page Map Width (in %)', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc_tip'    => __( 'Enter the height of map you\'d like.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'          => 'lpac_view_order_page_map_width',
             'placeholder' => '100',
@@ -507,7 +511,7 @@ HTML;
             'name'  => 'Map ID',
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
             'type'  => 'hr',
-            'desc'  => sprintf( __( 'Set the Map ID for the respective Maps. You can create a custom map for each entry. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/pro-features/?utm_source=morefeaturestab&utm_medium=lpacdashboard&utm_campaign=prodocs#map-id' target='blank'>{$learn_more}</a>" ),
+            'desc'  => sprintf( __( 'Set the Map ID for the respective Maps. You can create a custom map for each entry. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/display-settings/?utm_source=displaytab&utm_medium=lpacdashboard&utm_campaign=prodocs#map-id' target='blank'>{$learn_more}</a>" ),
         );
         $lpac_dummy_display_pro_settings[] = array(
             'name'              => __( 'Checkout Page Map ID', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -548,7 +552,7 @@ HTML;
         $lpac_dummy_display_pro_settings[] = array(
             'name'  => 'Marker Icon',
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
-            'desc'  => sprintf( __( 'Set a custom icon to be used for the map marker. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/pro-features/?utm_source=morefeaturestab&utm_medium=lpacdashboard&utm_campaign=prodocs#marker-icon' target='blank'>{$learn_more}</a>" ),
+            'desc'  => sprintf( __( 'Set a custom icon to be used for the map marker. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/display-settings/?utm_source=displaytab&utm_medium=lpacdashboard&utm_campaign=prodocs#marker-icon' target='blank'>{$learn_more}</a>" ),
             'type'  => 'hr',
         );
         $lpac_dummy_display_pro_settings[] = array(
@@ -790,9 +794,9 @@ HTML;
             'type' => 'title',
         );
         $lpac_dummy_pro_settings[] = array(
-            'name'  => 'Cost by Region',
+            'name'  => __( 'Cost by Region', 'map-location-picker-at-checkout-for-woocommerce' ),
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
-            'desc'  => sprintf( __( 'Use the map to draw regions and set shipping costs for customers who fall within those regions.  %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/pro-features/?utm_source=morefeaturestab&utm_medium=lpacdashboard&utm_campaign=prodocs#shipping-cost-by-distance' target='_blank'>{$learn_more}</a>" ),
+            'desc'  => sprintf( __( 'Use the map to draw regions and set shipping costs for customers who fall within those regions.  %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=shippingtab&utm_medium=lpacdashboard&utm_campaign=prodocs#cost-by-region' target='_blank'>{$learn_more}</a>" ),
             'type'  => 'hr',
         );
         $lpac_dummy_pro_settings[] = array(
@@ -818,10 +822,46 @@ HTML;
             'name'              => __( 'Shipping Methods', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'                => 'lpac_shipping_regions_shipping_methods',
             'class'             => 'wc-enhanced-select',
-            'desc'              => sprintf( __( 'Select the Shipping Method(s) this feature applies to. If there is a cost already set on the shipping method, then that base cost will be added to the cost set for the region. NOTE: You need to have at least ONE created Shipping Zone with Shipping Methods attached to it. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=morefeaturestab&utm_medium=lpacdashboard&utm_campaign=prodocs#shipping-cost-by-region' target='_blank'>{$learn_more}</a>" ),
+            'desc'              => sprintf( __( 'Select the Shipping Method(s) this feature applies to. If there is a cost already set on the shipping method, then that base cost will be added to the cost set for the region. NOTE: You need to have at least ONE created Shipping Zone with Shipping Methods attached to it. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=shippingtab&utm_medium=lpacdashboard&utm_campaign=prodocs#cost-by-region' target='_blank'>{$learn_more}</a>" ),
             'type'              => 'multiselect',
             'css'               => 'min-width:300px;height: 100px',
             'options'           => array(),
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'Ship Only to Drawn Regions.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip'          => __( 'If checked, a customer WILL NOT be able to place an order unless they choose a location that falls within any of your drawn regions. Pair this setting with the "Force Use of Map" general option for best results.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_ship_only_to_drawn_regions',
+            'type'              => 'checkbox',
+            'css'               => 'max-width:80px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'No Shipping Method Available Text', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Enter the text that displays when a customer\'s location does not fall within any drawn shipping region.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_no_shipping_method_available_text',
+            'default'           => __( 'Unfortunately, we do not currently ship to your region.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'type'              => 'textarea',
+            'css'               => 'min-width:700px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'No Shipping Method Error', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Enter the text that displays when a customer tries to checkout without choosing a location within a drawn region.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_no_shipping_method_selected_error',
+            'default'           => __( 'We do not currently ship to your selected location. Please choose a different location on the map then try placing your order again. Please contact us if you need any help.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'type'              => 'textarea',
+            'css'               => 'min-width:700px;',
             'custom_attributes' => array(
             'disabled' => 'disabled',
         ),
@@ -874,9 +914,9 @@ HTML;
             'is_option'         => false,
         );
         $lpac_dummy_pro_settings[] = array(
-            'name'  => 'Cost by Distance',
+            'name'  => __( 'Cost by Distance', 'map-location-picker-at-checkout-for-woocommerce' ),
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
-            'desc'  => sprintf( __( 'Charge customers based on the distance between your store and their location. Be sure to test this before committing to the changes. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=morefeaturestab&utm_medium=lpacdashboard&utm_campaign=prodocs#shipping-cost-by-distance' target='blank'>{$learn_more}</a>" ),
+            'desc'  => sprintf( __( 'Charge customers based on the distance between your store and their location. Be sure to test this before committing to the changes. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=shippingtab&utm_medium=lpacdashboard&utm_campaign=prodocs#cost-by-distance' target='blank'>{$learn_more}</a>" ),
             'type'  => 'hr',
         );
         $lpac_dummy_pro_settings[] = array(
@@ -961,10 +1001,58 @@ HTML;
             'name'              => __( 'Shipping Methods', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'                => 'lpac_distance_matrix_shipping_methods',
             'class'             => 'wc-enhanced-select',
-            'desc'              => sprintf( __( 'Select the Shipping Method(s) this feature applies to. If there is a cost already set on the shipping method, then that base cost will be added to the cost set for the region. NOTE: You need to have at least ONE created Shipping Zone with Shipping Methods attached to it. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=morefeaturestab&utm_medium=lpacdashboard&utm_campaign=prodocs#shipping-cost-by-distance' target='_blank'>{$learn_more}</a>" ),
+            'desc'              => sprintf( __( 'Select the Shipping Method(s) this feature applies to. If there is a cost already set on the shipping method, then that base cost will be added to the cost set for the region. NOTE: You need to have at least ONE created Shipping Zone with Shipping Methods attached to it. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=shippingtab&utm_medium=lpacdashboard&utm_campaign=prodocs#cost-by-distance' target='_blank'>{$learn_more}</a>" ),
             'type'              => 'multiselect',
             'options'           => array(),
             'css'               => 'height:40px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'Limit Shipping Distance', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip'          => __( 'If checked, you can limit the maximum distance you will ship to. The distance will be calculated in the unit you set above.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_limit_shipping_distance',
+            'type'              => 'checkbox',
+            'css'               => 'max-width:80px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'Maximum Distance', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Set the maximum distance you will ship to. The unit used will be the same as the unit you set above.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_max_shipping_distance',
+            'placeholder'       => '24',
+            'type'              => 'text',
+            'css'               => 'max-width:80px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'No Shipping Method Available Text', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Enter the text that displays when a customer\'s location is beyond your max shipping distance.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_distance_cost_no_shipping_method_available_text',
+            'default'           => __( 'Unfortunately, we do not currently ship this far.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'type'              => 'textarea',
+            'css'               => 'min-width:700px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'No Shipping Method Error', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Enter the text that displays when a customer tries to checkout with a location that is beyond your max shipping distance.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_distance_cost_no_shipping_method_selected_error',
+            'default'           => __( 'We do not currently ship to your selected location. Please choose a location closer to our main store then try placing your order again. Please contact us if you need any help.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'type'              => 'textarea',
+            'css'               => 'min-width:700px;',
             'custom_attributes' => array(
             'disabled' => 'disabled',
         ),
