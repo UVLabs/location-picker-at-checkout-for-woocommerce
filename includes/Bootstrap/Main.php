@@ -239,8 +239,12 @@ class Main
                 7
             );
             // Remove map from default position and set it to above the customer information fields.
-            remove_action( $checkout_page_map_location, 'lpac_output_map_on_checkout_page' );
-            $this->loader->add_action( 'woocommerce_checkout_before_customer_details', $plugin_public_display, 'lpac_output_map_on_checkout_page' );
+            
+            if ( $checkout_page_map_location !== 'woocommerce_checkout_before_customer_details' ) {
+                remove_action( $checkout_page_map_location, 'lpac_output_map_on_checkout_page' );
+                $this->loader->add_action( 'woocommerce_checkout_before_customer_details', $plugin_public_display, 'lpac_output_map_on_checkout_page' );
+            }
+        
         }
         
         /*

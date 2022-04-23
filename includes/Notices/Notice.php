@@ -64,12 +64,8 @@ class Notice {
 
 		$dismissed_notices = $this->get_dismissed_notices();
 
-		if ( ! is_array( $dismissed_notices ) ) {
-			return; // Bail if received value type is unexpected.
-		}
-
 		# Bail if this notice has been dismissed
-		if ( in_array( $notice_id, $dismissed_notices, true ) ) {
+		if ( is_array( $dismissed_notices ) && in_array( $notice_id, $dismissed_notices, true ) ) {
 			return;
 		}
 
@@ -94,7 +90,7 @@ class Notice {
 			<p class="lpac-notice-body">$body</p>
 			<ul class="lpac-notice-body">
 			$learm_more_output
-			<li id="lpac-notice-dismiss"><a href="$dismiss_url" style="color: #2b4fa3"> <span class="dashicons dashicons-dismiss"></span> $dismiss_text</a></li>
+			<li id="lpac-notice-dismiss"><a href="$dismiss_url" style="color: #2b4fa3"> <span class="dashicons dashicons-dismiss"></span>$dismiss_text</a></li>
 			</ul>
 			</div>
 

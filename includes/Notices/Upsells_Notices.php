@@ -10,14 +10,15 @@
 * @since   1.4.3
 * @package Notices
 */
-namespace Lpac\Notices;
 
-use Lpac\Notices\Notice;
-use Lpac\Traits\Plugin_Info;
+namespace Lpac\Notices;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
+use Lpac\Notices\Notice;
+use Lpac\Traits\Plugin_Info;
 
 /**
 * Class Upsells_Notices.
@@ -50,6 +51,7 @@ class Upsells_Notices extends Notice {
 
 		$days_since_installed = $this->get_days_since_installed();
 
+		// Show notice after 4 days
 		if ( $days_since_installed < 3 ) {
 			return;
 		}

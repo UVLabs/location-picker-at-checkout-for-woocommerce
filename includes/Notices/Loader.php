@@ -12,6 +12,7 @@
 
 namespace Lpac\Notices;
 use Lpac\Notices\Upsells_Notices;
+use Lpac\Notices\Review_Notices;
 
 /**
 * The Loader class.
@@ -26,5 +27,6 @@ class Loader {
 	 */
 	public function load_notices() {
 		( new Upsells_Notices );
+		( new Review_Notices );
 	}
 }
