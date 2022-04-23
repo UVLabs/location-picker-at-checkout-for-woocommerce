@@ -67,4 +67,6 @@
 
 #edit-saved-addresses {
   font-size: 16px;
+  margin-top: 10px;
+  text-decoration: underline;
 }

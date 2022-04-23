@@ -88,8 +88,4 @@ class Admin {
 
 	}
 
-	public function create_pro_version_released_notice() {
-		// TODO Create notice helper functions with notice ID in URL and should_show_notice($user_id, $notice_id) method
-	}
-
 }

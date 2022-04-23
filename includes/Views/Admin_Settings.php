@@ -325,7 +325,7 @@ HTML;
             'type'  => 'hr',
         );
         $lpac_settings[] = array(
-            'name'     => __( 'Enable Places Autocomplete Feature', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'name'     => __( 'Enable Feature', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc_tip' => sprintf( __( 'Allows customers to begin typing an address and receive suggestions from Google. NOTE: This is not as reliable as allowing customers to select their location on the map. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs' target='blank'>{$learn_more}</a>" ),
             'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'       => 'lpac_enable_places_autocomplete',
@@ -434,12 +434,7 @@ HTML;
             'desc_tip' => __( 'This option displays a map view on the order received page after an order has been placed by a customer.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'       => 'lpac_checkout_map_orientation',
             'type'     => 'select',
-            'options'  => array(
-            'woocommerce_before_checkout_billing_form'  => __( 'Billing Address Area - Top', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'woocommerce_after_checkout_billing_form'   => __( 'Billing Address Area - Bottom', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'woocommerce_before_checkout_shipping_form' => __( 'Shipping Address Area - Top', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'woocommerce_after_checkout_shipping_form'  => __( 'Shipping Address Area - Bottom', 'map-location-picker-at-checkout-for-woocommerce' ),
-        ),
+            'options'  => $this->get_possible_map_locations(),
             'css'      => 'min-width:300px;',
         );
         $lpac_settings[] = array(
@@ -1314,6 +1309,43 @@ HTML;
         if ( $current_section ) {
             do_action( 'woocommerce_update_options_' . $this->id . '_' . $current_section );
         }
+    }
+    
+    /**
+     * Get the possible locations that the map can be rendered on the checkout page.
+     *
+     * @return array
+     */
+    private function get_possible_map_locations()
+    {
+        $locations = array(
+            ''                                             => __( 'Select', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'woocommerce_before_checkout_billing_form'     => __( 'Billing Address Area - Top', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'woocommerce_after_checkout_billing_form'      => __( 'Billing Address Area - Bottom', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'woocommerce_before_checkout_shipping_form'    => __( 'Shipping Address Area - Top', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'woocommerce_after_checkout_shipping_form'     => __( 'Shipping Address Area - Bottom', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'woocommerce_checkout_before_customer_details' => __( 'Checkout Form - Top', 'map-location-picker-at-checkout-for-woocommerce' ),
+        );
+        /*
+         * Fluid Checkout compatibility
+         */
+        if ( class_exists( 'FluidCheckout' ) ) {
+            $locations = array(
+                ''                                             => __( 'Select', 'map-location-picker-at-checkout-for-woocommerce' ),
+                'woocommerce_checkout_before_customer_details' => __( 'Checkout Form - Top (Fluid Checkout)', 'map-location-picker-at-checkout-for-woocommerce' ),
+                'fc_checkout_before_step_shipping_fields'      => __( 'Shipping Address Area - Top (Fluid Checkout)', 'map-location-picker-at-checkout-for-woocommerce' ),
+            );
+        }
+        /*
+         * WooFunnels compatibility
+         */
+        if ( class_exists( 'WFFN_Core' ) ) {
+            $locations = array(
+                ''                                             => __( 'Select', 'map-location-picker-at-checkout-for-woocommerce' ),
+                'woocommerce_checkout_before_customer_details' => __( 'Checkout Form - Top (Fluid Checkout)', 'map-location-picker-at-checkout-for-woocommerce' ),
+            );
+        }
+        return $locations;
     }
 
 }

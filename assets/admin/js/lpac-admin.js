@@ -143,19 +143,29 @@
       const placesAutoCompleteChecked = placesAutoComplete.is(":checked");
       const placesAllowedFields = $("#lpac_places_autocomplete_fields");
       const placesAutoCompleteHideMap = $("#lpac_places_autocomplete_hide_map");
+      const placesAutoCompleteCountryRestrictions = $(
+        "select[name^=lpac_places_autocomplete_country_restrictions]"
+      );
+      const placesAutoCompleteType = $("#lpac_places_autocomplete_type");
 
       if (!placesAutoCompleteChecked) {
         placesAllowedFields.closest("tr").hide();
         placesAutoCompleteHideMap.closest("tr").hide();
+        placesAutoCompleteCountryRestrictions.closest("tr").hide();
+        placesAutoCompleteType.closest("tr").hide();
       }
 
       placesAutoComplete.on("click", () => {
         if (placesAutoComplete.is(":checked")) {
           placesAllowedFields.closest("tr").show();
           placesAutoCompleteHideMap.closest("tr").show();
+          placesAutoCompleteCountryRestrictions.closest("tr").show();
+          placesAutoCompleteType.closest("tr").show();
         } else {
           placesAllowedFields.closest("tr").hide();
           placesAutoCompleteHideMap.closest("tr").hide();
+          placesAutoCompleteCountryRestrictions.closest("tr").hide();
+          placesAutoCompleteType.closest("tr").hide();
         }
       });
     }

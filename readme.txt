@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, checkout map, geolocation, google map, map, 
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 5.9
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -105,6 +105,7 @@ Though the primary focus of the plugin is to allow customers to select accurate 
 ### Support for:
 
 - WooFunnels Funnel Builder Plugin for WordPress
+- Fluid Checkout for WooCommerce
 
 #### Location Picker at Checkout is the last WooCommerce checkout map plugin you'll need.
 
@@ -180,10 +181,13 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 
 == Upgrade Notice ==
 
-= 1.4.0 =
-The save location of QR codes have been changed. Links to QR codes in past order emails will stop working after updating, but QR codes in new orders will work fine.
-
 == Changelog ==
+
+= 1.5.3 = 
+* [Fix PRO] Customers would always receive a shipping error when trying to place an order if "Ship Only to Drawn Regions" or "Limit Shipping Distance" feature was enabled.
+* [Fix PRO] Saved address details on map would show 'undefined' if `shipping_address_1` field was not present in object.
+* [Fix PRO] Saved Addresses feature would always save customer billing address even when shipping address details were available.
+* [Info] Support added for Fluid Checkout for WooCommerce plugin's custom checkout page.
 
 = 1.5.2 = 
 * [New PRO] Feature to prevent shipping to customers who's location do not fall inside your drawn shipping regions. [Learn More](https://lpacwp.com/docs/getting-started/plugin-settings/shipping/#cost-by-region)
