@@ -45,11 +45,11 @@ class Admin_Settings extends \WC_Settings_Page
         // This method is located in parent class
         add_filter( 'woocommerce_settings_tabs_array', array( $this, 'add_settings_page' ), 99 );
         // Add sections to our custom tab
-        add_action( 'woocommerce_sections_' . $this->id, array( $this, 'lpac_output_settings_sections' ) );
+        add_action( 'woocommerce_sections_' . $this->id, array( $this, 'output_settings_sections' ) );
         // Output our different settings
-        add_action( 'woocommerce_settings_' . $this->id, array( $this, 'lpac_output_plugin_settings' ) );
+        add_action( 'woocommerce_settings_' . $this->id, array( $this, 'output_plugin_settings' ) );
         // Save our settings
-        add_action( 'woocommerce_settings_save_' . $this->id, array( $this, 'lpac_save_plugin_settings' ) );
+        add_action( 'woocommerce_settings_save_' . $this->id, array( $this, 'save_plugin_settings' ) );
     }
     
     /**
@@ -58,7 +58,7 @@ class Admin_Settings extends \WC_Settings_Page
      * @return array $sections The sections for the custom tab.
      * @since    1.1.0
      */
-    public function lpac_create_plugin_settings_sections()
+    public function create_plugin_settings_sections()
     {
         $sections = array(
             'general'          => __( 'General', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -76,10 +76,10 @@ class Admin_Settings extends \WC_Settings_Page
      *
      * @since    1.1.0
      */
-    public function lpac_output_settings_sections()
+    public function output_settings_sections()
     {
         global  $current_section ;
-        $sections = $this->lpac_create_plugin_settings_sections();
+        $sections = $this->create_plugin_settings_sections();
         if ( empty($sections) || 1 === sizeof( $sections ) ) {
             return;
         }
@@ -97,15 +97,14 @@ class Admin_Settings extends \WC_Settings_Page
      * @since    1.2.0
      * @return mixed $markup The markup for the banner.
      */
-    public static function lpac_create_plugin_settings_banner()
+    public static function create_plugin_settings_banner()
     {
-        $here = __( 'HERE', 'map-location-picker-at-checkout-for-woocommerce' );
+        $here = __( 'HERE', 'map-location-picker-at-checkout-for-woocommerce' ) . '<strong><span style="text-decoration: none" class="dashicons dashicons-external"></span></strong>';
         $external_icon = '<strong><span style="text-decoration: none" class="dashicons dashicons-external"></span></strong>';
         
         if ( empty(get_option( 'lpac_google_maps_api_key', '' )) ) {
             $no_api_key = __( 'You need an API Key to use Google Maps. Please see this document for how to get it ', 'map-location-picker-at-checkout-for-woocommerce' );
             $no_api_key .= "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=freedocs' target='_blank'>{$here}</a>";
-            $no_api_key .= $external_icon;
         } else {
             $no_api_key = '';
         }
@@ -113,20 +112,17 @@ class Admin_Settings extends \WC_Settings_Page
         $title = __( "Use the Options Below to Change the Plugin's Settings", 'map-location-picker-at-checkout-for-woocommerce' );
         $issues = __( 'If you encounter any issues then please open a support ticket ', 'map-location-picker-at-checkout-for-woocommerce' );
         $issues .= "<a href='https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
-        $issues .= $external_icon;
         $documentation = __( 'Read the documentation ', 'map-location-picker-at-checkout-for-woocommerce' );
         $documentation .= "<a href='https://lpacwp.com/docs/?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=docshome' target='_blank'>{$here}</a>";
-        $documentation .= $external_icon;
         $translate_plugin = __( 'Plugin settings not in your Language? Help translate it ', 'map-location-picker-at-checkout-for-woocommerce' );
         $translate_plugin .= "<a href='hhttps://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
-        $translate_plugin .= $external_icon;
         $markup = <<<HTML
 \t\t<div class="lpac-banner">
 \t\t<h2>{$title}</h2>
 \t\t<p>{$no_api_key}</p>
 \t\t<p>{$documentation}</p>
-\t\t<p>{$issues}</p>
 \t\t<p>{$translate_plugin}</p>
+\t\t<p>{$issues}</p>
 \t\t</div>
 HTML;
         return $markup;
@@ -144,7 +140,7 @@ HTML;
             'name' => __( 'LPAC General Settings', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'   => 'lpac_general_settings',
             'type' => 'title',
-            'desc' => self::lpac_create_plugin_settings_banner(),
+            'desc' => self::create_plugin_settings_banner(),
         );
         $plugin_enabled = get_option( 'lpac_enabled' );
         /* translators: 1: Dashicons outbound link icon */
@@ -176,13 +172,16 @@ HTML;
         }
         
         $lpac_settings[] = array(
-            'name'        => __( 'Google Maps API Key', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc_tip'    => __( 'Enter the API key from Google cloud console.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'        => __( 'Enter the API key you copied from the Google Cloud Console. <a href="https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs" target="blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'          => 'lpac_google_maps_api_key',
-            'placeholder' => 'AIzaSyD8seU-lym435g...',
-            'type'        => ( LPAC_DEBUG ? 'text' : 'password' ),
-            'css'         => 'min-width:300px;',
+            'name'              => __( 'Google Maps API Key', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip'          => __( 'Enter the API key from Google cloud console.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Enter the API key you copied from the Google Cloud Console. <a href="https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs" target="blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_google_maps_api_key',
+            'placeholder'       => 'AIzaSyD8seU-lym435g...',
+            'type'              => ( LPAC_DEBUG ? 'text' : 'password' ),
+            'css'               => 'min-width:300px;',
+            'custom_attributes' => array(
+            'autocomplete' => 'new-password',
+        ),
         );
         $lpac_settings[] = array(
             'name'  => 'Map Behaviour',
@@ -241,14 +240,6 @@ HTML;
             'type'     => 'checkbox',
             'css'      => 'min-width:300px;',
             'default'  => 'yes',
-        );
-        $lpac_settings[] = array(
-            'name'     => __( 'Autofill Billing fields', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc_tip' => __( 'Should the billing fields be automatically populated with information pulled from the location?', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'       => 'lpac_autofill_billing_fields',
-            'type'     => 'checkbox',
-            'css'      => 'min-width:300px;',
         );
         $lpac_settings[] = array(
             'name'     => __( 'Show Map on the Order Received Page', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -419,6 +410,7 @@ HTML;
             'name' => __( 'LPAC Display Settings', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'   => 'lpac_display_settings',
             'type' => 'title',
+            'desc' => self::create_plugin_settings_banner(),
         );
         $lpac_settings[] = array(
             'name'        => __( 'Background Color (HEX)', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -431,10 +423,11 @@ HTML;
         );
         $lpac_settings[] = array(
             'name'     => __( 'Where Should the Map Appear on the Checkout Page?', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc_tip' => __( 'This option displays a map view on the order received page after an order has been placed by a customer.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => __( 'Choose where you would like the map to appear on the checkout page.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'       => 'lpac_checkout_map_orientation',
             'type'     => 'select',
             'options'  => $this->get_possible_map_locations(),
+            'default'  => 'woocommerce_checkout_before_customer_details',
             'css'      => 'min-width:300px;',
         );
         $lpac_settings[] = array(
@@ -586,7 +579,7 @@ HTML;
             'name' => __( 'LPAC Map Visibility Rules', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'   => 'lpac_map_visibility_settings',
             'type' => 'title',
-            'desc' => self::lpac_create_plugin_settings_banner(),
+            'desc' => self::create_plugin_settings_banner(),
         );
         $lpac_settings[] = array(
             'name'     => __( 'Hide map for Guest orders', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -1065,14 +1058,14 @@ HTML;
      *
      * @return array
      */
-    private function lpac_create_debug_setting_fields()
+    private function create_debug_setting_fields()
     {
         $lpac_settings = array();
         $lpac_settings[] = array(
             'name' => __( 'LPAC Debug Settings', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'   => 'lpac_debug_settings',
             'type' => 'title',
-            'desc' => self::lpac_create_plugin_settings_banner(),
+            'desc' => self::create_plugin_settings_banner(),
         );
         $lpac_settings[] = array(
             'name'     => __( 'Hide checkout notice', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -1193,7 +1186,7 @@ HTML;
      * @param array $settings The WooCommerce settings.
      * @param array $current_section The current settings tab being viewed.
      */
-    public function lpac_create_plugin_settings_fields()
+    public function create_plugin_settings_fields()
     {
         global  $current_section ;
         $lpac_settings = array();
@@ -1245,7 +1238,7 @@ HTML;
         
         }
         if ( $current_section === 'debug' ) {
-            $lpac_settings = $this->lpac_create_debug_setting_fields();
+            $lpac_settings = $this->create_debug_setting_fields();
         }
         // Custom attributes example
         // https://woocommerce.github.io/code-reference/files/woocommerce-includes-admin-wc-meta-box-functions.html#source-view.146
@@ -1287,9 +1280,9 @@ HTML;
      *
      * @since    1.1.0
      */
-    public function lpac_output_plugin_settings()
+    public function output_plugin_settings()
     {
-        $settings = $this->lpac_create_plugin_settings_fields();
+        $settings = $this->create_plugin_settings_fields();
         \WC_Admin_Settings::output_fields( $settings );
         global  $current_section ;
         if ( $current_section === 'visibility_rules' ) {
@@ -1301,10 +1294,10 @@ HTML;
      *  Save our settings.
      *
      */
-    public function lpac_save_plugin_settings()
+    public function save_plugin_settings()
     {
         global  $current_section ;
-        $settings = $this->lpac_create_plugin_settings_fields();
+        $settings = $this->create_plugin_settings_fields();
         \WC_Admin_Settings::save_fields( $settings );
         if ( $current_section ) {
             do_action( 'woocommerce_update_options_' . $this->id . '_' . $current_section );

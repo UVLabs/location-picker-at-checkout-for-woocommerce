@@ -50,6 +50,12 @@
 }
 
 /* Google maps info window */
+
+.woocommerce-checkout .lpac-map .gm-style-iw-d {
+  color: #000 !important;
+  font-weight: bold;
+}
+
 .woocommerce-page .lpac-map .gm-style-iw-d p {
   font-size: 1.2em;
   margin-bottom: 0 !important;

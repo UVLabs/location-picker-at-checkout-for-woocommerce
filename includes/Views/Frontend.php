@@ -14,6 +14,7 @@ namespace Lpac\Views;
 
 use  Lpac\Controllers\Map_Visibility_Controller ;
 use  Lpac\Controllers\Checkout_Page_Controller ;
+use  Lpac\Compatibility\Checkout_Provider ;
 class Frontend
 {
     /**
@@ -30,9 +31,12 @@ class Frontend
         $map_options = array_merge( $map_options, $additional );
         $map_options = json_encode( $map_options );
         $last_order_location = json_encode( $last_order_location );
+        $checkout_provider = ( new Checkout_Provider() )->get_checkout_provider();
+        $checkout_provider = json_encode( $checkout_provider );
         $global_variables = <<<JAVASCRIPT
 \t\tvar mapOptions = {$map_options};
 \t\tvar lpacLastOrder = {$last_order_location};
+\t\tvar checkoutProvider = {$checkout_provider}
 JAVASCRIPT;
         return $global_variables;
     }
@@ -92,6 +96,26 @@ JAVASCRIPT;
 \t\t</div>
 HTML;
         echo  apply_filters( 'lpac_map_markup', $markup, $user_id ) ;
+        woocommerce_form_field( 'lpac_latitude', array(
+            'label'    => __( 'Latitude', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required' => false,
+            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide' ) : array( 'form-row-wide', 'hidden' ) ),
+        ) );
+        woocommerce_form_field( 'lpac_longitude', array(
+            'label'    => __( 'Longitude', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required' => false,
+            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide' ) : array( 'form-row-wide', 'hidden' ) ),
+        ) );
+        woocommerce_form_field( 'lpac_is_map_shown', array(
+            'label'    => __( 'Map Shown', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required' => false,
+            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide' ) : array( 'form-row-wide', 'hidden' ) ),
+        ) );
+        woocommerce_form_field( 'lpac_places_autocomplete', array(
+            'label'    => __( 'Places Autocomplete', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required' => false,
+            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden', 'fc-skip-hide-optional-field' ) ),
+        ) );
         do_action( 'lpac_after_map' );
         // Add inline global JS so that we can use data fetched using PHP inside JS
         $global_js_vars = $this->setup_global_js_vars();
@@ -131,8 +155,12 @@ HTML;
         if ( empty($order_id) ) {
             return;
         }
-        $latitude = (double) get_post_meta( $order_id, '_lpac_latitude', true );
-        $longitude = (double) get_post_meta( $order_id, '_lpac_longitude', true );
+        // TODO get_post_meta runs everytime when single option is used...
+        // We can simply just call it once without a key and only the order id and we'll receive the full array without needing multiple calls to the DB
+        // This might not be necessary if the data is cached
+        // Backwards compatibility, previously we stored location coords as private meta.
+        $latitude = ( (double) get_post_meta( $order_id, 'lpac_latitude', true ) ?: (double) get_post_meta( $order_id, '_lpac_latitude', true ) );
+        $longitude = ( (double) get_post_meta( $order_id, 'lpac_longitude', true ) ?: (double) get_post_meta( $order_id, '_lpac_longitude', true ) );
         $shipping_address_1 = get_post_meta( $order_id, '_shipping_address_1', true );
         $shipping_address_2 = get_post_meta( $order_id, '_shipping_address_2', true );
         if ( empty($latitude) || empty($longitude) ) {
@@ -156,75 +184,6 @@ HTML;
         // On some websites our basemap might not enqueue in time. In those cases fall back to default wp jquery handle.
         if ( empty($added) ) {
             wp_add_inline_script( 'jquery-core', $global_js_vars, 'before' );
-        }
-    }
-    
-    /**
-     * Creates the latitude and longitude input fields.
-     *
-     * @since    1.0.0
-     * @param array $fields The fields array.
-     */
-    public function lpac_create_lat_and_long_inputs( $fields )
-    {
-        $fields['billing']['lpac_latitude'] = array(
-            'label'    => __( 'Latitude', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide' ) : array( 'form-row-wide', 'hidden' ) ),
-        );
-        $fields['billing']['lpac_longitude'] = array(
-            'label'    => __( 'Longitude', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide' ) : array( 'form-row-wide', 'hidden' ) ),
-        );
-        $fields['billing']['lpac_is_map_shown'] = array(
-            'label'    => __( 'Map Shown', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide' ) : array( 'form-row-wide', 'hidden' ) ),
-        );
-        $fields['billing']['lpac_places_autocomplete'] = array(
-            'label'    => __( 'Places Autocomplete', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden', 'fc-skip-hide-optional-field' ) ),
-        );
-        return $fields;
-    }
-    
-    /**
-     * Check if the latitude or longitude inputs are filled in.
-     *
-     * @since    1.1.0
-     * @param array $fields The fields array.
-     * @param object $errors The errors object.
-     *
-     * @return void
-     */
-    public function lpac_validate_location_fields( $fields, $errors )
-    {
-        /**
-         * The map visibility might be changed via JS or other conditions
-         * So we need to check if its actually shown before trying to validate
-         */
-        $map_shown = (bool) $fields['lpac_is_map_shown'];
-        if ( $map_shown === false ) {
-            return;
-        }
-        /**
-         * Allow users to override this setting
-         */
-        $custom_override = apply_filters(
-            'lpac_override_map_validation',
-            false,
-            $fields,
-            $errors
-        );
-        if ( $custom_override === true ) {
-            return;
-        }
-        $error_msg = '<strong>' . __( 'Please select your location using the Google Map.', 'map-location-picker-at-checkout-for-woocommerce' ) . '</strong>';
-        $error_msg = apply_filters( 'lpac_checkout_empty_cords_error_msg', $error_msg );
-        if ( empty($fields['lpac_latitude']) || empty($fields['lpac_longitude']) ) {
-            $errors->add( 'validation', $error_msg );
         }
     }
     

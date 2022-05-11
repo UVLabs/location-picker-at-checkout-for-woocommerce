@@ -39,6 +39,7 @@ trait Upload_Folders {
 
 			if ( ! file_exists( $folder_dir ) ) {
 				$path_created = wp_mkdir_p( $folder_dir );
+				// Add index.php to folder to help prevent farming of customer location data.
 				if ( $path_created ) {
 					$outstream = fopen( $folder_dir . 'index.php', 'w' );
 					fwrite( $outstream, '<?php //Silence;' );

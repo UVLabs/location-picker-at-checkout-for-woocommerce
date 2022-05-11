@@ -201,7 +201,7 @@ class Main
         $plugin_public_display = new Frontend_Display();
         $controller_emails = new Emails_Controller();
         $controller_map_visibility = new Map_Visibility_Controller();
-        $controler_checkout_page = new Checkout_Page_Controller();
+        $controller_checkout_page = new Checkout_Page_Controller();
         $model_location_details = new Location_Details();
         /*
          * If plugin not enabled don't continue
@@ -248,10 +248,6 @@ class Main
         }
         
         /*
-         * Output hidden input fields for latitude and longitude.
-         */
-        $this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public_display, 'lpac_create_lat_and_long_inputs' );
-        /*
          * Output map on order received and order details pages.
          */
         $this->loader->add_action( 'woocommerce_order_details_after_order_table', $plugin_public_display, 'lpac_output_map_on_order_details_page' );
@@ -262,8 +258,8 @@ class Main
         if ( $validate_lat_long_fields === 'yes' ) {
             $this->loader->add_action(
                 'woocommerce_after_checkout_validation',
-                $plugin_public_display,
-                'lpac_validate_location_fields',
+                $controller_checkout_page,
+                'validate_location_fields',
                 10,
                 2
             );

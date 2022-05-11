@@ -9,7 +9,10 @@
     <exclude-pattern>*.js</exclude-pattern>
     <exclude-pattern>*.css</exclude-pattern>
     <rule ref="WordPress-Core">
+    <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+    <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
     </rule>
+    <rule ref="vendor/suin/phpcs-psr4-sniff/src/Suin"/>
 
     <!-- <rule ref="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing">
         <severity>0</severity>

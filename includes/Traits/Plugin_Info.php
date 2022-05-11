@@ -8,7 +8,7 @@
 *
 * @link    https://uriahsvictor.com
 * @since   1.4.3
-* @package Notices
+* @package Traits
 */
 
 namespace Lpac\Traits;
@@ -27,7 +27,7 @@ trait Plugin_Info {
 	 * @since    1.4.3
 	 * @return int Days since plugin has been installed.
 	 */
-	private function get_days_since_installed() {
+	protected function get_days_since_installed() {
 
 		// Get the installed date.
 		// If option does not exist then set installed date as two days ago.
@@ -50,7 +50,7 @@ trait Plugin_Info {
 	 * Get the version LPAC was installed at.
 	 * @return mixed
 	 */
-	private function get_installed_at_version() {
+	protected function get_installed_at_version() {
 		return get_option( 'lpac_installed_at_version' );
 	}
 }
