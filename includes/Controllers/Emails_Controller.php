@@ -40,8 +40,9 @@ class Emails_Controller {
 			return;
 		}
 
-		$latitude  = get_post_meta( $order->get_id(), '_lpac_latitude', true );
-		$longitude = get_post_meta( $order->get_id(), '_lpac_longitude', true );
+		// Backwards compatibility, previously we stored location coords as private meta.
+		$latitude  = get_post_meta( $order->get_id(), 'lpac_latitude', true ) ?: get_post_meta( $order->get_id(), '_lpac_latitude', true );
+		$longitude = get_post_meta( $order->get_id(), 'lpac_longitude', true ) ?: get_post_meta( $order->get_id(), '_lpac_longitude', true );
 
 		// If we have no results return.
 		if ( empty( $latitude ) or empty( $longitude ) ) {

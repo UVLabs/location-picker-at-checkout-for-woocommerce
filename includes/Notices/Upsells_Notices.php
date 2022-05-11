@@ -1,5 +1,4 @@
 <?php
-
 /**
 * Class responsible for upsell notices.
 *
@@ -17,15 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-use Lpac\Notices\Notice;
-use Lpac\Traits\Plugin_Info;
-
 /**
 * Class Upsells_Notices.
 */
 class Upsells_Notices extends Notice {
-
-	use Plugin_Info;
 
 	/**
 	 * Class constructor
@@ -57,9 +51,10 @@ class Upsells_Notices extends Notice {
 		}
 
 		$content = array(
-			'title' => __( 'Location Picker at Checkout PRO Released!', 'map-location-picker-at-checkout-for-woocommerce' ),
-			'body'  => __( 'Unlock the full potential of your pickups and deliveries. The PRO version of LPAC is now live and available for purchase! Use Coupon code INIT15 for a 15% discount on your first year subscription! Limited time offer.', 'map-location-picker-at-checkout-for-woocommerce' ),
-			'link'  => 'https://lpacwp.com/pricing/?utm_source=banner&utm_medium=lpacnotice&utm_campaign=proupsell',
+			'title' => esc_html__( 'Location Picker at Checkout PRO Released', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🚀',
+			/* translators: 1: Emoji 2: Opening <strong> HTML element 3: Closing <strong> HTML element 4: % symbol  */
+			'body'  => sprintf( esc_html__( 'Unlock the full potential of your pickups and deliveries %1$s The PRO version of LPAC is now live and available for purchase! Use Coupon code %2$sINIT15%3$s for a 15%4$s discount on your first year subscription! %2$sLimited time offer%3$s.', 'map-location-picker-at-checkout-for-woocommerce' ), '📈', '<strong>', '</strong>', '%' ),
+			'link'  => esc_attr( 'https://lpacwp.com/pricing/?utm_source=banner&utm_medium=lpacnotice&utm_campaign=proupsell' ),
 		);
 
 		echo $this->create_notice_markup( 'initial_pro_launch_notice', $content );

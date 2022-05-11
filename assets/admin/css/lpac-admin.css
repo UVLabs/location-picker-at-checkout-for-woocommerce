@@ -30,6 +30,10 @@
   text-align: center;
 }
 
+.lpac-banner p {
+  font-size: 16px;
+}
+
 #lpac_export_btn {
   cursor: pointer;
   padding: 10px;

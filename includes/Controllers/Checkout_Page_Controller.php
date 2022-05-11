@@ -22,6 +22,46 @@ use Lpac\Helpers\Functions;
 class Checkout_Page_Controller {
 
 	/**
+	 * Check if the latitude or longitude inputs are filled in.
+	 *
+	 * @since    1.1.0
+	 * @param array $fields The fields array.
+	 * @param object $errors The errors object.
+	 *
+	 * @return void
+	 */
+	public function validate_location_fields( $fields, $errors ) {
+
+		/**
+		 * The map visibility might be changed via JS or other conditions
+		 * So we need to check if its actually shown before trying to validate
+		 */
+		$map_shown = (bool) $_POST['lpac_is_map_shown'] ?? '';
+
+		if ( $map_shown === false ) {
+			return;
+		}
+
+		/**
+		 * Allow users to override this setting
+		 */
+		$custom_override = apply_filters( 'lpac_override_map_validation', false, $fields, $errors );
+
+		if ( $custom_override === true ) {
+			return;
+		}
+
+		$error_msg = '<strong>' . __( 'Please select your location using the Google Map.', 'map-location-picker-at-checkout-for-woocommerce' ) . '</strong>';
+
+		$error_msg = apply_filters( 'lpac_checkout_empty_cords_error_msg', $error_msg );
+
+		if ( empty( $_POST['lpac_latitude'] ) || empty( $_POST['lpac_longitude'] ) ) {
+			$errors->add( 'validation', $error_msg );
+		}
+
+	}
+
+	/**
 	 * Map settings.
 	 *
 	 * @since    1.0.0
@@ -36,7 +76,6 @@ class Checkout_Page_Controller {
 			'lpac_map_zoom_level'                  => $options['zoom_level'],
 			'lpac_map_clickable_icons'             => $options['clickable_icons'] === 'yes' ? true : false,
 			'lpac_map_background_color'            => $options['background_color'],
-			'lpac_autofill_billing_fields'         => $options['fill_in_billing_fields'] === 'yes' ? true : false,
 			'lpac_remove_address_plus_code'        => $options['remove_address_plus_code'] === 'yes' ? true : false,
 			'lpac_enable_places_autocomplete'      => $options['enable_places_search'] === 'yes' ? true : false,
 			'lpac_places_autocomplete_fields'      => $options['places_search_fields'],
@@ -74,10 +113,14 @@ class Checkout_Page_Controller {
 			return;
 		}
 
+		// Backwards compatibility, previously we stored location coords as private meta.
+		$latitude  = $last_order->get_meta( 'lpac_latitude', true ) ?: $last_order->get_meta( '_lpac_latitude', true );
+		$longitude = $last_order->get_meta( 'lpac_longitude', true ) ?: $last_order->get_meta( '_lpac_longitude', true );
+
 		return array(
 			'address'   => $last_order->get_formatted_shipping_address(),
-			'latitude'  => $last_order->get_meta( '_lpac_latitude', true ),
-			'longitude' => $last_order->get_meta( '_lpac_longitude', true ),
+			'latitude'  => $latitude,
+			'longitude' => $longitude,
 		);
 
 	}

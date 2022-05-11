@@ -1,10 +1,9 @@
-// map.setOptions({
-//    disableDefaultUI: true,
-//  Overwrite map options
-//  https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
-// })
-
-/* Get our global map variables */
+/**
+ * Globals:
+ *
+ * mapOptions, checkoutProvider
+ */
+/* Get our global map variables from base-map.js */
 const map = window.lpac_map;
 const marker = window.lpac_marker;
 const infowindow = window.lpac_infowindow;
@@ -277,16 +276,35 @@ function lpac_fill_in_latlng(latlng) {
 function lpac_fill_in_address_fields(results, latLng = "") {
   lpac_fill_in_latlng(latLng);
 
-  lpac_fill_in_shipping_fields(results);
+  /** Fluid checkout does things differently **/
+  if (checkoutProvider && checkoutProvider === "fluidcheckout") {
+    lpac_fill_in_shipping_fields(results);
 
-  if (typeof mapOptions === "undefined" || mapOptions === null) {
-    console.log("LPAC: mapOptions object not present, skipping...");
+    const billingSameAsShippingCheckbox = document.querySelector(
+      "#billing_same_as_shipping"
+    );
+
+    if (
+      billingSameAsShippingCheckbox &&
+      billingSameAsShippingCheckbox.checked === true
+    ) {
+      lpac_fill_in_billing_fields(results);
+    }
+
     return;
   }
+  /** / */
 
-  const lpac_autofill_billing_fields = mapOptions.lpac_autofill_billing_fields;
+  const shipToDifferentAddressCheckbox = document.querySelector(
+    "#ship-to-different-address-checkbox"
+  );
 
-  if (lpac_autofill_billing_fields) {
+  if (
+    shipToDifferentAddressCheckbox &&
+    shipToDifferentAddressCheckbox.checked === true
+  ) {
+    lpac_fill_in_shipping_fields(results);
+  } else {
     lpac_fill_in_billing_fields(results);
   }
 }
@@ -827,13 +845,49 @@ function addPlacesAutoComplete() {
           lpacFillPlacesAutocompleteBillingFields(results);
         }
 
+        let shipToDifferentAddress = false;
+
+        const shipToDifferentAddressCheckbox = document.querySelector(
+          "#ship-to-different-address-checkbox"
+        );
+
+        if (
+          shipToDifferentAddressCheckbox &&
+          shipToDifferentAddressCheckbox.checked === true
+        ) {
+          shipToDifferentAddress = true;
+        }
+
+        /** Fluid checkout does things differently **/
+        if (checkoutProvider && checkoutProvider === "fluidcheckout") {
+          const billingSameAsShippingCheckbox = document.querySelector(
+            "#billing_same_as_shipping"
+          );
+
+          if (
+            billingSameAsShippingCheckbox &&
+            billingSameAsShippingCheckbox.checked === true
+          ) {
+            /**
+             * In Fluid Checkout (FC) this checkbox actually means that the customer billing address is the same as their shipping.
+             * By default in FC, shipping address is always present, so in essence, when "Billing TO: Same as shipping address" is unchecked, we should not be updating the map view when those billing fields are updated.
+             */
+            shipToDifferentAddress = true;
+          }
+        }
+        /** / */
+
         /*
-         * When Shipping destination is set as "Force shipping to the customer billing address" in WooCommerce->Shipping->Shipping Options
+         * When Shipping destination is set as "Force shipping to the customer billing address" or " Default to customer billing address" in WooCommerce->Shipping->Shipping Options
          * We would want to adjust the map as needed.
+         *
+         * Also check the status of shipping to a different address checkbox. Based on it's value we'd want to decide whether to update the map view or not.
          */
         if (
-          mapOptions.lpac_wc_shipping_destination_setting === "billing_only" ||
-          (fields.length === 1 && fields.includes("billing_address_1"))
+          (mapOptions.lpac_wc_shipping_destination_setting === "billing_only" ||
+            mapOptions.lpac_wc_shipping_destination_setting === "billing" ||
+            (fields.length === 1 && fields.includes("billing_address_1"))) &&
+          shipToDifferentAddress === false
         ) {
           lpac_fill_in_latlng(latlng);
           map.setCenter(latlng);
@@ -863,6 +917,14 @@ addPlacesAutoComplete();
     // Prevents ajax call in lpacHideShowMap from overriding our lpac_places_autocomplete_hide_map option.
     if (!mapOptions.lpac_places_autocomplete_hide_map) {
       $(document.body).on("updated_checkout", lpacHideShowMap);
+    }
+
+    // Fluid checkout updates frequently so always check for fields after checkout updating event is fired.
+    // https://github.com/fluidweb-co/fluid-checkout/issues/47#issuecomment-1109699262
+    if (checkoutProvider && checkoutProvider === "fluidcheckout") {
+      $(document.body).on("updated_checkout", () => {
+        addPlacesAutoComplete();
+      });
     }
 
     // If the auto detect location feature is turned on, then detect the location but don't output the last order details.

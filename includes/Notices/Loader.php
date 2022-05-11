@@ -11,6 +11,11 @@
 */
 
 namespace Lpac\Notices;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 use Lpac\Notices\Upsells_Notices;
 use Lpac\Notices\Review_Notices;
 
@@ -28,5 +33,6 @@ class Loader {
 	public function load_notices() {
 		( new Upsells_Notices );
 		( new Review_Notices );
+		( new General_Notices );
 	}
 }

@@ -1,11 +1,11 @@
-=== Location Picker at Checkout for WooCommerce ===
+=== Location Picker at Checkout & Google Address AutoFill for WooCommerce ===
 Contributors: uriahs-victor
 Donate link: https://uriahsvictor.com
 Tags: woocommerce, location picker, checkout map, geolocation, google map, map, delivery map
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 5.9
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -183,11 +183,19 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 
 == Changelog ==
 
+= 1.5.4 = 
+* [Fix PRO] Saved Addresses checkbox was always showing on checkout page even though option was turned off.
+* [Fix PRO] Session GPS Coordinates were not always updating when using Saved Addresses feature.
+* [Improvement] Allow places autocomplete feature to work for billing fields when checkout defaults to billing same as shipping.
+* [Improvement] Handle map and fields updating based on Shipping Options set in WooCommerce and "Ship to different address" checkbox status.
+* [Change] GPS Coordinates `lpac_latitude` & `lpac_longitude` are no longer stored as private meta items. They're now public.
+* [Compat] Add AutoComplete support for Fluid Checkout plugin.
+
 = 1.5.3 = 
 * [Fix PRO] Customers would always receive a shipping error when trying to place an order if "Ship Only to Drawn Regions" or "Limit Shipping Distance" feature was enabled.
 * [Fix PRO] Saved address details on map would show 'undefined' if `shipping_address_1` field was not present in object.
 * [Fix PRO] Saved Addresses feature would always save customer billing address even when shipping address details were available.
-* [Info] Support added for Fluid Checkout for WooCommerce plugin's custom checkout page.
+* [Compat] Support added for Fluid Checkout for WooCommerce plugin's custom checkout page.
 
 = 1.5.2 = 
 * [New PRO] Feature to prevent shipping to customers who's location do not fall inside your drawn shipping regions. [Learn More](https://lpacwp.com/docs/getting-started/plugin-settings/shipping/#cost-by-region)

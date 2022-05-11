@@ -11,17 +11,23 @@
 */
 namespace Lpac\Notices;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 /**
 * Class Notice.
 */
 class Notice {
+
+	use \Lpac\Traits\Plugin_Info;
 
 	/**
 	 * Get the current user id
 	 *
 	 * @return int
 	 */
-	private function get_user_id() {
+	protected function get_user_id() {
 		return get_current_user_id();
 	}
 
@@ -29,7 +35,7 @@ class Notice {
 	 * Get the notice ids that have been dismissed by user.
 	 * @return mixed
 	 */
-	private function get_dismissed_notices() {
+	protected function get_dismissed_notices() {
 		return get_user_meta( $this->get_user_id(), 'lpac_dismissed_notices', true );
 	}
 
@@ -69,10 +75,10 @@ class Notice {
 			return;
 		}
 
-		$title             = esc_html( $content['title'] ?? '' );
-		$body              = esc_html( $content['body'] ?? '' );
-		$cta_text          = esc_html( $content['cta'] ?? __( 'Learn more', 'map-location-picker-at-checkout-for-woocommerce' ) );
-		$learn_more_link   = esc_attr( $content['link'] ?? '' );
+		$title             = $content['title'] ?? '';
+		$body              = $content['body'] ?? '';
+		$cta_text          = $content['cta'] ?? esc_html__( 'Learn more', 'map-location-picker-at-checkout-for-woocommerce' );
+		$learn_more_link   = $content['link'] ?? '';
 		$learm_more_output = '';
 
 		if ( ! empty( $learn_more_link ) ) {

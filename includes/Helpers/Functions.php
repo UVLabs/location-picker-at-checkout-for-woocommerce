@@ -237,9 +237,6 @@ class Functions {
 		$background_color = get_option( 'lpac_map_background_color', '#eee' );
 		$background_color = apply_filters( 'lpac_map_background_color', $background_color );
 
-		$fill_in_billing_fields = get_option( 'lpac_autofill_billing_fields', 'yes' );
-		$fill_in_billing_fields = apply_filters( 'lpac_autofill_billing_fields', $fill_in_billing_fields );
-
 		$remove_address_plus_code = get_option( 'lpac_remove_address_plus_code', 'no' );
 		$remove_address_plus_code = apply_filters( 'lpac_remove_address_plus_code', $remove_address_plus_code );
 
@@ -259,7 +256,6 @@ class Functions {
 			'zoom_level'                      => $zoom_level,
 			'clickable_icons'                 => $clickable_icons,
 			'background_color'                => $background_color,
-			'fill_in_billing_fields'          => $fill_in_billing_fields,
 			'remove_address_plus_code'        => $remove_address_plus_code,
 			'enable_places_search'            => $enable_places_search,
 			'places_search_fields'            => $places_search_fields,

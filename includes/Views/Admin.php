@@ -35,8 +35,10 @@ class Admin {
 	 */
 	public function lpac_display_lpac_admin_order_meta( $order ) {
 
-		$latitude                 = get_post_meta( $order->get_id(), '_lpac_latitude', true );
-		$longitude                = get_post_meta( $order->get_id(), '_lpac_longitude', true );
+		// Backwards compatibility, previously we stored location coords as private meta.
+		$latitude  = get_post_meta( $order->get_id(), 'lpac_latitude', true ) ?: get_post_meta( $order->get_id(), '_lpac_latitude', true );
+		$longitude = get_post_meta( $order->get_id(), 'lpac_longitude', true ) ?: get_post_meta( $order->get_id(), '_lpac_longitude', true );
+
 		$places_autocomplete_used = get_post_meta( $order->get_id(), '_places_autocomplete', true );
 
 		/* translators: 1: Dashicons outbound link icon*/
@@ -75,8 +77,9 @@ HTML;
 	 */
 	public function lpac_create_custom_order_details_metabox() {
 
-		$latitude  = (float) get_post_meta( get_the_ID(), '_lpac_latitude', true );
-		$longitude = (float) get_post_meta( get_the_ID(), '_lpac_longitude', true );
+		// Backwards compatibility, previously we stored location coords as private meta.
+		$latitude  = get_post_meta( get_the_ID(), 'lpac_latitude', true ) ?: get_post_meta( get_the_ID(), '_lpac_latitude', true );
+		$longitude = get_post_meta( get_the_ID(), 'lpac_longitude', true ) ?: get_post_meta( get_the_ID(), '_lpac_longitude', true );
 
 		/**
 		 * If we have no values for these options bail.
@@ -97,8 +100,10 @@ HTML;
 
 		$id = get_the_ID();
 
-		$latitude           = (float) get_post_meta( $id, '_lpac_latitude', true );
-		$longitude          = (float) get_post_meta( $id, '_lpac_longitude', true );
+		// Backwards compatibility, previously we stored location coords as private meta.
+		$latitude  = (float) get_post_meta( $id, 'lpac_latitude', true ) ?: (float) get_post_meta( $id, '_lpac_latitude', true );
+		$longitude = (float) get_post_meta( $id, 'lpac_longitude', true ) ?: (float) get_post_meta( $id, '_lpac_longitude', true );
+
 		$shipping_address_1 = get_post_meta( $id, '_shipping_address_1', true );
 		$shipping_address_2 = get_post_meta( $id, '_shipping_address_2', true );
 
@@ -119,13 +124,11 @@ HTML;
 		$options = Functions::set_map_options();
 
 		$data = array(
-			'lpac_map_default_latitude'    => $options['latitude'],
-			'lpac_map_default_longitude'   => $options['longitude'],
-			'lpac_map_zoom_level'          => $options['zoom_level'],
-			'lpac_map_clickable_icons'     => $options['clickable_icons'] === 'yes' ? true : false,
-			'lpac_map_background_color'    => $options['background_color'],
-			'lpac_autofill_billing_fields' => $options['fill_in_billing_fields'] === 'yes' ? true : false,
-
+			'lpac_map_default_latitude'  => $options['latitude'],
+			'lpac_map_default_longitude' => $options['longitude'],
+			'lpac_map_zoom_level'        => $options['zoom_level'],
+			'lpac_map_clickable_icons'   => $options['clickable_icons'] === 'yes' ? true : false,
+			'lpac_map_background_color'  => $options['background_color'],
 		);
 
 		$order_location_details = json_encode( $order_location_details );

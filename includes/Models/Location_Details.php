@@ -28,9 +28,8 @@ class Location_Details {
 	 */
 	public function validate_map_visibility( $order_id, $data ) {
 
-		$show = Map_Visibility_Controller::lpac_show_map( 'checkout' );
-
-		$map_shown = $data['lpac_is_map_shown'] ?? '';
+		$show      = Map_Visibility_Controller::lpac_show_map( 'checkout' );
+		$map_shown = $_POST['lpac_is_map_shown'] ?? '';
 
 		if ( $show === false ) {
 			return;
@@ -43,8 +42,8 @@ class Location_Details {
 			return;
 		}
 
-		$lat  = (float) $data['lpac_latitude'] ?? (float) 0.0;
-		$long = (float) $data['lpac_longitude'] ?? (float) 0.0;
+		$lat  = (float) $_POST['lpac_latitude'] ?? 0.0;
+		$long = (float) $_POST['lpac_longitude'] ?? 0.0;
 
 		$this->save_order_meta_cords( $order_id, $lat, $long );
 
@@ -62,8 +61,8 @@ class Location_Details {
 			return;
 		}
 
-		update_post_meta( $order_id, '_lpac_latitude', sanitize_text_field( $lat ) );
-		update_post_meta( $order_id, '_lpac_longitude', sanitize_text_field( $long ) );
+		update_post_meta( $order_id, 'lpac_latitude', sanitize_text_field( $lat ) );
+		update_post_meta( $order_id, 'lpac_longitude', sanitize_text_field( $long ) );
 	}
 
 	/**
@@ -76,7 +75,7 @@ class Location_Details {
 	 * @return void
 	 */
 	public function save_places_autocomplete( int $order_id, array $data ) : void {
-		$places_autocomplete_used = $data['lpac_places_autocomplete'];
+		$places_autocomplete_used = $_POST['lpac_places_autocomplete'] ?? '';
 		update_post_meta( $order_id, '_places_autocomplete', sanitize_text_field( $places_autocomplete_used ) );
 	}
 
