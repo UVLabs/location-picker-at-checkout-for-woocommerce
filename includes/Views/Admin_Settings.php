@@ -68,6 +68,9 @@ class Admin_Settings extends \WC_Settings_Page
             'shipping'         => __( 'Shipping', 'map-location-picker-at-checkout-for-woocommerce' ),
             'debug'            => __( 'Debug', 'map-location-picker-at-checkout-for-woocommerce' ),
         );
+        if ( defined( 'LPAC_SAAS_EARLY_ACCESS' ) ) {
+            $sections['api'] = __( 'API', 'map-location-picker-at-checkout-for-woocommerce' );
+        }
         return apply_filters( 'woocommerce_get_sections_' . LPAC_PLUGIN_NAME, $sections );
     }
     
@@ -633,7 +636,7 @@ HTML;
             'css'     => 'min-width:300px;height: 100px',
         );
         if ( lpac_fs()->is_not_paying() ) {
-            $lpac_settings = $this->create_dummy_visibility_rules_settings_fields( $lpac_settings );
+            $lpac_settings = $this->create_dummy_visibility_settings_fields( $lpac_settings );
         }
         $lpac_settings[] = array(
             'type' => 'sectionend',
@@ -647,7 +650,7 @@ HTML;
      * @param array $lpac_visibility_settings An array of Live fields to merge the dummy ones into.
      * @return array
      */
-    private function create_dummy_visibility_rules_settings_fields( array $lpac_visibility_settings )
+    private function create_dummy_visibility_settings_fields( array $lpac_visibility_settings )
     {
         /* translators: 1: Dashicons outbound link icon */
         $learn_more = sprintf( __( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
@@ -1054,6 +1057,55 @@ HTML;
     }
     
     /**
+     * House all the plugin settings to do with the API.
+     *
+     * @return array
+     */
+    public function create_api_settings_fields()
+    {
+        /* translators: 1: Dashicons outbound link icon */
+        $learn_more = sprintf( __( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
+        $lpac_api_settings = array();
+        $lpac_api_settings[] = array(
+            'name' => __( 'LPAC API Settings', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'   => 'lpac_api_settings',
+            'type' => 'title',
+            'desc' => $this->create_plugin_settings_banner(),
+        );
+        $lpac_api_settings[] = array(
+            'name' => __( 'Email', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc' => __( 'Enter the email you used to sign up with app.lpacwp.com.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'   => 'lpac_saas_email',
+            'type' => 'text',
+        );
+        $lpac_api_settings[] = array(
+            'name' => __( 'API Key', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc' => __( 'Enter your API Key.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'   => 'lpac_saas_token',
+            'type' => 'password',
+        );
+        $lpac_api_settings[] = array(
+            'name'      => __( 'API Connection', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'type'      => 'button',
+            'value'     => 'Test',
+            'id'        => 'lpac_test_connection',
+            'desc'      => sprintf(
+            __( 'Test your website\'s connection to the API.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            '<br>',
+            '<code>',
+            '/wp-content/uploads/lpac/order-exports/',
+            '</code>'
+        ),
+            'is_option' => false,
+        );
+        $lpac_api_settings[] = array(
+            'type' => 'sectionend',
+            'id'   => 'lpac_api_settings_section_end',
+        );
+        return $lpac_api_settings;
+    }
+    
+    /**
      * House all the plugin settings to do with Debugging.
      *
      * @return array
@@ -1236,6 +1288,10 @@ HTML;
                 $lpac_settings = array_merge( $lpac_settings, $this->create_dummy_shipping_setting_fields() );
             }
         
+        }
+        // Add fields to API tab
+        if ( $current_section === 'api' ) {
+            $lpac_settings = $this->create_api_settings_fields();
         }
         if ( $current_section === 'debug' ) {
             $lpac_settings = $this->create_debug_setting_fields();

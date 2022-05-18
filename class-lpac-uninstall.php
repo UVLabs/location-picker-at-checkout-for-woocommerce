@@ -43,7 +43,7 @@ class Lpac_Uninstall {
 
 		$plugins = get_plugins();
 
-		if ( array_key_exists( 'map-location-picker-at-checkout-for-woocommerce/lpac.php', $plugins ) && array_key_exists( 'map-location-picker-at-checkout-for-woocommerce-pro/lpac.php', $plugins ) ) {
+		if ( array_key_exists( 'map-location-picker-at-checkout-for-woocommerce/map-location-picker-at-checkout-for-woocommerce.php', $plugins ) && array_key_exists( 'map-location-picker-at-checkout-for-woocommerce-pro/map-location-picker-at-checkout-for-woocommerce.php', $plugins ) ) {
 			return;
 		}
 
@@ -125,6 +125,8 @@ class Lpac_Uninstall {
 			'lpac_max_shipping_distance',
 			'lpac_distance_cost_no_shipping_method_available_text',
 			'lpac_distance_cost_no_shipping_method_selected_error',
+			'lpac_saas_email',
+			'lpac_saas_token',
 		);
 
 		foreach ( $option_keys as $key ) {

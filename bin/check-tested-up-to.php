@@ -39,7 +39,7 @@ class Check_Tested_Up_To {
 
 		$this->endpoint = "https://api.wordpress.org/plugins/info/1.0/{$plugin}.json";
 		$this->resource = $this->setup_resource();
-		$this->file_obj = new SplFileObject( './lpac.php' );
+		$this->file_obj = new SplFileObject( './map-location-picker-at-checkout-for-woocommerce.php' );
 
 		switch ( $field ) {
 			case 'check':

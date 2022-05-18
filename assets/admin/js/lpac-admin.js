@@ -187,6 +187,50 @@
       }
     }
 
+    /**
+     * Test API Connection to SaaS
+     */
+    function testAPIConnection() {
+      const testBtn = document.querySelector("#lpac_test_connection");
+
+      if (!testBtn) {
+        return;
+      }
+
+      testBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        // TODO get this URL dynamically from variable on page, set it in a constant.
+        const url = lpacSaasURL + "/wp-json/bridge/v1/verify";
+        const data = {
+          email: window.btoa(document.querySelector("#lpac_saas_email").value),
+          token: window.btoa(document.querySelector("#lpac_saas_token").value),
+        };
+
+        const response = await fetch(url, {
+          method: "POST",
+          mode: "cors",
+          // mode: 'no-cors',
+          redirect: "follow",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        response
+          .json()
+          .then((response) => {
+            // console.log(response);
+            alert(response.response_body);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+    }
+    testAPIConnection();
+
     toggleAutoDetectOptions();
     toggleMapLinkOrderEmailOptions();
     togglePlacesAutoCompleteOptions();
