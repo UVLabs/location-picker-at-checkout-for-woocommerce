@@ -4,8 +4,8 @@ Donate link: https://uriahsvictor.com
 Tags: woocommerce, location picker, checkout map, geolocation, google map, map, delivery map
 Requires at least: 5.5
 Requires PHP: 7.3
-Tested up to: 5.9
-Stable tag: 1.5.3
+Tested up to: 6.0
+Stable tag: 1.5.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,7 +59,7 @@ If you ran a website where customers select their location for pickup then Locat
 
 ### WooCommerce Autocomplete/Autofill Checkout Address Plugin
 
-Though the primary focus of the plugin is to allow customers to select accurate locations by using a map. Location Picker at Checkout for WooCommerce also allows store owners to enable the Places autocomplete feature on their checkout address fields. This feature shows customers address predictions as they type in their address. When a customer clicks the desired address from the dropdown, it can also automatically fill in the rest of the checkout fields.
+Though the primary focus of the plugin is to allow customers to select accurate locations by using a map. Location Picker at Checkout for WooCommerce also allows store owners to enable the Places autocomplete feature on their checkout address fields. This feature shows customers address predictions as they type in their address. When a customer clicks the desired address from the dropdown, it can also automatically fill in the rest of the checkout fields. This feature is also known as Google Address Autofill.
 
 ### Below are a few types of stores that would benefit tremendously from this plugin:
 
@@ -182,6 +182,10 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 == Upgrade Notice ==
 
 == Changelog ==
+= 1.5.5 = 
+* [Fix PRO] On some websites the checkout update event was not always firing after the location is changed. LPAC will now automatically fire a checkout update event everytime locations are changed.
+* [Info] Tested on WC 6.5
+* [Info] Tested on WP 6.0 RC3
 
 = 1.5.4 = 
 * [Fix PRO] Saved Addresses checkbox was always showing on checkout page even though option was turned off.

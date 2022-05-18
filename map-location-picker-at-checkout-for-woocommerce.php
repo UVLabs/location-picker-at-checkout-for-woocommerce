@@ -17,7 +17,8 @@
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://lpacwp.com
  * Description:       Allow customers to choose their shipping or pickup location using a map at checkout.
- * Version:           1.5.4-lite
+ * Version:           1.5.5-lite
+ * Requires at least: 5.7
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
  * License:           GPL-2.0+
@@ -25,7 +26,7 @@
  * Text Domain:       map-location-picker-at-checkout-for-woocommerce
  * Domain Path:       /languages
  * WC requires at least: 3.0
- * WC tested up to: 6.0
+ * WC tested up to: 6.5
  * Requires PHP: 7.3
  */
 // If this file is called directly, abort.
@@ -76,7 +77,7 @@ if ( $plugin_folder === 'map-location-picker-at-checkout-for-woocommerce-pro' ) 
     }
     $plugins = get_plugins();
     
-    if ( array_key_exists( 'map-location-picker-at-checkout-for-woocommerce/lpac.php', $plugins ) && array_key_exists( 'map-location-picker-at-checkout-for-woocommerce-pro/lpac.php', $plugins ) ) {
+    if ( array_key_exists( 'map-location-picker-at-checkout-for-woocommerce/map-location-picker-at-checkout-for-woocommerce.php', $plugins ) && array_key_exists( 'map-location-picker-at-checkout-for-woocommerce-pro/map-location-picker-at-checkout-for-woocommerce.php', $plugins ) ) {
         add_action( 'admin_notices', function () {
             ?>
 				<div class="notice notice-error is-dismissible">
@@ -93,7 +94,7 @@ if ( $plugin_folder === 'map-location-picker-at-checkout-for-woocommerce-pro' ) 
 				</div>
 				<?php 
         } );
-        deactivate_plugins( 'map-location-picker-at-checkout-for-woocommerce/lpac.php', true );
+        deactivate_plugins( 'map-location-picker-at-checkout-for-woocommerce/map-location-picker-at-checkout-for-woocommerce.php', true );
         return;
     }
 
@@ -185,9 +186,17 @@ define( 'LPAC_GOOGLE_MAPS_API_KEY', get_option( 'lpac_google_maps_api_key', '' )
 $debug = false;
 if ( function_exists( 'wp_get_environment_type' ) ) {
     /* File will only exist in local installation */
+    
     if ( wp_get_environment_type() === 'local' && file_exists( LPAC_PLUGIN_ASSETS_DIR . 'public/js/maps/base-map.js' ) ) {
         $debug = true;
+        if ( !defined( 'LPAC_SAAS_URL' ) ) {
+            define( 'LPAC_SAAS_URL', 'https://lpac-saas.local' );
+        }
     }
+
+}
+if ( !defined( 'LPAC_SAAS_URL' ) ) {
+    define( 'LPAC_SAAS_URL', 'https://app.lpacwp.com' );
 }
 define( 'LPAC_DEBUG', $debug );
 $site_locale = get_locale();

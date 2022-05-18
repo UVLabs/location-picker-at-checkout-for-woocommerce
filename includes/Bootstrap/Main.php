@@ -42,6 +42,7 @@ use  Lpac\Notices\Loader as Notices_Loader ;
 use  Lpac\Views\Frontend as Frontend_Display ;
 use  Lpac\Compatibility\WooFunnels\Woo_Funnels ;
 use  Lpac\Models\Location_Details ;
+use  Lpac\Controllers\API\Order as API_Order ;
 /**
 * Class Main.
 *
@@ -148,6 +149,7 @@ class Main
         $admin_notices = new Admin_Notices();
         $admin_settings_controller = new Admin_Settings_Controller();
         $controller_map_visibility = new Map_Visibility_Controller();
+        $api_orders = new API_Order();
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         // Notices
@@ -184,6 +186,21 @@ class Main
             $this,
             'add_plugin_action_links',
             999999,
+            2
+        );
+        // We need both of these hooks to be able to get our coordinates and build our payload
+        $this->loader->add_action(
+            'woocommerce_checkout_update_order_meta',
+            $api_orders,
+            'prepare_order_checkout',
+            99999,
+            2
+        );
+        $this->loader->add_action(
+            'woocommerce_process_shop_order_meta',
+            $api_orders,
+            'prepare_order_admin',
+            99999,
             2
         );
     }
@@ -365,7 +382,7 @@ class Main
     public function add_plugin_action_links( $plugin_actions, $plugin_file )
     {
         $new_actions = array();
-        if ( LPAC_BASE_FILE . '/lpac.php' === $plugin_file ) {
+        if ( LPAC_BASE_FILE . '/map-location-picker-at-checkout-for-woocommerce.php' === $plugin_file ) {
             $new_actions['lpac_wc_settings'] = sprintf( __( '<a href="%s">Settings</a>', 'map-location-picker-at-checkout-for-woocommerce' ), esc_url( admin_url( 'admin.php?page=wc-settings&tab=lpac_settings' ) ) );
         }
         return array_merge( $new_actions, $plugin_actions );

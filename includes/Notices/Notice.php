@@ -36,7 +36,7 @@ class Notice {
 	 * @return mixed
 	 */
 	protected function get_dismissed_notices() {
-		return get_user_meta( $this->get_user_id(), 'lpac_dismissed_notices', true );
+		return get_user_meta( $this->get_user_id(), 'lpac_dismissed_notices', true ) ?: array();
 	}
 
 	/**

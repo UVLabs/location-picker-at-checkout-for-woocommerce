@@ -26,7 +26,8 @@ class General_Notices extends Notice {
 	 * @return void
 	 */
 	public function __construct() {
-		 $this->create_translators_needed_notice();
+		$this->create_translators_needed_notice();
+		$this->create_saas_pilot_notice();
 	}
 
 	/**
@@ -55,6 +56,30 @@ class General_Notices extends Notice {
 		);
 
 		echo $this->create_notice_markup( 'help_translate_lpac', $content );
+	}
+
+	/**
+	 * SaaS pilot notice.
+	 *
+	 * @return void
+	 */
+	public function create_saas_pilot_notice() {
+
+		$days_since_installed = $this->get_days_since_installed();
+
+		// Show notice after 5 days
+		if ( $days_since_installed < 5 ) {
+			return;
+		}
+
+		$content = array(
+			'title' => esc_html__( 'Help Shape the Future', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 👀',
+			'body'  => sprintf( esc_html__( 'Want a more streamlined delivery/pickup workflow for you or your drivers? Signup for early access to the LPAC Web App pilot; quickly pull up orders and directions from one simplified dashboard. %1$1sLimited spots available%2$2s', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 👾', '<strong>', '</strong>' ),
+			'cta'   => esc_html__( 'Learn more', 'map-location-picker-at-checkout-for-woocommerce' ),
+			'link'  => esc_attr( 'https://lpacwp.com/saas-pilot/' ),
+		);
+
+		echo $this->create_notice_markup( 'saas_pilot', $content );
 	}
 
 }

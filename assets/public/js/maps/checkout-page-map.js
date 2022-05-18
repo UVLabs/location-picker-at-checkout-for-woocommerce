@@ -307,6 +307,14 @@ function lpac_fill_in_address_fields(results, latLng = "") {
   } else {
     lpac_fill_in_billing_fields(results);
   }
+  /**
+   * Ensure that this event is fired and the checkout is updated.
+   *
+   * In some themes the event does not automatically fire after LPAC updates the address. So here we're ensuring that it does.
+   */
+  if (jQuery) {
+    jQuery(document.body).trigger("update_checkout");
+  }
 }
 
 /**
@@ -333,6 +341,14 @@ function lpacFillPlacesAutocompleteShippingFields(results) {
   lpac_fill_in_shipping_town_city(results);
   lpac_fill_in_shipping_state_county(results);
   lpac_fill_in_shipping_zipcode(results);
+  /**
+   * Ensure that this event is fired and the checkout is updated.
+   *
+   * In some themes the event does not automatically fire after LPAC updates the address. So here we're ensuring that it does.
+   */
+  if (jQuery) {
+    jQuery(document.body).trigger("update_checkout");
+  }
 }
 
 /**
@@ -359,6 +375,14 @@ function lpacFillPlacesAutocompleteBillingFields(results) {
   lpac_fill_in_billing_town_city(results);
   lpac_fill_in_billing_state_county(results);
   lpac_fill_in_billing_zipcode(results);
+  /**
+   * Ensure that this event is fired and the checkout is updated.
+   *
+   * In some themes the event does not automatically fire after LPAC updates the address. So here we're ensuring that it does.
+   */
+  if (jQuery) {
+    jQuery(document.body).trigger("update_checkout");
+  }
 }
 
 /*

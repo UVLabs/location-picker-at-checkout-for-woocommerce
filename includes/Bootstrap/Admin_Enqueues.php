@@ -86,6 +86,7 @@ class Admin_Enqueues
         $lite_assets_path_url = constant( 'LPAC_PLUGIN_ASSETS_PATH_URL' );
         $path = ( LPAC_DEBUG ? '' : 'build/' );
         $is_lpac_settings = strpos( $query_string, 'wc-settings&tab=lpac_settings' );
+        $saas_url = constant( 'LPAC_SAAS_URL' );
         // Only load the admin scripts on the WooCommerce settings page of LPAC
         if ( $is_lpac_settings ) {
             wp_enqueue_script(
@@ -111,12 +112,17 @@ class Admin_Enqueues
             wp_enqueue_script( $this->plugin_name . '-google-maps-js' );
         }
         
+        // Pass assets folder path to JS
         $global_variables = <<<JAVASCRIPT
-\t\t// Lpac Map Settings
 \t\tvar lpacAssetsFolderPath = "{$lite_assets_path_url}";
+JAVASCRIPT;
+        // Pass sass url to JS
+        $saas_url = <<<JAVASCRIPT
+\t\tvar lpacSaasURL = "{$saas_url}";
 JAVASCRIPT;
         // Expose JS variables for usage.
         wp_add_inline_script( $this->plugin_name, $global_variables, 'before' );
+        wp_add_inline_script( $this->plugin_name, $saas_url, 'before' );
         /**
          * This has to be enqueued in the footer so our wp_add_inline_script() function can work.
          * Only run this code on shop order(order details) page in admin area.
