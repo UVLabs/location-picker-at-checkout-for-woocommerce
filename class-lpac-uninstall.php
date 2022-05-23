@@ -43,7 +43,7 @@ class Lpac_Uninstall {
 
 		$plugins = get_plugins();
 
-		if ( array_key_exists( 'map-location-picker-at-checkout-for-woocommerce/map-location-picker-at-checkout-for-woocommerce.php', $plugins ) && array_key_exists( 'map-location-picker-at-checkout-for-woocommerce-pro/map-location-picker-at-checkout-for-woocommerce.php', $plugins ) ) {
+		if ( array_key_exists( 'map-location-picker-at-checkout-for-woocommerce/lpac.php', $plugins ) && array_key_exists( 'map-location-picker-at-checkout-for-woocommerce-pro/lpac.php', $plugins ) ) {
 			return;
 		}
 

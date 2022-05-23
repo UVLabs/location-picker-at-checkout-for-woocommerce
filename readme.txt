@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, checkout map, geolocation, google map, map, 
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 6.0
-Stable tag: 1.5.5
+Stable tag: 1.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -182,6 +182,9 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 == Upgrade Notice ==
 
 == Changelog ==
+= 1.5.6 = 
+* [Fix] Plugin main file name change caused plugin to automatically deactivate after updating. Please reactivate plugin after this update.
+
 = 1.5.5 = 
 * [Fix PRO] On some websites the checkout update event was not always firing after the location is changed. LPAC will now automatically fire a checkout update event everytime locations are changed.
 * [Info] Tested on WC 6.5
