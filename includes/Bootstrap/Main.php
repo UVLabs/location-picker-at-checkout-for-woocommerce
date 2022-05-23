@@ -382,7 +382,7 @@ class Main
     public function add_plugin_action_links( $plugin_actions, $plugin_file )
     {
         $new_actions = array();
-        if ( LPAC_BASE_FILE . '/map-location-picker-at-checkout-for-woocommerce.php' === $plugin_file ) {
+        if ( LPAC_BASE_FILE . '/lpac.php' === $plugin_file ) {
             $new_actions['lpac_wc_settings'] = sprintf( __( '<a href="%s">Settings</a>', 'map-location-picker-at-checkout-for-woocommerce' ), esc_url( admin_url( 'admin.php?page=wc-settings&tab=lpac_settings' ) ) );
         }
         return array_merge( $new_actions, $plugin_actions );
