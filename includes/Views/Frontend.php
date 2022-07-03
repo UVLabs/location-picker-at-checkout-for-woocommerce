@@ -26,17 +26,20 @@ class Frontend
     private function setup_global_js_vars( $additional = array() )
     {
         $controller_checkout_page = new Checkout_Page_Controller();
-        $last_order_location = $controller_checkout_page->get_last_order_location();
         $map_options = $controller_checkout_page->get_map_options();
+        $last_order_location = $controller_checkout_page->get_last_order_location();
+        $store_locations = $controller_checkout_page->get_store_locations_labels();
         $map_options = array_merge( $map_options, $additional );
         $map_options = json_encode( $map_options );
         $last_order_location = json_encode( $last_order_location );
+        $store_locations = json_encode( $store_locations );
         $checkout_provider = ( new Checkout_Provider() )->get_checkout_provider();
         $checkout_provider = json_encode( $checkout_provider );
         $global_variables = <<<JAVASCRIPT
 \t\tvar mapOptions = {$map_options};
 \t\tvar lpacLastOrder = {$last_order_location};
-\t\tvar checkoutProvider = {$checkout_provider}
+\t\tvar checkoutProvider = {$checkout_provider};
+\t\tvar storeLocations = {$store_locations};
 JAVASCRIPT;
         return $global_variables;
     }
@@ -286,6 +289,22 @@ HTML;
 \t\t</div>
 HTML;
         echo  $markup ;
+    }
+    
+    /**
+     * Localize our alert messages to be used by Javascript.
+     *
+     * @return void
+     */
+    public function create_checkoutpage_translated_strings()
+    {
+        $strings = array(
+            'geolocation_not_supported' => __( 'Geolocation is not possible on this web browser. Please switch to a different web browser to use our interactive map.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'error_getting_location'    => __( 'Something went wrong while trying to detect your location. Click on the location icon in the address bar and allow our website to detect your location. Please contact us if you need additional assistance.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'no_results_found'          => __( 'No address results found for your location.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'moving_too_quickly'        => __( 'Slow down, you are moving too quickly, use the zoom out button to move the marker across larger distances.', 'map-location-picker-at-checkout-for-woocommerce' ),
+        );
+        wp_localize_script( 'lpac-checkout-page-map', 'lpacTranslatedAlerts', $strings );
     }
 
 }

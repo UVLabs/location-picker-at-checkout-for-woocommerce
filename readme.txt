@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, checkout map, geolocation, google map, map, 
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 6.0
-Stable tag: 1.5.6
+Stable tag: 1.5.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,12 @@ If you ran a website where customers select their location for pickup then Locat
 ### WooCommerce Autocomplete/Autofill Checkout Address Plugin
 
 Though the primary focus of the plugin is to allow customers to select accurate locations by using a map. Location Picker at Checkout for WooCommerce also allows store owners to enable the Places autocomplete feature on their checkout address fields. This feature shows customers address predictions as they type in their address. When a customer clicks the desired address from the dropdown, it can also automatically fill in the rest of the checkout fields. This feature is also known as Google Address Autofill.
+
+### Saved Addresses for WooCommerce Plugin
+
+Allow customers to save multiple addresses to their account for ordering. This feature is useful for customers who might be placing orders on your store from multiple locations. 
+
+A customer placing an order might not always be at the previously used address, with this feature they can select any previously saved address such as "Work" or "Home".
 
 ### Below are a few types of stores that would benefit tremendously from this plugin:
 
@@ -182,6 +188,13 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 == Upgrade Notice ==
 
 == Changelog ==
+= 1.5.7 = 
+* [New] Store location feature - display map markers for your store locations on the checkout page map.
+* [Improvement] Add sample export in lite version of plugin.
+* [Improvement] Add customer email to order export feature.
+* [Improvement] Make checkout alert messages translatable.
+* [Info] Tested on WC 6.6
+
 = 1.5.6 = 
 * [Fix] Plugin main file name change caused plugin to automatically deactivate after updating. Please reactivate plugin after this update.
 

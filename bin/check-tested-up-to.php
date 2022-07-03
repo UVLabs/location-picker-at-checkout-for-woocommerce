@@ -42,15 +42,13 @@ class Check_Tested_Up_To {
 		$this->file_obj = new SplFileObject( './lpac.php' );
 
 		switch ( $field ) {
-			case 'check':
-				echo $this->compare_versions();
-				break;
 			case 'version':
 				echo $this->get_latest_version();
 				break;
 			case 'changelog':
 				echo $this->get_changelog();
 				break;
+			case 'check':
 			default:
 				echo $this->compare_versions();
 				break;

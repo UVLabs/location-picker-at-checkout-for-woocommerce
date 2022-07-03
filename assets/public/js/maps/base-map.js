@@ -50,14 +50,14 @@ if (
     mapId: map_id,
   });
 
-  /* Globally scoped so that only one marker can be added to map. */
+  /* Globally scoped so that only one marker for customer location can be added to map. */
   const marker = new google.maps.Marker({
     draggable: true,
     map: map,
     icon: window.lpac_map_marker_image,
   });
 
-  /* Globally scoped so that only one info window can be added to map. */
+  /* Globally scoped so that only one info window for customer location can be added to map. */
   const infowindow = new google.maps.InfoWindow();
 
   /* We need to set these variables to the window object or else parcel will break our script when transpiling */

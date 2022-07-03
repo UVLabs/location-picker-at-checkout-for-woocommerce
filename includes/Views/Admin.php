@@ -167,15 +167,17 @@ HTML;
 		$text        = $value['value'];
 		$name        = $value['name'];
 		$description = $value['desc'];
+		$link        = $value['link'] ?? '';
 
 		$custom_attributes = $value['custom_attributes'] ?? '';
 		$disabled          = $custom_attributes['disabled'] ?? '';
+		$script            = $link ? "window.open('$link')" : ''; // Adds button location link js if a 'link' value present on the field.
 
 		$markup = <<<HTML
 				<tr valign='top'>
 				<th scope='row' class='titledesc'>$name</th>
 				<td>
-					<button id="$id" class="$class" $disabled>$text</button>
+					<button onclick="event.preventDefault(); $script" id="$id" class="$class" $disabled>$text</button>
 					<p class="description">$description</p>
 				</td>
 				</tr>
