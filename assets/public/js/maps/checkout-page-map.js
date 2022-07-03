@@ -49,18 +49,14 @@ function get_navigator_coordinates() {
       navigator.geolocation.getCurrentPosition(resolve, reject);
     } else {
       // TODO add input fields so users can change this text
-      alert(
-        "Geolocation is not possible on this web browser. Please switch to a different web browser to use our interactive map."
-      );
+      alert(lpacTranslatedAlerts.geolocation_not_supported);
     }
   }).catch(function (error) {
     console.log("Location Picker At Checkout Plugin: " + error.message);
 
     if (error.code === 1) {
       // TODO add input fields so users can change this text
-      alert(
-        "Something went wrong while trying to detect your location. Click on the location icon in the address bar and allow our website to detect your location. Please contact us if you need additional assistance."
-      );
+      alert(lpacTranslatedAlerts.error_getting_location);
       return;
     }
 
@@ -110,11 +106,12 @@ async function lpac_geocode_coordinates(latlng) {
 
   await geocoder
     .geocode({ location: latlng }, (results, status) => {
+      console.log(results);
       if (status === "OK") {
         if (results[0]) {
           address_array = results;
         } else {
-          window.alert("No results found");
+          window.alert(lpacTranslatedAlerts.no_results_found);
           return;
         }
       } else {
@@ -130,10 +127,7 @@ async function lpac_geocode_coordinates(latlng) {
       // TODO Add error messages below map
 
       if (error.code === "OVER_QUERY_LIMIT") {
-        // TODO Localize this string
-        error_msg =
-          "Slow down, you are moving too quickly, use the zoom out button to move the marker across larger distances.";
-        alert(error_msg);
+        alert(lpacTranslatedAlerts.moving_too_quickly);
         location.reload();
       }
     });
@@ -701,6 +695,44 @@ function lpacHideShowMap() {
 }
 
 /**
+ * Set store locations markers on checkout map.
+ */
+function lpacSetStoreLocationsMarkers() {
+  google.maps.event.addListenerOnce(map, "tilesloaded", function () {
+    if (typeof storeLocations === "undefined" || storeLocations === null) {
+      return;
+    }
+
+    // Manipulate our store locations object to display the different locations and their labels
+    Object.keys(storeLocations).forEach((key) => {
+      const location = storeLocations[key];
+      const locationCordsArray = location.cords.split(",");
+      const latitude = locationCordsArray[0];
+      const longitude = locationCordsArray[1];
+
+      const latlng = {
+        lat: parseFloat(latitude),
+        lng: parseFloat(longitude),
+      };
+
+      const marker = new google.maps.Marker({
+        clickable: false,
+        icon: location.icon,
+        position: latlng,
+        map: map,
+      });
+
+      const infoWindow = new google.maps.InfoWindow({
+        content: location.label,
+        disableAutoPan: true,
+      });
+
+      infoWindow.open(map, marker);
+    });
+  });
+}
+
+/**
  * Set the previous order marker.
  */
 function lpacSetLastOrderMarker() {
@@ -737,6 +769,7 @@ function lpacSetLastOrderMarker() {
       return;
     }
 
+    // Set the checkout fields lat and long value
     latitude.value = lpacLastOrder.latitude;
     longitude.value = lpacLastOrder.longitude;
 
@@ -957,5 +990,7 @@ addPlacesAutoComplete();
     } else {
       lpacSetLastOrderMarker();
     }
+
+    lpacSetStoreLocationsMarkers();
   });
 })(jQuery);

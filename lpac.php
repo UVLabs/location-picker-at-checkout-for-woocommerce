@@ -17,7 +17,7 @@
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://lpacwp.com
  * Description:       Allow customers to choose their shipping or pickup location using a map at checkout.
- * Version:           1.5.6-lite
+ * Version:           1.5.7-lite
  * Requires at least: 5.7
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
@@ -26,7 +26,7 @@
  * Text Domain:       map-location-picker-at-checkout-for-woocommerce
  * Domain Path:       /languages
  * WC requires at least: 3.0
- * WC tested up to: 6.5
+ * WC tested up to: 6.6
  * Requires PHP: 7.3
  */
 // If this file is called directly, abort.
@@ -34,7 +34,7 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 if ( !defined( 'LPAC_VERSION' ) ) {
-    define( 'LPAC_VERSION', '1.5.4' );
+    define( 'LPAC_VERSION', '1.5.7' );
 }
 /**
  * The code that runs during plugin activation.

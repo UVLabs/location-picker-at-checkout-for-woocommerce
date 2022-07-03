@@ -41,5 +41,5 @@
           with:
             filename: .github/ISSUE_TEMPLATE/Test_WooCommerce.md
             update_existing: true
-            search_existing: open
+            search_existing: all
         

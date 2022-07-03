@@ -265,6 +265,15 @@ class Main
         }
         
         /*
+         * Translated alert strings for checkout page.
+         */
+        $this->loader->add_action(
+            'wp_enqueue_scripts',
+            $plugin_public_display,
+            'create_checkoutpage_translated_strings',
+            99999
+        );
+        /*
          * Output map on order received and order details pages.
          */
         $this->loader->add_action( 'woocommerce_order_details_after_order_table', $plugin_public_display, 'lpac_output_map_on_order_details_page' );
