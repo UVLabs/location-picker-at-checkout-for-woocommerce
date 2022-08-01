@@ -17,7 +17,7 @@
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://lpacwp.com
  * Description:       Allow customers to choose their shipping or pickup location using a map at checkout.
- * Version:           1.5.7-lite
+ * Version:           1.6.0-lite
  * Requires at least: 5.7
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
@@ -26,7 +26,7 @@
  * Text Domain:       map-location-picker-at-checkout-for-woocommerce
  * Domain Path:       /languages
  * WC requires at least: 3.0
- * WC tested up to: 6.6
+ * WC tested up to: 6.7
  * Requires PHP: 7.3
  */
 // If this file is called directly, abort.
@@ -34,7 +34,7 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 if ( !defined( 'LPAC_VERSION' ) ) {
-    define( 'LPAC_VERSION', '1.5.7' );
+    define( 'LPAC_VERSION', '1.6.0' );
 }
 /**
  * The code that runs during plugin activation.
@@ -181,6 +181,7 @@ define( 'LPAC_PLUGIN_DIR', __DIR__ . '/' );
 define( 'LPAC_PLUGIN_ASSETS_DIR', __DIR__ . '/assets/' );
 define( 'LPAC_PLUGIN_ASSETS_PATH_URL', plugin_dir_url( __FILE__ ) . 'assets/' );
 define( 'LPAC_PLUGIN_PATH_URL', plugin_dir_url( __FILE__ ) );
+define( 'LPAC_INSTALLED_AT_VERSION', get_option( 'lpac_installed_at_version', constant( 'LPAC_VERSION' ) ) );
 define( 'LPAC_GOOGLE_MAPS_LINK', 'https://maps.googleapis.com/maps/api/js?key=' );
 define( 'LPAC_GOOGLE_MAPS_API_KEY', get_option( 'lpac_google_maps_api_key', '' ) );
 $debug = false;

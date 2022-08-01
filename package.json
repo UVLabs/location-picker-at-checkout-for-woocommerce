@@ -34,8 +34,11 @@
     },
     "pro-admin": {
       "source": [
+        "./assets/pro/admin/js/lpac-admin-pro.js",
+        "./assets/pro/admin/js/shipping-settings.js",
         "./assets/pro/admin/js/draw-shipping-zones.js",
-        "./assets/pro/admin/js/lpac-admin-pro.js"
+        "./assets/pro/admin/js/export-settings.js",
+        "./assets/pro/admin/js/plot-orders.js"
       ],
       "sourceMap": false,
       "distDir": "./assets/pro/admin/js/build/"

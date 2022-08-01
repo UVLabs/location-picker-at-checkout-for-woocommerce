@@ -40,7 +40,7 @@ use  Lpac\Notices\Admin as Admin_Notices ;
 use  Lpac\Notices\Notice ;
 use  Lpac\Notices\Loader as Notices_Loader ;
 use  Lpac\Views\Frontend as Frontend_Display ;
-use  Lpac\Compatibility\WooFunnels\Woo_Funnels ;
+use  Lpac\Compatibility\WooFunnels\WooFunnels ;
 use  Lpac\Models\Location_Details ;
 use  Lpac\Controllers\API\Order as API_Order ;
 /**
@@ -100,6 +100,8 @@ class Main
         $this->plugin_name = 'lpac';
         $this->load_dependencies();
         $this->set_locale();
+        // TODO these hooks should run depending on if the user is on the admin page or the public site.
+        // Right now it runs on both
         $this->define_admin_hooks();
         $this->define_public_hooks();
     }
@@ -169,11 +171,42 @@ class Main
         $this->loader->add_action( 'woocommerce_get_settings_pages', $plugin_admin_view, 'lpac_add_settings_tab' );
         /* Handle map visibility rules ordering table ajax requests in admin settings  */
         $this->loader->add_action( 'wp_ajax_lpac_map_visibility_rules_order', $controller_map_visibility, 'checkout_map_rules_order_ajax_handler' );
-        /* Sanitize default map coordinates */
+        /* Run tasks related to admin settings */
         $this->loader->add_filter(
             'woocommerce_admin_settings_sanitize_option_lpac_map_starting_coordinates',
             $admin_settings_controller,
-            'sanitize_default_map_coordinates',
+            'sanitize_coordinates',
+            10,
+            3
+        );
+        $this->loader->add_filter(
+            'woocommerce_admin_settings_sanitize_option_lpac_store_locations',
+            $admin_settings_controller,
+            'generate_store_id',
+            10,
+            3
+        );
+        $this->loader->add_filter(
+            'woocommerce_admin_settings_sanitize_option_lpac_cost_by_store_location_delivery_prices',
+            $admin_settings_controller,
+            'sanitize_pricing_inputs',
+            10,
+            3
+        );
+        $this->loader->add_filter(
+            'woocommerce_admin_settings_sanitize_option_lpac_cost_by_store_distance_delivery_prices',
+            $admin_settings_controller,
+            'sanitize_pricing_inputs',
+            10,
+            3
+        );
+        /**
+         * Migrate old way of saving store locations to new array structure. Added @1.6.0
+         */
+        $this->loader->add_action(
+            'admin_init',
+            $admin_settings_controller,
+            'migrate_old_store_locations',
             10,
             3
         );
@@ -181,6 +214,7 @@ class Main
         $this->loader->add_action( 'woocommerce_admin_field_button', $plugin_admin_view, 'create_custom_wc_settings_button' );
         $this->loader->add_action( 'woocommerce_admin_field_hr', $plugin_admin_view, 'create_custom_wc_settings_hr' );
         $this->loader->add_action( 'woocommerce_admin_field_div', $plugin_admin_view, 'create_custom_wc_settings_div' );
+        $this->loader->add_action( 'woocommerce_admin_field_repeater', $plugin_admin_view, 'create_custom_wc_settings_repeater' );
         $this->loader->add_filter(
             'plugin_action_links',
             $this,
@@ -241,7 +275,7 @@ class Main
          */
         
         if ( class_exists( 'WFFN_Core' ) ) {
-            $woofunnels_compatibility = new Woo_Funnels();
+            $woofunnels_compatibility = new WooFunnels();
             $this->loader->add_action( 'after_setup_theme', $woofunnels_compatibility, 'create_lpac_fields' );
             $this->loader->add_filter(
                 'wfacp_get_checkout_fields',
@@ -276,7 +310,21 @@ class Main
         /*
          * Output map on order received and order details pages.
          */
-        $this->loader->add_action( 'woocommerce_order_details_after_order_table', $plugin_public_display, 'lpac_output_map_on_order_details_page' );
+        $this->loader->add_action(
+            'woocommerce_order_details_after_order_table',
+            $plugin_public_display,
+            'lpac_output_map_on_order_details_page',
+            10
+        );
+        /*
+         * Origin store name on order details page.
+         */
+        $this->loader->add_action(
+            'woocommerce_order_details_after_order_table',
+            $plugin_public_display,
+            'output_origin_store_name',
+            11
+        );
         /*
          * Check if the latitude and longitude fields are filled in based on admin settings.
          */
@@ -310,7 +358,7 @@ class Main
         /*
          * Adds a notice for admin to checkout page
          */
-        $this->loader->add_action( 'woocommerce_before_checkout_form', $plugin_public_display, 'lpac_add_admin_checkout_notice' );
+        $this->loader->add_action( 'woocommerce_before_checkout_form', $plugin_public_display, 'add_admin_checkout_notice' );
         /*
          * Handles showing or hiding of map. Fires everytime the checkout page is updated.
          */
@@ -391,10 +439,15 @@ class Main
     public function add_plugin_action_links( $plugin_actions, $plugin_file )
     {
         $new_actions = array();
+        
         if ( LPAC_BASE_FILE . '/lpac.php' === $plugin_file ) {
             $new_actions['lpac_wc_settings'] = sprintf( __( '<a href="%s">Settings</a>', 'map-location-picker-at-checkout-for-woocommerce' ), esc_url( admin_url( 'admin.php?page=wc-settings&tab=lpac_settings' ) ) );
+            if ( !defined( 'LPAC_PLUGIN_PATH_URL_PRO' ) ) {
+                $new_actions['lpac_upgrade_link'] = sprintf( __( '%1$sUpgrade to PRO%2$s', 'map-location-picker-at-checkout-for-woocommerce' ), '<a style="color: green; font-weight: bold" href="https://lpacwp.com/pricing?utm_source=plugin_actions_links&utm_medium=wp_plugins_area" target="_blank">', '</a>' );
+            }
         }
-        return array_merge( $new_actions, $plugin_actions );
+        
+        return array_merge( $plugin_actions, $new_actions );
     }
 
 }

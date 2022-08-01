@@ -12,11 +12,18 @@
  */
 namespace Lpac\Views;
 
+use  Freemius_Exception ;
 use  Lpac\Controllers\Map_Visibility_Controller ;
 use  Lpac\Controllers\Checkout_Page_Controller ;
 use  Lpac\Compatibility\Checkout_Provider ;
 class Frontend
 {
+    private  $checkout_provider = 'wc' ;
+    public function __construct()
+    {
+        $this->checkout_provider = ( new Checkout_Provider() )->get_checkout_provider();
+    }
+    
     /**
      * Exposes map settings to be used in client-side javascript.
      *
@@ -28,12 +35,16 @@ class Frontend
         $controller_checkout_page = new Checkout_Page_Controller();
         $map_options = $controller_checkout_page->get_map_options();
         $last_order_location = $controller_checkout_page->get_last_order_location();
-        $store_locations = $controller_checkout_page->get_store_locations_labels();
+        $show_store_locations_on_map = get_option( 'lpac_show_store_locations_on_map' );
+        $store_locations = array();
+        if ( $show_store_locations_on_map === 'yes' ) {
+            $store_locations = $controller_checkout_page->get_store_locations();
+        }
         $map_options = array_merge( $map_options, $additional );
         $map_options = json_encode( $map_options );
         $last_order_location = json_encode( $last_order_location );
         $store_locations = json_encode( $store_locations );
-        $checkout_provider = ( new Checkout_Provider() )->get_checkout_provider();
+        $checkout_provider = $this->checkout_provider;
         $checkout_provider = json_encode( $checkout_provider );
         $global_variables = <<<JAVASCRIPT
 \t\tvar mapOptions = {$map_options};
@@ -42,6 +53,150 @@ class Frontend
 \t\tvar storeLocations = {$store_locations};
 JAVASCRIPT;
         return $global_variables;
+    }
+    
+    /**
+     * Get our currently stored store locations.
+     *
+     * @since 1.6.0
+     * @return array
+     */
+    private function get_store_locations()
+    {
+        return $this->normalize_store_locations();
+    }
+    
+    /**
+     * Normalize our store locations for displaying in a dropdown.
+     *
+     * @since 1.6.0
+     * @return array
+     */
+    private function normalize_store_locations() : array
+    {
+        $store_locations = get_option( 'lpac_store_locations', array() );
+        $location_ids = array_column( $store_locations, 'store_location_id' );
+        $location_names = array_column( $store_locations, 'store_name_text' );
+        $store_locations_normalized = array_combine( $location_ids, $location_names );
+        return $store_locations_normalized;
+    }
+    
+    /**
+     * Get the setting for whether the cost by distance feature is enabled.
+     *
+     * @since 1.6.0
+     * @return mixed
+     */
+    private function get_cost_by_distance_setting()
+    {
+        $enable_cost_by_distance = get_option( 'lpac_enable_shipping_cost_by_distance_feature' );
+        return filter_var( $enable_cost_by_distance, FILTER_VALIDATE_BOOL );
+    }
+    
+    /**
+     * Get the setting for whether the cost by store distance feature is enabled, reliant on the cost by distance feature.
+     *
+     * @since 1.6.0
+     * @return mixed
+     */
+    private function get_cost_by_store_distance_setting()
+    {
+        $enable_cost_by_distance = get_option( 'lpac_enable_cost_by_store_distance' );
+        return filter_var( $enable_cost_by_distance, FILTER_VALIDATE_BOOL );
+    }
+    
+    /**
+     * Get the setting for whether the cost by store location feature is enabled.
+     *
+     * @since 1.6.0
+     * @return mixed
+     */
+    private function get_cost_by_store_location_setting()
+    {
+        $enable_cost_by_store_location = get_option( 'lpac_enable_cost_by_store_location' );
+        return filter_var( $enable_cost_by_store_location, FILTER_VALIDATE_BOOL );
+    }
+    
+    /**
+     * Get the setting for whether the store location selector should be shown on the checkout page.
+     *
+     * This setting is set on the Store Locations settings page.
+     *
+     * @since 1.6.0
+     * @return mixed
+     */
+    private function get_store_location_selector_setting()
+    {
+        $enable_store_location_selector = get_option( 'lpac_enable_store_location_selector' );
+        return filter_var( $enable_store_location_selector, FILTER_VALIDATE_BOOL );
+    }
+    
+    /**
+     * Get the setting for store selector label
+     *
+     * @since 1.6.0
+     * @return mixed
+     */
+    private function get_store_selector_label_setting()
+    {
+        return ( get_option( 'lpac_store_select_label' ) ?: __( 'Deliver from', 'map-location-picker-at-checkout-for-woocommerce' ) );
+    }
+    
+    /**
+     * Create the store selector field if the option is turned on in "Store Locations".
+     *
+     * @since 1.6.0
+     * @return void
+     */
+    private function maybe_create_store_location_selector_fields() : void
+    {
+        
+        if ( $this->get_cost_by_store_distance_setting() === false && $this->get_cost_by_store_location_setting() === false && $this->get_store_location_selector_setting() === true ) {
+            $store_locations = array_merge( array(
+                '' => '--' . __( 'Please choose an option', 'map-location-picker-at-checkout-for-woocommerce' ) . '--',
+            ), $this->get_store_locations() );
+            woocommerce_form_field( 'lpac_order__origin_store', array(
+                'type'     => 'select',
+                'label'    => $this->get_store_selector_label_setting(),
+                'required' => true,
+                'class'    => array( 'form-row-wide', 'hidden' ),
+                'options'  => $store_locations,
+            ), '' );
+        }
+    
+    }
+    
+    /**
+     * Create our custom checkout fields.
+     *
+     * Changes done here should always be reflected in the WooFunnels compatibility class since they do things differently.
+     *
+     * @return void
+     * @throws Freemius_Exception
+     */
+    private function create_lpac_checkout_fields() : void
+    {
+        $this->maybe_create_store_location_selector_fields();
+        woocommerce_form_field( 'lpac_latitude', array(
+            'label'    => __( 'Latitude', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required' => false,
+            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+        ) );
+        woocommerce_form_field( 'lpac_longitude', array(
+            'label'    => __( 'Longitude', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required' => false,
+            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+        ) );
+        woocommerce_form_field( 'lpac_is_map_shown', array(
+            'label'    => __( 'Map Shown', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required' => false,
+            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+        ) );
+        woocommerce_form_field( 'lpac_places_autocomplete', array(
+            'label'    => __( 'Places Autocomplete', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required' => false,
+            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+        ) );
     }
     
     /**
@@ -61,6 +216,7 @@ JAVASCRIPT;
         $instuctions_text = __( 'Click the "Detect Current Location" button then move the red marker to your desired shipping address.', 'map-location-picker-at-checkout-for-woocommerce' );
         $instuctions_text = apply_filters( 'lpac_map_instuctions_text', $instuctions_text );
         $user_id = (int) get_current_user_id();
+        // This filter is populated with the saved addresses in the Pro plugin. See lpac_output_saved_addresses()
         $saved_addresses_area = apply_filters( 'lpac_saved_addresses', '', $user_id );
         $saved_addresses_area = wp_kses_post( $saved_addresses_area );
         $edit_saved_addresses = '';
@@ -70,6 +226,7 @@ JAVASCRIPT;
             $edit_saved_addresses = sprintf( esc_html__( '%1$sEdit Saved Addresses%2$s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='{$account_link}' target='_blank'>", '</a>' );
         }
         
+        // TODO these filters do not work as expected...split up map area markup and ensure all filters/actions are working as expected
         $before_map_filter = apply_filters( 'lpac_before_map', '', $user_id );
         $before_map_filter = wp_kses_post( $before_map_filter );
         $after_map_filter = apply_filters( 'lpac_after_map', '', $user_id );
@@ -99,26 +256,13 @@ JAVASCRIPT;
 \t\t</div>
 HTML;
         echo  apply_filters( 'lpac_map_markup', $markup, $user_id ) ;
-        woocommerce_form_field( 'lpac_latitude', array(
-            'label'    => __( 'Latitude', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide' ) : array( 'form-row-wide', 'hidden' ) ),
-        ) );
-        woocommerce_form_field( 'lpac_longitude', array(
-            'label'    => __( 'Longitude', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide' ) : array( 'form-row-wide', 'hidden' ) ),
-        ) );
-        woocommerce_form_field( 'lpac_is_map_shown', array(
-            'label'    => __( 'Map Shown', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide' ) : array( 'form-row-wide', 'hidden' ) ),
-        ) );
-        woocommerce_form_field( 'lpac_places_autocomplete', array(
-            'label'    => __( 'Places Autocomplete', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden', 'fc-skip-hide-optional-field' ) ),
-        ) );
+        /**
+         * In WooFunnels we need to create our checkout fields differently.
+         * see Lpac\Compatibility\WooFunnels\WooFunnels
+         */
+        if ( $this->checkout_provider !== 'woofunnels' ) {
+            $this->create_lpac_checkout_fields();
+        }
         do_action( 'lpac_after_map' );
         // Add inline global JS so that we can use data fetched using PHP inside JS
         $global_js_vars = $this->setup_global_js_vars();
@@ -127,6 +271,42 @@ HTML;
         if ( empty($added) ) {
             wp_add_inline_script( 'jquery-core', $global_js_vars, 'before' );
         }
+    }
+    
+    /**
+     * Add origin store name on order details page.
+     *
+     * @return void
+     */
+    public function output_origin_store_name()
+    {
+        if ( $this->get_store_location_selector_setting() === false && $this->get_cost_by_store_distance_setting() === false && $this->get_cost_by_store_location_setting() === false ) {
+            return;
+        }
+        // If this isn't the order received page shown after a purchase, or the view order page shown on the user account, then bail.
+        if ( !is_wc_endpoint_url( 'view-order' ) && !is_wc_endpoint_url( 'order-received' ) ) {
+            return;
+        }
+        global  $wp ;
+        if ( is_wc_endpoint_url( 'order-received' ) ) {
+            $order_id = $wp->query_vars['order-received'];
+        }
+        if ( is_wc_endpoint_url( 'view-order' ) ) {
+            $order_id = $wp->query_vars['view-order'];
+        }
+        if ( empty($order_id) ) {
+            return;
+        }
+        $store_origin_name = get_post_meta( $order_id, '_lpac_order__origin_store_name', true );
+        if ( empty($store_origin_name) ) {
+            return;
+        }
+        $store_origin_name_label = apply_filters( 'lpac_order_details_deliver_from_text', __( 'Order origin:', 'map-location-picker-at-checkout-for-woocommerce' ) );
+        $markup = <<<HTML
+\t\t<br/>
+\t\t<p class='lpac_order_details_deliver_from_text' style='font-size: 20px; font-weight: bold'>{$store_origin_name_label} <span style='color: green; font-style: italic;'>{$store_origin_name}</span></p>
+HTML;
+        echo  $markup ;
     }
     
     /**
@@ -248,7 +428,7 @@ HTML;
      *
      * @since    1.0.0
      */
-    public function lpac_add_admin_checkout_notice()
+    public function add_admin_checkout_notice()
     {
         $hide_notice = get_option( 'lpac_hide_troubleshooting_admin_checkout_notice', 'no' );
         if ( $hide_notice === 'yes' ) {
@@ -269,7 +449,7 @@ HTML;
         if ( empty($api_key) ) {
             $no_api_key = sprintf( esc_html__( 'You have not entered a Google Maps API Key! The plugin will not function how it should until you have entered the key. Please read the following doc for instructions on obtaining a Google Maps API Key %s' ), "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/' target='_blank'>{$learn_more} >></a>" );
             $no_api_key_markup = <<<HTML
-\t\t\t<div class="lpac-admin-notice" style="background: #246df3; text-align: center; margin-bottom: 20px; padding: 10px;">
+\t\t\t<div class="lpac-admin-notice" style="background: red; text-align: center; margin-bottom: 20px; padding: 10px; font-weight: bold">
 \t\t\t<p style=" color: #ffffff !important; font-size:14px;"><span style="font-weight: bold">Location Picker at Checkout: </span>
 \t\t\t\t{$no_api_key}
 \t\t\t</p>
@@ -303,6 +483,7 @@ HTML;
             'error_getting_location'    => __( 'Something went wrong while trying to detect your location. Click on the location icon in the address bar and allow our website to detect your location. Please contact us if you need additional assistance.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'no_results_found'          => __( 'No address results found for your location.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'moving_too_quickly'        => __( 'Slow down, you are moving too quickly, use the zoom out button to move the marker across larger distances.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'generic_error'             => __( 'An error occurred while trying to detect your location. Please try again after the page has refreshed.', 'map-location-picker-at-checkout-for-woocommerce' ),
         );
         wp_localize_script( 'lpac-checkout-page-map', 'lpacTranslatedAlerts', $strings );
     }

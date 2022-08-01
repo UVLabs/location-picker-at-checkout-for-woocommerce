@@ -13,6 +13,11 @@
 */
 
 namespace Lpac\Controllers;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 use Lpac\Helpers\Functions;
 
 /**
@@ -30,7 +35,7 @@ class Checkout_Page_Controller {
 	 *
 	 * @return void
 	 */
-	public function validate_location_fields( $fields, $errors ) {
+	public function validate_location_fields( array $fields, object $errors ) :void {
 
 		/**
 		 * The map visibility might be changed via JS or other conditions
@@ -114,105 +119,29 @@ class Checkout_Page_Controller {
 		}
 
 		// Backwards compatibility, previously we stored location coords as private meta.
-		// TODO: Remove backwards compatibility once we're satisfied users have updated the plugin
-		$latitude  = $last_order->get_meta( 'lpac_latitude', true ) ?: $last_order->get_meta( '_lpac_latitude', true );
-		$longitude = $last_order->get_meta( 'lpac_longitude', true ) ?: $last_order->get_meta( '_lpac_longitude', true );
+		// TODO: Remove backwards compatibility once we're satisfied users have updated the plugin. This was added in v1.5.4
+		$latitude        = $last_order->get_meta( 'lpac_latitude', true ) ?: $last_order->get_meta( '_lpac_latitude', true );
+		$longitude       = $last_order->get_meta( 'lpac_longitude', true ) ?: $last_order->get_meta( '_lpac_longitude', true );
+		$store_origin_id = $last_order->get_meta( '_lpac_order__origin_store_id', true ) ?: ''; // Value exists if the customer selected an origin store.
 
 		return array(
-			'address'   => $last_order->get_formatted_shipping_address(),
-			'latitude'  => $latitude,
-			'longitude' => $longitude,
+			'address'         => $last_order->get_formatted_shipping_address(),
+			'latitude'        => $latitude,
+			'longitude'       => $longitude,
+			'store_origin_id' => $store_origin_id,
 		);
 
-	}
-
-	/**
-	 * Get cords for the store locations.
-	 *
-	 * @since 1.5.7
-	 * @return array
-	 */
-	private function get_store_locations() {
-
-		$cords = get_option( 'lpac_store_locations_cords' );
-
-		if ( empty( $cords ) ) {
-			return array();
-		}
-
-		$cords_array = explode( '|', $cords );
-
-		return $cords_array;
-	}
-
-	/**
-	 * Get the GPS coordinates for the store locations.
-	 *
-	 * @since 1.5.7
-	 * @return array
-	 */
-	private function get_store_labels() {
-
-		$labels = get_option( 'lpac_store_locations_labels' );
-
-		if ( empty( $labels ) ) {
-			return array();
-		}
-
-		$labels_array = explode( '|', $labels );
-
-		return $labels_array;
-	}
-
-	/**
-	 * Get the icons locations.
-	 *
-	 * @since 1.5.7
-	 * @return array
-	 */
-	private function get_store_locations_icons() {
-
-		$icons = get_option( 'lpac_store_locations_icons' );
-
-		if ( empty( $icons ) ) {
-			return array();
-		}
-
-		$icons_array = explode( '|', $icons );
-
-		return $icons_array;
 	}
 
 	/**
 	 * Combine store locations with their labels.
 	 *
 	 * @since 1.5.7
+	 * @since 1.6.0 use new store locations array
 	 * @return array
 	 */
-	public function get_store_locations_labels() {
-
-		$locations = $this->get_store_locations();
-		$labels    = $this->get_store_labels();
-		$icons     = ( lpac_fs()->is_not_paying() ) ? array() : $this->get_store_locations_icons();
-
-		$combined = array();
-
-		foreach ( $locations as $key => $location_cords ) {
-
-			$icon  = $icons[ $key ] ?? '';
-			$label = $labels[ $key ] ?? __( 'Store Location', 'map-location-picker-at-checkout-for-woocommerce' );
-			$label = sanitize_text_field( $label );
-
-			$label_id              = strtolower( str_replace( ' ', '_', $label ) );
-			$combined[ $label_id ] = array(
-				'icon'  => $icon,
-				'label' => $label,
-				'cords' => $location_cords,
-			);
-
-		}
-
-		return $combined;
+	public function get_store_locations() {
+		return get_option( 'lpac_store_locations', array() );
 	}
 
 }
