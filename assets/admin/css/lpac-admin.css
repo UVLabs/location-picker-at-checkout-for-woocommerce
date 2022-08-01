@@ -43,7 +43,8 @@ hr {
   border-top: 8px solid #dcdcde !important;
 }
 
-.premium-subsection:before {
+.premium-subsection:before,
+.pro-dashicon {
   font-size: 20px;
   margin-right: 5px;
   color: gold;

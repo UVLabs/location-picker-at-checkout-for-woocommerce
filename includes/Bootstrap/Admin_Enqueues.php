@@ -88,7 +88,22 @@ class Admin_Enqueues
         $is_lpac_settings = strpos( $query_string, 'wc-settings&tab=lpac_settings' );
         $saas_url = constant( 'LPAC_SAAS_URL' );
         // Only load the admin scripts on the WooCommerce settings page of LPAC
+        
         if ( $is_lpac_settings ) {
+            wp_enqueue_script(
+                $this->plugin_name . '-jquery-repeater-js',
+                $lite_assets_path_url . 'lib/jquery.repeater.js',
+                array( 'jquery' ),
+                $this->version,
+                false
+            );
+            wp_enqueue_script(
+                $this->plugin_name . '-repeater-setup-js',
+                $lite_assets_path_url . 'admin/js/repeater-setup.js',
+                array( 'jquery' ),
+                $this->version,
+                false
+            );
             wp_enqueue_script(
                 $this->plugin_name,
                 $lite_assets_path_url . 'admin/js/lpac-admin.js',
@@ -97,6 +112,7 @@ class Admin_Enqueues
                 false
             );
         }
+        
         /**
          * Register Google Map Script
          */

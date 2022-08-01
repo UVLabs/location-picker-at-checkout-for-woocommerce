@@ -35,11 +35,12 @@ class Admin {
 	 */
 	public function lpac_display_lpac_admin_order_meta( $order ) {
 
-		// Backwards compatibility, previously we stored location coords as private meta.
-		$latitude  = get_post_meta( $order->get_id(), 'lpac_latitude', true ) ?: get_post_meta( $order->get_id(), '_lpac_latitude', true );
-		$longitude = get_post_meta( $order->get_id(), 'lpac_longitude', true ) ?: get_post_meta( $order->get_id(), '_lpac_longitude', true );
+		// Backwards compatibility, previously(prior to v1.5.4) we stored location coords as private meta.
+		$latitude          = get_post_meta( $order->get_id(), 'lpac_latitude', true ) ?: get_post_meta( $order->get_id(), '_lpac_latitude', true );
+		$longitude         = get_post_meta( $order->get_id(), 'lpac_longitude', true ) ?: get_post_meta( $order->get_id(), '_lpac_longitude', true );
+		$store_origin_name = get_post_meta( $order->get_id(), '_lpac_order__origin_store_name', true );
 
-		$places_autocomplete_used = get_post_meta( $order->get_id(), '_places_autocomplete', true );
+		$places_autocomplete_used = get_post_meta( $order->get_id(), '_lpac_places_autocomplete', true );
 
 		/* translators: 1: Dashicons outbound link icon*/
 		$learn_more = sprintf( __( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
@@ -51,8 +52,9 @@ class Admin {
 			return;
 		}
 
-		$order_meta_text  = esc_html( __( 'Customer Location', 'map-location-picker-at-checkout-for-woocommerce' ) );
-		$view_on_map_text = esc_html( __( 'View on Map', 'map-location-picker-at-checkout-for-woocommerce' ) );
+		$customer_location_meta_text = esc_html__( 'Customer Location', 'map-location-picker-at-checkout-for-woocommerce' );
+		$store_origin_name_meta_text = esc_html__( 'Origin Store' );
+		$view_on_map_text            = esc_html( __( 'View on Map', 'map-location-picker-at-checkout-for-woocommerce' ) );
 
 		$places_autocomplete_used_text = '';
 		if ( ! empty( $places_autocomplete_used ) ) {
@@ -62,10 +64,16 @@ class Admin {
 		$map_link = apply_filters( 'lpac_map_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
 
 		$markup = <<<HTML
-		<p><strong>$order_meta_text:</strong></p>
+		<p><strong>$customer_location_meta_text:</strong></p>
 		<p><a href="$map_link" target="_blank"><button style="cursor:pointer" type='button'>$view_on_map_text</button></a></p>
 		<p style="font-size: 12px">$places_autocomplete_used_text</p>
 HTML;
+
+		if ( ! empty( $store_origin_name ) ) {
+			$markup .= <<<HTML
+		<p><strong>$store_origin_name_meta_text:</strong> <span style="color: green; text-decoration: underline">$store_origin_name</span></p>
+HTML;
+		}
 
 		echo $markup;
 	}
@@ -197,9 +205,10 @@ HTML;
 		$class       = $value['class'];
 		$name        = $value['name'];
 		$description = $value['desc'];
+		$id          = $value['id'] ?? '';
 
 		$markup = <<<HTML
-				<tr valign='top'>
+				<tr valign='top' id="$id">
 				<th scope='row' class="titledesc $class" style='font-size: 18px'>$name</th>
 				<td>
 					<hr/>
@@ -236,6 +245,185 @@ HTML;
 HTML;
 		echo $markup;
 
+	}
+
+	/**
+	 * Create a custom repeater element that can be used on the plugin's settings page.
+	 *
+	 * @since 1.6.0
+	 * @param array $value
+	 * @return void
+	 */
+	public function create_custom_wc_settings_repeater( $value ) {
+
+		$class                         = $value['class'];
+		$name                          = $value['name'];
+		$description                   = $value['desc'] ?? '';
+		$css                           = $value['css'] ?? '';
+		$current_saved_settings_array  = $value['current_saved_settings'] ?? '';
+		$table_columns                 = $value['table_columns'];
+		$list_name                     = $value['id'];
+		$row_id                        = $value['row_id'] ?? '';
+		$id_field                      = $value['id_field'] ?? ''; // The field that will be used as the unique identifier for the entry
+		$entity_name                   = $value['entity_name']; // The name of the entity we are allowing the user to create
+		$select_field_dropdown_options = $value['select_field_dropdown_options'] ?? ''; // The options to populate the select field dropdown with
+		$option_element_id             = $value['option_element_id'] ?? '';  // The array element we want to set for the HTML option 'id'
+		$option_element_value          = $value['option_element_value'] ?? ''; // The array element we want to set for the HTML option 'value'
+		$select_element_id             = $value['select_element_id'] ?? ''; // The name to set for our <select> element. The value passed here is saved as the key for the item that is selected from the dropdown options.
+		$fields_disabled               = $value['fields_disabled'] ?? ''; // Whether we should disable all fields in this table
+
+		$fields_disabled = disabled( $fields_disabled, true, false );
+
+		$add                   = esc_html__( 'Add', 'map-location-picker-at-checkout-for-woocommerce' ) . ' ' . $entity_name;
+		$delete_text           = esc_html__( 'Delete', 'map-location-picker-at-checkout-for-woocommerce' ) . ' ' . $entity_name;
+		$default_dropdown_text = esc_html__( 'Please choose an option', 'map-location-picker-at-checkout-for-woocommerce' );
+
+		$table_column_headings = '';
+		foreach ( $table_columns as $id => $heading ) {
+			$table_column_headings .= '<th>' . $heading['name'] . '</th>';
+		}
+
+		if ( ! empty( $current_saved_settings_array ) && is_array( $current_saved_settings_array ) ) {
+
+			$repeater_items = '';
+			foreach ( $current_saved_settings_array as $index => $current_saved_settings ) {
+				$hold_inputs = ''; // clear the previously added inputs so we can concat the fresh pair
+
+				$fields = array_keys( $current_saved_settings );
+
+				foreach ( $fields as $field_name ) {
+
+					if ( $id_field === $field_name ) {
+						continue;
+					}
+
+					$readonly = $table_columns[ $field_name ]['readonly'] ?? '';
+					$readonly = ( $readonly ) ? 'readonly' : '';
+
+					$placeholder = $table_columns[ $field_name ]['placeholder'] ?? '';
+
+					$type = $this->get_field_type( $field_name );
+
+					switch ( $type ) {
+						case 'select':
+							if ( empty( $select_field_dropdown_options ) || ! is_array( $select_field_dropdown_options ) ) {
+								break;
+							}
+
+							$options = '';
+
+							foreach ( $select_field_dropdown_options as $key => $option_details ) {
+								$item_id    = $option_details[ $option_element_id ];
+								$item_value = $option_details[ $option_element_value ];
+
+								if ( $current_saved_settings[ $select_element_id ] === $item_id ) {
+									$options .= "<option value='$item_id' selected>$item_value</option>";
+								} else {
+									$options .= "<option value='$item_id'>$item_value</option>";
+								}
+							}
+
+							$hold_inputs .= "
+									<td>
+										<select name='$select_element_id' $fields_disabled>
+											<option value=''>--$default_dropdown_text--</option>
+											$options
+										</select>
+									</td>
+									";
+							break;
+
+						default:
+							$hold_inputs .= "<td><input type='text' class='$field_name' name='$field_name' value='$current_saved_settings[$field_name]' placeholder='$placeholder' $readonly $fields_disabled/></td>";
+							break;
+					}
+				}
+
+				$hold_inputs .= "<td><input data-repeater-delete type='button' value='$delete_text' /></td>";
+
+				$repeater_items .= '<tr data-repeater-item><div>' . $hold_inputs . '</tr></span>';
+			}
+		} else {
+			$hold_inputs = ''; // clear the previously added inputs so we can concat the fresh pair
+
+			foreach ( $table_columns as $key => $value ) {
+
+				$type = $this->get_field_type( $key );
+
+				$readonly    = ( $value['readonly'] ) ? 'readonly' : '';
+				$placeholder = $value['placeholder'] ?? '';
+
+				switch ( $type ) {
+					case 'select':
+						if ( empty( $select_field_dropdown_options ) || ! is_array( $select_field_dropdown_options ) ) {
+							break;
+						}
+
+						$options = '';
+
+						foreach ( $select_field_dropdown_options as $index => $option_details ) {
+							$item_id    = $option_details[ $option_element_id ];
+							$item_value = $option_details[ $option_element_value ];
+							$options   .= "<option value='$item_id'>$item_value</option>";
+						}
+
+						$hold_inputs .= "
+						<td>
+							<select name='$select_element_id' $fields_disabled>
+								<option value=''>--$default_dropdown_text--</option>
+								$options
+							</select>
+						</td>";
+						break;
+
+					default:
+						$hold_inputs .= "<td><input type='text' name='$key' placeholder='$placeholder' $readonly $fields_disabled/></td>";
+						break;
+				}
+			}
+
+			$hold_inputs .= "<td><input data-repeater-delete type='button' value='$delete_text' /></td>";
+
+			$repeater_items = '<tr data-repeater-item><div>' . $hold_inputs . '</div></tr>';
+		}
+
+		$markup = <<<HTML
+				<tr valign='top' id="$row_id">
+				<th scope='row' class="titledesc">$name</th>
+				<td>
+					<div class="repeater $class">	
+						<table  class="" >
+							<thead>
+								<tr>
+								$table_column_headings
+								</tr>
+							</thead>
+							<tbody data-repeater-list="$list_name" >
+								$repeater_items
+							</tbody>
+							<td><input data-repeater-create type="button" value="$add"/></td>
+						</table>
+					</div>
+					<div>$description</div>
+				</td>
+				</tr>
+HTML;
+
+		echo $markup;
+	}
+
+	/**
+	 * Get a field type based on it's name.
+	 *
+	 * @since 1.6.0
+	 * @param string $field_name
+	 * @return string
+	 */
+	private function get_field_type( string $field_name ) : string {
+		$type = explode( '_', $field_name );
+		$type = end( $type );
+
+		return $type;
 	}
 
 }

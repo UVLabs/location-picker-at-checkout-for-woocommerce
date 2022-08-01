@@ -173,13 +173,42 @@
     /**
      * Set a dummy image for Shipping Regions feature.
      */
-    function setShippingRegionsDummyMapImage() {
+    function setPlottedOrdersDummyMapImage() {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      if (urlParams.get("section") !== "export") {
+        return;
+      }
+
       const mapDiv = $(".lpac-map");
 
       if (mapDiv && mapDiv.children().length == 0) {
         mapDiv.css(
           "background-image",
-          `url( ${lpacAssetsFolderPath}img/map.png )`
+          `url( ${lpacAssetsFolderPath}img/plotted-orders-map-sample.png )`
+        );
+        mapDiv.css("background-size", "contain");
+        mapDiv.css("background-repeat", "no-repeat");
+        mapDiv.addClass("dummy-map");
+      }
+    }
+
+    /**
+     * Set a dummy image for Shipping Regions feature.
+     */
+    function setShippingRegionsDummyMapImage() {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      if (urlParams.get("section") !== "shipping") {
+        return;
+      }
+
+      const mapDiv = $(".lpac-map");
+
+      if (mapDiv && mapDiv.children().length == 0) {
+        mapDiv.css(
+          "background-image",
+          `url( ${lpacAssetsFolderPath}img/shipping-regions-map-sample.png )`
         );
         mapDiv.css("background-size", "contain");
         mapDiv.css("background-repeat", "no-repeat");
@@ -234,6 +263,7 @@
     toggleAutoDetectOptions();
     toggleMapLinkOrderEmailOptions();
     togglePlacesAutoCompleteOptions();
+    setPlottedOrdersDummyMapImage();
     setShippingRegionsDummyMapImage();
   });
 })(jQuery);

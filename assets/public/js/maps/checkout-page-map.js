@@ -1,7 +1,7 @@
 /**
  * Globals:
  *
- * mapOptions, checkoutProvider
+ * mapOptions, checkoutProvider, lpacLastOrder, storeLocations
  */
 /* Get our global map variables from base-map.js */
 const map = window.lpac_map;
@@ -128,6 +128,11 @@ async function lpac_geocode_coordinates(latlng) {
 
       if (error.code === "OVER_QUERY_LIMIT") {
         alert(lpacTranslatedAlerts.moving_too_quickly);
+        location.reload();
+      }
+
+      if (error.code === "UNKNOWN_ERROR") {
+        alert(lpacTranslatedAlerts.generic_error);
         location.reload();
       }
     });
@@ -262,6 +267,9 @@ function lpac_fill_in_latlng(latlng) {
 
   latitude.value = latlng.lat;
   longitude.value = latlng.lng;
+
+  latitude.dispatchEvent(new Event("input", { bubbles: false }));
+  longitude.dispatchEvent(new Event("input", { bubbles: false }));
 }
 
 /**
@@ -695,85 +703,81 @@ function lpacHideShowMap() {
 }
 
 /**
- * Set store locations markers on checkout map.
+ * Fill in coordinatee fields for last order.
  */
-function lpacSetStoreLocationsMarkers() {
-  google.maps.event.addListenerOnce(map, "tilesloaded", function () {
-    if (typeof storeLocations === "undefined" || storeLocations === null) {
-      return;
-    }
+function lpacSetLastOrderLocationCords() {
+  if (typeof lpacLastOrder === "undefined" || lpacLastOrder === null) {
+    return;
+  }
 
-    // Manipulate our store locations object to display the different locations and their labels
-    Object.keys(storeLocations).forEach((key) => {
-      const location = storeLocations[key];
-      const locationCordsArray = location.cords.split(",");
-      const latitude = locationCordsArray[0];
-      const longitude = locationCordsArray[1];
+  // If no coordinates exist don't try to plot the location on the map
+  if (!lpacLastOrder.latitude || !lpacLastOrder.longitude) {
+    return;
+  }
 
-      const latlng = {
-        lat: parseFloat(latitude),
-        lng: parseFloat(longitude),
-      };
+  const latlng = {
+    lat: parseFloat(lpacLastOrder.latitude),
+    lng: parseFloat(lpacLastOrder.longitude),
+  };
 
-      const marker = new google.maps.Marker({
-        clickable: false,
-        icon: location.icon,
-        position: latlng,
-        map: map,
-      });
+  let latitude = document.querySelector("#lpac_latitude");
+  let longitude = document.querySelector("#lpac_longitude");
 
-      const infoWindow = new google.maps.InfoWindow({
-        content: location.label,
-        disableAutoPan: true,
-      });
+  if (typeof latitude === "undefined" || latitude === null) {
+    console.log(
+      "LPAC: Can't find latitude and longitude input areas. Can't insert location coordinates."
+    );
+    return;
+  }
 
-      infoWindow.open(map, marker);
-    });
-  });
+  if (typeof longitude === "undefined" || longitude === null) {
+    console.log(
+      "LPAC: Can't find latitude and longitude input areas. Can't insert location coordinates."
+    );
+    return;
+  }
+
+  // Set the checkout fields lat and long value
+  lpac_fill_in_latlng(latlng);
+}
+
+/**
+ * Make store locator always visible when using autocomplete feature with map turned off.
+ *
+ * By default we're hiding the store location selector when showing the map because we first want the location cords fields
+ * to be filled in before showing the selector (in the case a user has never ordered from site before).  But when the autocomplete feature is being used without the map we want the field always visible
+ */
+function lpacSetLastOrderForAutocompleteWithoutMap() {
+  const hideMapForAutocomplete = mapOptions.lpac_places_autocomplete_hide_map;
+
+  if (!hideMapForAutocomplete) {
+    return;
+  }
+
+  const field = document.querySelector("#lpac_order__origin_store_field");
+  field.classList.remove("hidden");
+
+  lpacSetLastOrderLocationCords();
 }
 
 /**
  * Set the previous order marker.
  */
 function lpacSetLastOrderMarker() {
+  if (lpacLastOrder === null) {
+    return;
+  }
+
   // Wait for map to load then add our marker
   google.maps.event.addListenerOnce(map, "tilesloaded", function () {
-    if (typeof lpacLastOrder === "undefined" || lpacLastOrder === null) {
-      return;
-    }
+    lpacSetLastOrderLocationCords();
 
-    // If no coordinates exist don't try to plot the location on the map
-    if (!lpacLastOrder.latitude || !lpacLastOrder.longitude) {
-      return;
-    }
+    map.setZoom(16);
 
     const latlng = {
       lat: parseFloat(lpacLastOrder.latitude),
       lng: parseFloat(lpacLastOrder.longitude),
     };
-
-    let latitude = document.querySelector("#lpac_latitude");
-    let longitude = document.querySelector("#lpac_longitude");
-
-    if (typeof latitude === "undefined" || latitude === null) {
-      console.log(
-        "LPAC: Can't find latitude and longitude input areas. Can't insert location coordinates."
-      );
-      return;
-    }
-
-    if (typeof longitude === "undefined" || longitude === null) {
-      console.log(
-        "LPAC: Can't find latitude and longitude input areas. Can't insert location coordinates."
-      );
-      return;
-    }
-
-    // Set the checkout fields lat and long value
-    latitude.value = lpacLastOrder.latitude;
-    longitude.value = lpacLastOrder.longitude;
-
-    map.setZoom(16);
 
     marker.setPosition(latlng);
 
@@ -817,6 +821,9 @@ function lpacSetLastOrderMarker() {
  * @returns
  */
 function addPlacesAutoComplete() {
+  //TODO Update this method to remove the heavy logic for checking whether shipping to billing address or shipping address is checked.
+  // We can simply check if the option exists versus running all the logic to determine the shipping destination.
+  // See moveStoreSelector()
   if (typeof mapOptions === "undefined" || mapOptions === null) {
     console.log(
       "LPAC: mapOptions object not present. This shouldn't be happening here. Contact Support."
@@ -989,8 +996,214 @@ addPlacesAutoComplete();
       lpac_bootstrap_map_functionality(geocoder, map, infowindow);
     } else {
       lpacSetLastOrderMarker();
+      lpacSetLastOrderForAutocompleteWithoutMap();
     }
 
+    /**
+     * Move the store locator selector based on whether shipping to billing or shipping address.
+     *
+     * This only runs when the map is not being displayed.
+     * @returns
+     */
+    function moveStoreSelector() {
+      /**
+       * We only need to do this when the map isnt present because it would look weird to just have the field appear
+       * in only locations where the map can appear.
+       */
+      const hideMapForAutocomplete =
+        mapOptions.lpac_places_autocomplete_hide_map;
+
+      if (!hideMapForAutocomplete) {
+        return;
+      }
+
+      let field = $("#lpac_order__origin_store_field");
+
+      let billingAddress =
+        $("#billing_address_2_field").length > 0
+          ? $("#billing_address_2_field")
+          : $("#billing_address_1_field"); // Some checkouts might remove this field or a user might remove it, so we're handling this here.
+      let shippingAddress =
+        $("#shipping_address_2_field").length > 0
+          ? $("#shipping_address_2_field")
+          : $("#shipping_address_1_field");
+
+      let shippingToDifferentAddress = "";
+
+      switch (checkoutProvider) {
+        case "woofunnels":
+          shippingToDifferentAddress = $("#shipping_same_as_billing");
+          break;
+        default:
+          shippingToDifferentAddress = $("#ship-to-different-address-checkbox");
+          break;
+      }
+
+      const shippingToDifferentAddressChecked =
+        shippingToDifferentAddress.is(":checked");
+
+      if (checkoutProvider !== "fluidcheckout") {
+        // If shipping to billing address keep in billing area
+        if (!shippingToDifferentAddressChecked) {
+          field.insertAfter(billingAddress);
+        } else {
+          field.insertAfter(shippingAddress);
+        }
+      }
+
+      shippingToDifferentAddress.on("click", function () {
+        let shippingToDifferentAddress = "";
+
+        switch (checkoutProvider) {
+          case "woofunnels":
+            shippingToDifferentAddress = $("#shipping_same_as_billing");
+            break;
+          default:
+            shippingToDifferentAddress = $(
+              "#ship-to-different-address-checkbox"
+            );
+            break;
+        }
+
+        const shippingToDifferentAddressChecked =
+          shippingToDifferentAddress.is(":checked");
+
+        if (!shippingToDifferentAddressChecked) {
+          field.insertAfter(billingAddress);
+        } else {
+          field.insertAfter(shippingAddress);
+        }
+      });
+
+      /**
+       * Weird bug with fluid checkout causing field to disappear if we try to move it too early.
+       */
+      if (checkoutProvider === "fluidcheckout") {
+        setTimeout(() => {
+          field.insertAfter("#shipping_address_1_field");
+        }, "1500");
+      }
+    }
+    moveStoreSelector();
+
+    /**
+     * Show the store selector field only when the lat and long fields are filled in.
+     */
+    function showStoreSelector() {
+      // Always show the store location when the user is only using the autocomplete feature and they are hiding the map.
+      // In those cases we have no need to wait until a location is found from the map to show the field.
+      const hideMapForAutocomplete =
+        mapOptions.lpac_places_autocomplete_hide_map;
+      if (hideMapForAutocomplete) {
+        return;
+      }
+
+      const field = $("#lpac_order__origin_store_field");
+
+      // Hide the field then remove the hidden class so that the slide down effect can work seamlessly.
+      field.hide().removeClass("hidden");
+
+      const lat = $("#lpac_latitude");
+
+      lat.on("input", function () {
+        field.slideDown();
+      });
+    }
+    showStoreSelector();
+
+    /**
+     * Set the store location selector to the last selected store.
+     */
+    function setLastSelectedStore() {
+      // This might be null if the user has never ordered from this site before.
+      if (lpacLastOrder === null) {
+        return;
+      }
+
+      const field = $("#lpac_order__origin_store");
+
+      if (field.length < 1) {
+        return;
+      }
+
+      const storeLocations = $.map(
+        $("#lpac_order__origin_store option"),
+        function (el) {
+          return el.value;
+        }
+      );
+
+      /**
+       * Set the currently selected option to be the last order's selected option.
+       *
+       * If that store location no longer exists, then set the option to the default empty option.
+       */
+      if (
+        lpacLastOrder.store_origin_id.length > 0 &&
+        storeLocations.indexOf(lpacLastOrder.store_origin_id) > -1
+      ) {
+        field.val(lpacLastOrder.store_origin_id).change();
+      }
+    }
+    setLastSelectedStore();
+
+    /**
+     * Detect when the store origin location is changed
+     */
+    function detectOriginStoreChange() {
+      const field = $("#lpac_order__origin_store");
+
+      if (field.length < 1) {
+        return;
+      }
+
+      field.on("change", function () {
+        $(document.body).trigger("update_checkout");
+      });
+    }
+    detectOriginStoreChange();
+
+    /**
+     * Set store locations markers on checkout map.
+     */
+    function lpacSetStoreLocationsMarkers() {
+      google.maps.event.addListenerOnce(map, "tilesloaded", function () {
+        if (
+          typeof storeLocations === "undefined" ||
+          storeLocations === null ||
+          !storeLocations.length > 0
+        ) {
+          return;
+        }
+
+        // Manipulate our store locations object to display the different locations and their labels
+        Object.keys(storeLocations).forEach((key) => {
+          const location = storeLocations[key];
+          const locationCordsArray = location.store_cords_text.split(",");
+          const latitude = locationCordsArray[0];
+          const longitude = locationCordsArray[1];
+
+          const latlng = {
+            lat: parseFloat(latitude),
+            lng: parseFloat(longitude),
+          };
+
+          const marker = new google.maps.Marker({
+            clickable: false,
+            icon: location.store_icon_text,
+            position: latlng,
+            map: map,
+          });
+
+          const infoWindow = new google.maps.InfoWindow({
+            content: location.store_name_text,
+            disableAutoPan: true,
+          });
+
+          infoWindow.open(map, marker);
+        });
+      });
+    }
     lpacSetStoreLocationsMarkers();
   });
 })(jQuery);

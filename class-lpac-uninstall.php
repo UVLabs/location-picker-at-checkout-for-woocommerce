@@ -126,10 +126,19 @@ class Lpac_Uninstall {
 			'lpac_no_shipping_method_selected_error',
 			'lpac_limit_shipping_distance',
 			'lpac_max_shipping_distance',
+			'lpac_max_free_shipping_distance',
 			'lpac_distance_cost_no_shipping_method_available_text',
 			'lpac_distance_cost_no_shipping_method_selected_error',
 			'lpac_saas_email',
 			'lpac_saas_token',
+			'lpac_store_locations',
+			'lpac_show_store_locations_on_map',
+			'lpac_enable_store_location_selector',
+			'lpac_store_select_label',
+			'lpac_enable_cost_by_store_distance',
+			'lpac_enable_cost_by_store_location',
+			'lpac_cost_by_store_distance_delivery_prices',
+			'lpac_cost_by_store_location_delivery_prices',
 		);
 
 		foreach ( $option_keys as $key ) {

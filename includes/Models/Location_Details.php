@@ -1,7 +1,7 @@
 <?php
 
 /**
-* Handles saving of location details to the databse.
+* Handles saving of location details to the database.
 *
 * Author:          Uriahs Victor
 * Created on:      16/10/2021 (d/m/y)
@@ -29,7 +29,8 @@ class Location_Details {
 	public function validate_map_visibility( $order_id, $data ) {
 
 		$show      = Map_Visibility_Controller::lpac_show_map( 'checkout' );
-		$map_shown = $_POST['lpac_is_map_shown'] ?? '';
+		$post_data = $_POST;
+		$map_shown = $post_data['lpac_is_map_shown'] ?? '';
 
 		if ( $show === false ) {
 			return;
@@ -42,11 +43,11 @@ class Location_Details {
 			return;
 		}
 
-		$lat  = (float) $_POST['lpac_latitude'] ?? 0.0;
-		$long = (float) $_POST['lpac_longitude'] ?? 0.0;
+		$lat  = (float) $post_data['lpac_latitude'] ?? 0.0;
+		$long = (float) $post_data['lpac_longitude'] ?? 0.0;
 
 		$this->save_order_meta_cords( $order_id, $lat, $long );
-
+		$this->save_order_delivery_origin( $order_id, $post_data );
 	}
 
 	/**
@@ -76,7 +77,30 @@ class Location_Details {
 	 */
 	public function save_places_autocomplete( int $order_id, array $data ) : void {
 		$places_autocomplete_used = $_POST['lpac_places_autocomplete'] ?? '';
-		update_post_meta( $order_id, '_places_autocomplete', sanitize_text_field( $places_autocomplete_used ) );
+		update_post_meta( $order_id, '_lpac_places_autocomplete', sanitize_text_field( $places_autocomplete_used ) );
+	}
+
+	/**
+	 * Save the order delivery origin to the DB.
+	 *
+	 * @param int $order_id
+	 * @param array $post_data
+	 * @return void
+	 */
+	private function save_order_delivery_origin( int $order_id, array $post_data ) : void {
+		$store_origin_id = $post_data['lpac_order__origin_store'] ?? '';
+
+		if ( ! empty( $store_origin_id ) ) {
+
+			$store_locations    = get_option( 'lpac_store_locations', array() );
+			$store_location_ids = array_column( $store_locations, 'store_location_id' );
+			$key                = array_search( $store_origin_id, $store_location_ids );
+			$store_origin_name  = $store_locations[ $key ]['store_name_text'] ?? '';
+			$store_origin_id    = $store_locations[ $key ]['store_location_id'] ?? '';
+
+			update_post_meta( $order_id, '_lpac_order__origin_store_id', sanitize_text_field( $store_origin_id ) );
+			update_post_meta( $order_id, '_lpac_order__origin_store_name', sanitize_text_field( $store_origin_name ) );
+		}
 	}
 
 }
