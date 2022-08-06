@@ -138,10 +138,41 @@ class Checkout_Page_Controller {
 	 *
 	 * @since 1.5.7
 	 * @since 1.6.0 use new store locations array
+	 * @see setup_global_js_vars()
 	 * @return array
 	 */
 	public function get_store_locations() {
 		return get_option( 'lpac_store_locations', array() );
+	}
+
+	/**
+	 * Check if the origin store dropdown has a selected value for Store location selector feature in Shipping Locations settings.
+	 *
+	 * @since    1.6.0
+	 * @param array $fields The fields array.
+	 * @param object $errors The errors object.
+	 *
+	 * @return void
+	 */
+	public function validate_store_location_selector_dropdown( array $fields, object $errors ) : void {
+
+		$enable_store_location_selector = get_option( 'lpac_enable_store_location_selector' );
+		$enable_store_location_selector = filter_var( $enable_store_location_selector, FILTER_VALIDATE_BOOL );
+
+		if ( empty( $enable_store_location_selector ) ) {
+			return;
+		}
+
+		$origin_store = $_POST['lpac_order__origin_store'] ?? '';
+
+		$error_msg = '<strong>' . __( 'Please select the store location you would like to order from.', 'map-location-picker-at-checkout-for-woocommerce' ) . '</strong>';
+
+		$error_msg = apply_filters( 'lpac_checkout_empty_origin_store_msg', $error_msg );
+
+		if ( empty( $origin_store ) ) {
+			$errors->add( 'validation', $error_msg );
+		}
+
 	}
 
 }

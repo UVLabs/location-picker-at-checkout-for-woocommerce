@@ -42,6 +42,10 @@ class Checkout_Provider {
 			$provider = 'fluidcheckout';
 		}
 
+		if ( defined( 'CFW_NAME' ) ) {
+			$provider = 'checkoutwc';
+		}
+
 		if ( class_exists( 'Orderable_Pro', false ) ) {
 			$settings               = get_option( 'orderable_settings', array() );
 			$enable_custom_checkout = $settings['checkout_general_override_checkout'] ?? '';

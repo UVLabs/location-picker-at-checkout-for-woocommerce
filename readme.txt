@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, checkout map, geolocation, google map, map, 
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 6.1
-Stable tag: 1.5.7
+Stable tag: 1.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -209,6 +209,20 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 == Upgrade Notice ==
 
 == Changelog ==
+= 1.6.2 = 
+* [New] Option to show selected store location in order emails.
+* [New] New address field when creating Store Locations.
+* [Fix] JS error when Store Location selector is not present on checkout page.
+* [Fix] Store Location selector was always being moved below shipping address even when map was being shown on checkout.
+* [Fix] Store Location validation was not being enforced in the free version of the plugin.
+* [Fix] Default Store Location selector would not display on checkout page unless "Cost by Store Distance" feature was explicitly disabled.
+* [Fix] Prevent plugin from trying to redirect to its settings if WooCommerce is not active.
+* [Compatibility] Support for CheckoutWC - WooCommerce custom checkout plugin.
+
+
+= 1.6.1 = 
+* [Fix] Migration error for old store location settings to new store location feature.
+
 = 1.6.0 = 
 * [New PRO] Cost by Store Distance - Set order shipping price based on the customer's distance relative to your store location.
 * [New PRO] Cost by Store Location - Set order shipping price based on the store that the customer selects at checkout.  

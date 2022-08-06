@@ -248,6 +248,32 @@ HTML;
 	}
 
 	/**
+	 * Create a custom info p element that can be used on the plugin's settings page.
+	 *
+	 * @param array $value
+	 * @return void
+	 */
+	public function create_custom_wc_settings_info_text( $value ) {
+
+		$name      = $value['name'];
+		$id        = $value['id'];
+		$row_class = $value['row_class'] ?? '';
+		$class     = $value['class'];
+		$text      = $value['text'];
+		$css       = $value['css'];
+
+		$markup = <<<HTML
+				<tr valign='top' class="$row_class">
+				<th scope='row' class="titledesc">$name</th>
+				<td>
+					<p class="$class" style="$css" id="$id">$text</p>
+				</td>
+				</tr>
+HTML;
+		echo $markup;
+	}
+
+	/**
 	 * Create a custom repeater element that can be used on the plugin's settings page.
 	 *
 	 * @since 1.6.0
