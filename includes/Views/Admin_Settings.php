@@ -191,7 +191,7 @@ HTML;
         $lpac_settings[] = array(
             'name'              => __( 'Google Maps API Key', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc_tip'          => __( 'Enter the API key from Google cloud console.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'              => __( 'Enter the API key you copied from the Google Cloud Console. <a href="https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs" target="blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Enter the API key you copied from the Google Cloud Console. Without the Google Maps API key the plugin will not function as expected. <a href="https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs" target="blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'                => 'lpac_google_maps_api_key',
             'placeholder'       => 'AIzaSyD8seU-lym435g...',
             'type'              => ( LPAC_DEBUG ? 'text' : 'password' ),
@@ -518,24 +518,29 @@ HTML;
         $dashicon = ( lpac_fs()->is_not_paying() ? "<span class='dashicons-before dashicons-lock'></span>" : '' );
         $lpac_settings[] = array(
             'name'                   => __( 'Store Locations', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'                   => sprintf( __( 'Create your different store locations. A "store" in this context simply means the locations where you do business. Separate coordinates latitude and longitude with a commar. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/store-locations/?utm_source=storelocationstab&utm_medium=lpacdashboard&utm_campaign=freedocs' target='blank'>" . self::$learn_more . '</a>' ),
+            'desc'                   => sprintf( __( 'Create your different store locations. A "store" in this context simply means the locations where you do business. Separate latitude and longitude coordinates with a comma. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/store-locations/?utm_source=storelocationstab&utm_medium=lpacdashboard&utm_campaign=freedocs' target='blank'>" . self::$learn_more . '</a>' ),
             'id'                     => 'lpac_store_locations',
             'type'                   => 'repeater',
             'current_saved_settings' => get_option( 'lpac_store_locations' ),
             'entity_name'            => __( 'location', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id_field'               => 'store_location_id',
             'table_columns'          => array(
-            'store_name_text'  => array(
+            'store_name_text'    => array(
             'name'        => __( 'Name', 'map-location-picker-at-checkout-for-woocommerce' ),
             'readonly'    => false,
             'placeholder' => __( 'Enter a store name', 'map-location-picker-at-checkout-for-woocommerce' ),
         ),
-            'store_cords_text' => array(
+            'store_cords_text'   => array(
             'name'        => __( 'Coordinates', 'map-location-picker-at-checkout-for-woocommerce' ),
             'readonly'    => false,
             'placeholder' => '13.856098,-61.057016',
         ),
-            'store_icon_text'  => array(
+            'store_address_text' => array(
+            'name'        => __( 'Address', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'readonly'    => false,
+            'placeholder' => '#9 LPAC Street',
+        ),
+            'store_icon_text'    => array(
             'name'        => $dashicon . __( 'Icon URL', 'map-location-picker-at-checkout-for-woocommerce' ) . $this->pro_label,
             'readonly'    => ( lpac_fs()->is_not_paying() ? true : false ),
             'placeholder' => 'https://example.com/wp-content/.../icon.png',
@@ -564,6 +569,15 @@ HTML;
             'type'        => 'text',
             'default'     => __( 'Deliver from', 'map-location-picker-at-checkout-for-woocommerce' ),
             'css'         => 'max-width:200px;',
+        );
+        $lpac_settings[] = array(
+            'name'     => __( 'Show Selected Store in Order Emails', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => __( 'Checking this option will add the Store name and address inside the WooCommerce order emails.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'       => 'lpac_show_selected_store_in_emails',
+            'type'     => 'checkbox',
+            'default'  => 'yes',
+            'css'      => 'max-width:200px;',
         );
         $lpac_settings[] = array(
             'type' => 'sectionend',
@@ -1631,6 +1645,19 @@ HTML;
             $current_set_location = get_option( 'lpac_checkout_map_orientation' );
             if ( !array_key_exists( $current_set_location, $locations ) ) {
                 update_option( 'lpac_checkout_map_orientation', 'woocommerce_checkout_before_customer_details' );
+            }
+        }
+        
+        
+        if ( defined( 'CFW_NAME' ) ) {
+            $locations = array(
+                ''                                     => __( 'Select', 'map-location-picker-at-checkout-for-woocommerce' ),
+                'cfw_start_shipping_address_container' => __( 'Shipping Address Area - Top (CheckoutWC)', 'map-location-picker-at-checkout-for-woocommerce' ),
+                'cfw_end_shipping_address_container'   => __( 'Shipping Address Area - Bottom (CheckoutWC)', 'map-location-picker-at-checkout-for-woocommerce' ),
+            );
+            $current_set_location = get_option( 'lpac_checkout_map_orientation' );
+            if ( !array_key_exists( $current_set_location, $locations ) ) {
+                update_option( 'lpac_checkout_map_orientation', 'cfw_start_shipping_address_container' );
             }
         }
         

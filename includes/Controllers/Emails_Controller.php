@@ -13,7 +13,6 @@
 
 namespace Lpac\Controllers;
 
-use Lpac\Helpers\Functions as Functions_Helper;
 use Lpac\Helpers\QR_Code_Generator;
 use Lpac\Traits\Upload_Folders;
 
@@ -28,10 +27,14 @@ class Emails_Controller {
 
 	/**
 	 * Outputs a Button or QR Code inside order emails.
-	 *
+	 * @param object $order
+	 * @param bool $sent_to_admin
+	 * @param bool $plain_text
+	 * @param object $email
 	 * @since    1.1.0
+	 * @return void
 	 */
-	public function add_delivery_location_link_to_email( $order, $sent_to_admin, $plain_text, $email ) {
+	public function add_delivery_location_link_to_email( object $order, bool $sent_to_admin, bool $plain_text, object $email ) {
 
 		$allowed_emails = get_option( 'lpac_email_delivery_map_emails', array() );
 
@@ -181,6 +184,59 @@ HTML;
 		$image = "<a href='$map_link' target='_blank'><img style='display: block !important; margin-bottom: 40px !important; margin-left: auto !important; margin-right: auto !important; postition: relative !important;' src='$image_src' width='$width' height='$height'/></a>";
 		echo $image;
 
+	}
+
+	/**
+	 * Adds store location to order email
+	 *
+	 * @param object $order
+	 * @param bool $sent_to_admin
+	 * @param bool $plain_text
+	 * @param object $email
+	 * @since 1.6.2
+	 * @return void
+	 */
+	public function add_store_location_to_email( object $order, bool $sent_to_admin, bool $plain_text, object $email ): void {
+
+		$show_in_emails = get_option( 'lpac_show_selected_store_in_emails', 'yes' );
+
+		if ( $show_in_emails !== 'yes' ) {
+			return;
+		}
+
+		$label             = get_option( 'lpac_store_select_label' ) ?: esc_html( 'Deliver from', 'map-location-picker-at-checkout-for-woocommerce' );
+		$label             = rtrim( $label, ':' );
+		$store_origin_name = get_post_meta( $order->get_id(), '_lpac_order__origin_store_name', true );
+
+		if ( empty( $store_origin_name ) ) {
+			return;
+		}
+
+		$store_locations = get_option( 'lpac_store_locations', array() );
+		$address         = '';
+
+		if ( empty( $store_locations ) ) {
+			return;
+		}
+
+		$store_names = array_column( $store_locations, 'store_name_text' );
+		$key         = array_search( $store_origin_name, $store_names );
+
+		if ( $key !== false ) {
+			$address = $store_locations[ $key ]['store_address_text'] ?? '';
+			$cords   = $store_locations[ $key ]['store_cords_text'] ?? '';
+		}
+
+		$link = ( ! empty( $cords ) ) ? "https://www.google.com/maps/search/?api=1&query=$cords" : '#';
+
+		$markup = "<hr><p>
+				   		<span style='font-size: 18px'>$label:</span> <br/><br/>
+						<a style='font-weight: bold;' href='$link' target='_blank'>
+							$store_origin_name <br/>
+							$address <br/>
+						</a>
+					</p><hr><br/>";
+		echo $markup;
 	}
 
 }

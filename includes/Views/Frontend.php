@@ -150,8 +150,12 @@ JAVASCRIPT;
      */
     private function maybe_create_store_location_selector_fields() : void
     {
+        /**
+         * Checking for get_cost_by_distance_setting() instead of get_cost_by_store_distance_setting because
+         * the latter can be turned on while the former is turned off resulting in unexpected results.
+         */
         
-        if ( $this->get_cost_by_store_distance_setting() === false && $this->get_cost_by_store_location_setting() === false && $this->get_store_location_selector_setting() === true ) {
+        if ( $this->get_cost_by_distance_setting() === false && $this->get_cost_by_store_location_setting() === false && $this->get_store_location_selector_setting() === true ) {
             $store_locations = array_merge( array(
                 '' => '--' . __( 'Please choose an option', 'map-location-picker-at-checkout-for-woocommerce' ) . '--',
             ), $this->get_store_locations() );
@@ -227,6 +231,7 @@ JAVASCRIPT;
         }
         
         // TODO these filters do not work as expected...split up map area markup and ensure all filters/actions are working as expected
+        // TODO These should actually be actions
         $before_map_filter = apply_filters( 'lpac_before_map', '', $user_id );
         $before_map_filter = wp_kses_post( $before_map_filter );
         $after_map_filter = apply_filters( 'lpac_after_map', '', $user_id );
@@ -447,7 +452,7 @@ HTML;
         $additional = esc_html__( 'Only Admins on your website can see this notice. You can turn it off in the plugin settings from the "Debug" submenu if everything works fine.' );
         
         if ( empty($api_key) ) {
-            $no_api_key = sprintf( esc_html__( 'You have not entered a Google Maps API Key! The plugin will not function how it should until you have entered the key. Please read the following doc for instructions on obtaining a Google Maps API Key %s' ), "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/' target='_blank'>{$learn_more} >></a>" );
+            $no_api_key = sprintf( esc_html__( 'You have not entered a Google Maps API Key! The plugin will not function how it should until you have entered the key. Please read the following doc for instructions on obtaining a Google Maps API Key %s' ), "<a style='color: blue !important' href='https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/' target='_blank'>{$learn_more} >></a>" );
             $no_api_key_markup = <<<HTML
 \t\t\t<div class="lpac-admin-notice" style="background: red; text-align: center; margin-bottom: 20px; padding: 10px; font-weight: bold">
 \t\t\t<p style=" color: #ffffff !important; font-size:14px;"><span style="font-weight: bold">Location Picker at Checkout: </span>

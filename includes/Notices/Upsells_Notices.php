@@ -69,12 +69,12 @@ class Upsells_Notices extends Notice {
 	 */
 	public function create_v160_release_notice() {
 
-		if ( constant( 'LPAC_VERSION' ) !== '1.6.0' ) {
+		if ( constant( 'LPAC_VERSION' ) !== '1.6.2' ) {
 			return;
 		}
 
 		$content = array(
-			'title' => esc_html__( 'Welcome to v1.6.0 of LPAC!', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🚀',
+			'title' => esc_html__( 'Welcome to v1.6 of LPAC!', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🚀',
 			'body'  => esc_html__( 'Some new features have been added to the PRO version of the plugin. These include: Orders Map, Cost by Store Location, Cost by Store Distance and more. Use coupon code INIT10 for a 10% discount at checkout.' ),
 			'link'  => esc_attr( 'https://lpacwp.com/pricing/?utm_source=banner&utm_medium=lpacnotice&utm_campaign=proupsell' ),
 		);

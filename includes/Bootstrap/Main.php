@@ -27,6 +27,9 @@
  */
 namespace Lpac\Bootstrap;
 
+if ( !defined( 'WPINC' ) ) {
+    die;
+}
 use  Lpac\Bootstrap\Loader ;
 use  Lpac\Bootstrap\I18n ;
 use  Lpac\Bootstrap\Admin_Enqueues ;
@@ -42,6 +45,7 @@ use  Lpac\Notices\Loader as Notices_Loader ;
 use  Lpac\Views\Frontend as Frontend_Display ;
 use  Lpac\Compatibility\WooFunnels\WooFunnels ;
 use  Lpac\Models\Location_Details ;
+use  Lpac\Models\Migrations ;
 use  Lpac\Controllers\API\Order as API_Order ;
 /**
 * Class Main.
@@ -152,6 +156,11 @@ class Main
         $admin_settings_controller = new Admin_Settings_Controller();
         $controller_map_visibility = new Map_Visibility_Controller();
         $api_orders = new API_Order();
+        $migrations = new Migrations();
+        /**
+         * Plugin settings migrations
+         */
+        $this->loader->add_action( 'admin_init', $migrations, 'add_address_field_to_store_locations' );
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         // Notices
@@ -200,21 +209,12 @@ class Main
             10,
             3
         );
-        /**
-         * Migrate old way of saving store locations to new array structure. Added @1.6.0
-         */
-        $this->loader->add_action(
-            'admin_init',
-            $admin_settings_controller,
-            'migrate_old_store_locations',
-            10,
-            3
-        );
         /* Custom elements created for WooCommerce settings */
         $this->loader->add_action( 'woocommerce_admin_field_button', $plugin_admin_view, 'create_custom_wc_settings_button' );
         $this->loader->add_action( 'woocommerce_admin_field_hr', $plugin_admin_view, 'create_custom_wc_settings_hr' );
         $this->loader->add_action( 'woocommerce_admin_field_div', $plugin_admin_view, 'create_custom_wc_settings_div' );
         $this->loader->add_action( 'woocommerce_admin_field_repeater', $plugin_admin_view, 'create_custom_wc_settings_repeater' );
+        $this->loader->add_action( 'woocommerce_admin_field_info_text', $plugin_admin_view, 'create_custom_wc_settings_info_text' );
         $this->loader->add_filter(
             'plugin_action_links',
             $this,
@@ -338,8 +338,18 @@ class Main
                 2
             );
         }
+        /**
+         * Validate that a customer has selected a store location from the drop down selector.
+         */
+        $this->loader->add_action(
+            'woocommerce_after_checkout_validation',
+            $controller_checkout_page,
+            'validate_store_location_selector_dropdown',
+            10,
+            2
+        );
         /*
-         * Display map button link or qr code link in email.
+         * Display map button link, static map or qr code link in order emails email.
          */
         $enable_map_link_in_email = get_option( 'lpac_enable_delivery_map_link_in_email' );
         
@@ -355,6 +365,16 @@ class Main
             );
         }
         
+        /**
+         * Add selected store location to order emails.
+         */
+        $this->loader->add_action(
+            'woocommerce_email_customer_details',
+            $controller_emails,
+            'add_store_location_to_email',
+            20,
+            4
+        );
         /*
          * Adds a notice for admin to checkout page
          */

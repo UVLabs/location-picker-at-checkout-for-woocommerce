@@ -1,12 +1,6 @@
 <?php
 
 /**
- * The plugin bootstrap file
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
  *
  * @link              https://uriahsvictor.com
  * @link              https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce
@@ -17,7 +11,7 @@
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://lpacwp.com
  * Description:       Allow customers to choose their shipping or pickup location using a map at checkout.
- * Version:           1.6.0-lite
+ * Version:           1.6.2-lite
  * Requires at least: 5.7
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
@@ -34,7 +28,7 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 if ( !defined( 'LPAC_VERSION' ) ) {
-    define( 'LPAC_VERSION', '1.6.0' );
+    define( 'LPAC_VERSION', '1.6.2' );
 }
 /**
  * The code that runs during plugin activation.
@@ -122,7 +116,7 @@ if ( !function_exists( 'lpac_fs' ) ) {
                 'has_addons'     => false,
                 'has_paid_plans' => true,
                 'menu'           => array(
-                'first-path' => 'admin.php?page=wc-settings&tab=lpac_settings',
+                'first-path' => ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ? 'admin.php?page=wc-settings&tab=lpac_settings' : '' ),
             ),
                 'is_live'        => true,
             ) );

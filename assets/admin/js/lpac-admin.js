@@ -69,6 +69,24 @@
     // hideSaveButtonOnExportTab();
 
     /**
+     * Check if the Google Maps API Key has been entered on the settings page.
+     */
+    function checkAPIKeyPresence() {
+      const field = $("#lpac_google_maps_api_key");
+
+      if (field.length < 1) {
+        return;
+      }
+
+      if (field.val().length > 10) {
+        return;
+      }
+
+      field.css("box-shadow", "1px 1px 10px 5px red");
+    }
+    checkAPIKeyPresence();
+
+    /**
      * Toggle AutoDetect customer location option on Generals Settings page.
      */
     function toggleAutoDetectOptions() {

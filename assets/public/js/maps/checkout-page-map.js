@@ -749,13 +749,16 @@ function lpacSetLastOrderLocationCords() {
  */
 function lpacSetLastOrderForAutocompleteWithoutMap() {
   const hideMapForAutocomplete = mapOptions.lpac_places_autocomplete_hide_map;
+  const enablePlacesAutoComplete = mapOptions.lpac_enable_places_autocomplete;
 
-  if (!hideMapForAutocomplete) {
+  if (enablePlacesAutoComplete === false && hideMapForAutocomplete === false) {
     return;
   }
 
   const field = document.querySelector("#lpac_order__origin_store_field");
-  field.classList.remove("hidden");
+  if (field) {
+    field.classList.remove("hidden");
+  }
 
   lpacSetLastOrderLocationCords();
 }
@@ -1012,8 +1015,13 @@ addPlacesAutoComplete();
        */
       const hideMapForAutocomplete =
         mapOptions.lpac_places_autocomplete_hide_map;
+      const enablePlacesAutoComplete =
+        mapOptions.lpac_enable_places_autocomplete;
 
-      if (!hideMapForAutocomplete) {
+      if (
+        enablePlacesAutoComplete === false &&
+        hideMapForAutocomplete === false
+      ) {
         return;
       }
 
@@ -1079,9 +1087,10 @@ addPlacesAutoComplete();
        * Weird bug with fluid checkout causing field to disappear if we try to move it too early.
        */
       if (checkoutProvider === "fluidcheckout") {
-        setTimeout(() => {
+        $(document.body).on("updated_checkout", function () {
+          let field = $("#lpac_order__origin_store_field");
           field.insertAfter("#shipping_address_1_field");
-        }, "1500");
+        });
       }
     }
     moveStoreSelector();
@@ -1094,7 +1103,13 @@ addPlacesAutoComplete();
       // In those cases we have no need to wait until a location is found from the map to show the field.
       const hideMapForAutocomplete =
         mapOptions.lpac_places_autocomplete_hide_map;
-      if (hideMapForAutocomplete) {
+      const enablePlacesAutoComplete =
+        mapOptions.lpac_enable_places_autocomplete;
+
+      if (
+        enablePlacesAutoComplete === true &&
+        hideMapForAutocomplete === true
+      ) {
         return;
       }
 

@@ -87,40 +87,4 @@ class Admin_Settings_Controller {
 		return $values;
 	}
 
-	/**
-	 * Migrate Store Locations from the old settings array to the new settings array.
-	 * @return void
-	 */
-	public function migrate_old_store_locations() : void {
-
-		$installed_at_version = LPAC_INSTALLED_AT_VERSION;
-		$migrated             = get_option( 'lpac_migrated_store_locations' );
-
-		// Only perform this migration prior to v1.6.0 when we had the old method of adding store locations.
-		if ( $installed_at_version >= '1.6.0' || ! empty( $migrated ) ) {
-			return;
-		}
-
-		$location_coordinates = get_option( 'lpac_store_locations_cords', array() );
-		$location_names       = get_option( 'lpac_store_locations_labels', array() );
-		$location_icons       = get_option( 'lpac_store_locations_icons', array() );
-
-		$location_coordinates_array = explode( '|', $location_coordinates );
-		$location_names_array       = explode( '|', $location_names );
-		$location_icons_array       = explode( '|', $location_icons );
-
-		$new_array_structure = array();
-
-		foreach ( $location_coordinates_array as $key => $cords ) {
-			$new_array_structure[] = array(
-				'store_location_id' => sanitize_text_field( 'store_location_' . $key ),
-				'store_name_text'   => sanitize_text_field( $location_names_array[ $key ] ?? 'Branch Name' ),
-				'store_cords_text'  => sanitize_text_field( $cords ),
-				'store_icon_text'   => sanitize_text_field( $location_icons_array[ $key ] ?? '' ),
-			);
-		}
-
-		update_option( 'lpac_store_locations', $new_array_structure );
-		update_option( 'lpac_migrated_store_locations', true );
-	}
 }
