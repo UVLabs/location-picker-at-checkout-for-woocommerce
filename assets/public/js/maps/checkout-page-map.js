@@ -1018,10 +1018,7 @@ addPlacesAutoComplete();
       const enablePlacesAutoComplete =
         mapOptions.lpac_enable_places_autocomplete;
 
-      if (
-        enablePlacesAutoComplete === false &&
-        hideMapForAutocomplete === false
-      ) {
+      if (hideMapForAutocomplete === false) {
         return;
       }
 

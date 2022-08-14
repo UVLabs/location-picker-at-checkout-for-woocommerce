@@ -220,47 +220,58 @@ JAVASCRIPT;
         $instuctions_text = __( 'Click the "Detect Current Location" button then move the red marker to your desired shipping address.', 'map-location-picker-at-checkout-for-woocommerce' );
         $instuctions_text = apply_filters( 'lpac_map_instuctions_text', $instuctions_text );
         $user_id = (int) get_current_user_id();
-        // This filter is populated with the saved addresses in the Pro plugin. See lpac_output_saved_addresses()
-        $saved_addresses_area = apply_filters( 'lpac_saved_addresses', '', $user_id );
-        $saved_addresses_area = wp_kses_post( $saved_addresses_area );
         $edit_saved_addresses = '';
-        
-        if ( !empty($saved_addresses_area) ) {
-            $account_link = get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) . 'edit-address/';
-            $edit_saved_addresses = sprintf( esc_html__( '%1$sEdit Saved Addresses%2$s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='{$account_link}' target='_blank'>", '</a>' );
-        }
-        
-        // TODO these filters do not work as expected...split up map area markup and ensure all filters/actions are working as expected
-        // TODO These should actually be actions
-        $before_map_filter = apply_filters( 'lpac_before_map', '', $user_id );
-        $before_map_filter = wp_kses_post( $before_map_filter );
-        $after_map_filter = apply_filters( 'lpac_after_map', '', $user_id );
-        $after_map_filter = wp_kses_post( $after_map_filter );
-        $before_map_controls_filter = apply_filters( 'lpac_before_map_controls', '', $user_id );
-        $before_map_controls_filter = wp_kses_post( $before_map_controls_filter );
-        // TODO use this filter to create our saved address field
-        $after_map_controls_filter = apply_filters( 'lpac_after_map_controls', '', $user_id );
-        $after_map_controls_filter = wp_kses_post( $after_map_controls_filter );
-        $markup = <<<HTML
-\t\t<div style="display: {$display}" id="lpac-map-container" class='woocommerce-shipping-fields__field-wrapper'>
-\t\t\t{$before_map_filter}
-\t\t\t<div class='lpac-map'></div>
-\t\t\t{$after_map_filter}
-\t\t\t<div class='lpac-map-controls'>
-\t\t\t{$before_map_controls_filter}
-\t\t\t<div id='lpac-map-instructions'>{$instuctions_text}</div>
-\t\t\t<div id='lpac-find-location-btn-wrapper'><button id='lpac-find-location-btn' class="button btn" type='button'>{$lpac_find_location_btn_text}</button></div>
-\t\t\t<div id='lpac-saved-addresses'>
-\t\t\t\t<ul>
-\t\t\t\t\t{$saved_addresses_area}
-\t\t\t\t</ul>
-\t\t\t\t<p id='edit-saved-addresses'>{$edit_saved_addresses}</p>
-\t\t\t</div>
-\t\t\t{$after_map_controls_filter}
-\t\t\t</div>
-\t\t</div>
-HTML;
-        echo  apply_filters( 'lpac_map_markup', $markup, $user_id ) ;
+        do_action( 'lpac_before_checkout_map_container', '', $user_id );
+        ?>
+		<div style='display: <?php 
+        echo  $display ;
+        ?>' id='lpac-map-container' class='woocommerce-shipping-fields__field-wrapper'>
+			<?php 
+        do_action( 'lpac_before_checkout_map', '', $user_id );
+        ?>
+			<div class='lpac-map'></div>
+			<?php 
+        do_action( 'lpac_after_checkout_map', '', $user_id );
+        ?>
+			<div class='lpac-map-controls'>
+			<?php 
+        do_action( 'lpac_before_checkout_map_controls', '', $user_id );
+        ?>
+			<div id='lpac-map-instructions'> <?php 
+        echo  $instuctions_text ;
+        ?></div>
+			<?php 
+        do_action( 'lpac_before_detect_location_btn', '', $user_id );
+        ?>
+			<div id='lpac-find-location-btn-wrapper'><button id='lpac-find-location-btn' class='button btn' type='button'><?php 
+        echo  $lpac_find_location_btn_text ;
+        ?></button></div>
+			<?php 
+        do_action( 'lpac_after_detect_location_btn', '', $user_id );
+        ?>
+			<div id='lpac-saved-addresses'>
+				<?php 
+        do_action( 'lpac_before_saved_addresses', '', $user_id );
+        ?>
+				<ul>
+					<?php 
+        do_action( 'lpac_saved_addresses', '', $user_id );
+        ?>
+				</ul>
+				<p id='edit-saved-addresses'><?php 
+        echo  $edit_saved_addresses ;
+        ?></p>
+				<?php 
+        do_action( 'lpac_after_saved_addresses', '', $user_id );
+        ?>
+			</div>
+			<?php 
+        do_action( 'lpac_after_checkout_map_controls', '', $user_id );
+        ?>
+			</div>
+		</div>
+		<?php 
+        do_action( 'lpac_after_checkout_map_container', '', $user_id );
         /**
          * In WooFunnels we need to create our checkout fields differently.
          * see Lpac\Compatibility\WooFunnels\WooFunnels
@@ -268,7 +279,6 @@ HTML;
         if ( $this->checkout_provider !== 'woofunnels' ) {
             $this->create_lpac_checkout_fields();
         }
-        do_action( 'lpac_after_map' );
         // Add inline global JS so that we can use data fetched using PHP inside JS
         $global_js_vars = $this->setup_global_js_vars();
         $added = wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_js_vars, 'before' );
@@ -360,12 +370,20 @@ HTML;
             'lpac_map_order_shipping_address_1' => $shipping_address_1,
             'lpac_map_order_shipping_address_2' => $shipping_address_2,
         );
-        $markup = <<<HTML
-\t\t<div id="lpac-map-container" class='woocommerce-shipping-fields__field-wrapper'>
-\t\t<div class='lpac-map'></div>
-\t\t</div>
-HTML;
-        echo  $markup ;
+        $user_id = (int) get_current_user_id();
+        do_action( 'lpac_before_order_details_map_container', '', $user_id );
+        ?>
+		<div id="lpac-map-container" class='woocommerce-shipping-fields__field-wrapper'>
+			<?php 
+        do_action( 'lpac_before_order_details_map', '', $user_id );
+        ?>
+			<div class='lpac-map'></div>
+			<?php 
+        do_action( 'lpac_after_order_details_map', '', $user_id );
+        ?>
+		</div>
+		<?php 
+        do_action( 'lpac_after_order_details_map_container', '', $user_id );
         // Add inline global JS so that we can use data fetched using PHP inside JS
         $global_js_vars = $this->setup_global_js_vars( $user_location_collected_during_order );
         $added = wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_js_vars, 'before' );
