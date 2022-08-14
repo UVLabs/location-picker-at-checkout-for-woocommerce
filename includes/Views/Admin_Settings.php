@@ -191,7 +191,7 @@ HTML;
         $lpac_settings[] = array(
             'name'              => __( 'Google Maps API Key', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc_tip'          => __( 'Enter the API key from Google cloud console.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'              => __( 'Enter the API key you copied from the Google Cloud Console. Without the Google Maps API key the plugin will not function as expected. <a href="https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs" target="blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Enter the API key you copied from the Google Cloud Console. Without the Google Maps API key the plugin will not work. <a href="https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs" target="blank">Learn More <span style="text-decoration: none" class="dashicons dashicons-external"></span></a>', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'                => 'lpac_google_maps_api_key',
             'placeholder'       => 'AIzaSyD8seU-lym435g...',
             'type'              => ( LPAC_DEBUG ? 'text' : 'password' ),
@@ -518,7 +518,12 @@ HTML;
         $dashicon = ( lpac_fs()->is_not_paying() ? "<span class='dashicons-before dashicons-lock'></span>" : '' );
         $lpac_settings[] = array(
             'name'                   => __( 'Store Locations', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'                   => sprintf( __( 'Create your different store locations. A "store" in this context simply means the locations where you do business. Separate latitude and longitude coordinates with a comma. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/store-locations/?utm_source=storelocationstab&utm_medium=lpacdashboard&utm_campaign=freedocs' target='blank'>" . self::$learn_more . '</a>' ),
+            'desc'                   => sprintf(
+            __( 'Create your different store locations. A "store" in this context simply means the locations where you do business. Separate latitude and longitude coordinates with a comma. You can use a website like %1$slatlong.net%2$s to get the GPS coordinates for an address. %3$s', 'map-location-picker-at-checkout-for-woocommerce' ),
+            "<a href='https://latlong.net' target='_blank'>",
+            "<span style='text-decoration: none' class='dashicons dashicons-external'></span></a>",
+            "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/store-locations/?utm_source=storelocationstab&utm_medium=lpacdashboard&utm_campaign=freedocs' target='blank'>" . self::$learn_more . '</a>'
+        ),
             'id'                     => 'lpac_store_locations',
             'type'                   => 'repeater',
             'current_saved_settings' => get_option( 'lpac_store_locations' ),
@@ -884,7 +889,7 @@ HTML;
             'type' => 'title',
         );
         $lpac_dummy_pro_settings[] = array(
-            'name'  => __( 'Cost by Region', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'name'  => __( 'Cost by Region', 'map-location-picker-at-checkout-for-woocommerce' ) . $this->pro_label,
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
             'desc'  => sprintf( __( 'Use the map to draw regions and set shipping costs for customers who fall within those regions.  %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=shippingtab&utm_medium=lpacdashboard&utm_campaign=prodocs#cost-by-region' target='_blank'>" . self::$learn_more . '</a>' ),
             'type'  => 'hr',
@@ -1004,7 +1009,7 @@ HTML;
             'is_option'         => false,
         );
         $lpac_dummy_pro_settings[] = array(
-            'name'  => __( 'Cost by Distance', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'name'  => __( 'Cost by Distance', 'map-location-picker-at-checkout-for-woocommerce' ) . $this->pro_label,
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
             'desc'  => sprintf( __( 'Charge customers based on the distance between your store and their location. Be sure to test this before committing to the changes. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=shippingtab&utm_medium=lpacdashboard&utm_campaign=prodocs#cost-by-distance' target='blank'>" . self::$learn_more . '</a>' ),
             'type'  => 'hr',
@@ -1026,6 +1031,19 @@ HTML;
             'desc'              => __( 'This is a specific API key created just for usage of Google\'s Distance Matrix API. The key should have no referrer restrictions set on it.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'placeholder'       => 'AIzaSyD8seU-lym435g...',
             'type'              => 'password',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'Shipping Methods', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_distance_matrix_shipping_methods',
+            'class'             => 'wc-enhanced-select',
+            'desc'              => sprintf( __( 'Select the Shipping Method(s) this feature applies to. If there is a cost already set on the shipping method, then that base cost will be added to the cost set for the region. NOTE: You need to have at least ONE created Shipping Zone with Shipping Methods attached to it. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=shippingtab&utm_medium=lpacdashboard&utm_campaign=prodocs#cost-by-distance' target='_blank'>" . self::$learn_more . '</a>' ),
+            'type'              => 'multiselect',
+            'options'           => array(),
+            'css'               => 'height:40px;',
             'custom_attributes' => array(
             'disabled' => 'disabled',
         ),
@@ -1071,6 +1089,18 @@ HTML;
             'is_option'         => false,
         );
         $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'Display Cost & Unit in Shipping Label', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip'          => __( 'Enabling this option will append the "Cost Per Unit Distance" and "Distance Unit" to the end of the Shipping Method name. E.g: Flat Rate ($1.50/Km).', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_show_distance_unit_cost_in_checkout',
+            'type'              => 'checkbox',
+            'css'               => 'max-width:120px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
             'name'              => __( 'Travel Mode', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'                => 'lpac_distance_matrix_travel_mode',
             'desc'              => __( 'Enter the travel mode you will be using. Though multiple options are provided, you might always want to use "driving" for best results.', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -1082,19 +1112,6 @@ HTML;
             'walking'   => __( 'Walking', 'map-location-picker-at-checkout-for-woocommerce' ),
         ),
             'css'               => 'max-width:120px;',
-            'custom_attributes' => array(
-            'disabled' => 'disabled',
-        ),
-            'is_option'         => false,
-        );
-        $lpac_dummy_pro_settings[] = array(
-            'name'              => __( 'Shipping Methods', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'                => 'lpac_distance_matrix_shipping_methods',
-            'class'             => 'wc-enhanced-select',
-            'desc'              => sprintf( __( 'Select the Shipping Method(s) this feature applies to. If there is a cost already set on the shipping method, then that base cost will be added to the cost set for the region. NOTE: You need to have at least ONE created Shipping Zone with Shipping Methods attached to it. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=shippingtab&utm_medium=lpacdashboard&utm_campaign=prodocs#cost-by-distance' target='_blank'>" . self::$learn_more . '</a>' ),
-            'type'              => 'multiselect',
-            'options'           => array(),
-            'css'               => 'height:40px;',
             'custom_attributes' => array(
             'disabled' => 'disabled',
         ),
@@ -1561,7 +1578,7 @@ HTML;
     private function output_pro_upsell_banner()
     {
         /* translators: 1: HTML break element */
-        $signup_text = sprintf( __( 'Custom Maps, Custom Marker Icons, Saved Addresses, More Visibility Rules, Cost by Region, Cost by Distance, Cost by Store Location, Multi-Store Distance Pricing, , Export Order Locations & more. %s Get the most out of LPAC with the PRO version.', 'map-location-picker-at-checkout-for-woocommerce' ), '<br/><br/>' );
+        $signup_text = sprintf( __( 'Custom Maps, Custom Marker Icons, Saved Addresses, More Visibility Rules, Cost by Region, Cost by Distance, Cost by Store Location, Multi-Store Distance Pricing, , Export Order Locations & More. %s Get the most out of LPAC with the PRO version.', 'map-location-picker-at-checkout-for-woocommerce' ), '<br/><br/>' );
         $learn_more = self::$learn_more;
         $markup = <<<HTML
 \t\t<div class="lpac-banner">

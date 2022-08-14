@@ -6,18 +6,24 @@
         "github-lite": "sh bin/github-lite-prep.sh"
     },
     "require-dev": {
-        "dealerdirect/phpcodesniffer-composer-installer": "0.7.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "0.7.2",
         "wp-coding-standards/wpcs": "2.3",
         "suin/phpcs-psr4-sniff": "^3.0"
     },
     "require": {
         "freemius/wordpress-sdk": "2.4.5",
         "endroid/qr-code": "4.3.5",
-        "mjaschen/phpgeo": "4.0"
+        "mjaschen/phpgeo": "4.0",
+        "wpbp/pointerplus": "1.0.2"
     },
     "autoload":{
         "psr-4": {
             "Lpac\\" : "includes/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }

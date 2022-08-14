@@ -15,7 +15,9 @@ Let WooCommerce customers set their exact location for delivery or pickup on Goo
 
 Do you run a WooCommerce store where you need more detailed location information from a customer? If so, then why not let them choose their exact location on Google Maps? 
 
-Location Picker At Checkout for WooCommerce(LPAC) allows store owners to add more flexibility to their WooCommerce store by letting their customers choose exactly where they'd like their product(s) delivered. This plugin is excellent for stores with delivery personnel that ship products to customers within a moderate geographical area. It can also work for websites which offer Pickup services such as Private Taxi websites.
+Location Picker At Checkout for WooCommerce(LPAC) allows store owners to add more flexibility to their WooCommerce store by letting their customers choose exactly where they'd like their product(s) delivered. 
+
+This plugin is excellent for stores with delivery personnel that ship products to customers within a moderate geographical area. It can also work for websites which offer Pickup services such as Private Taxi websites.
 
 Location Picker At Checkout for WooCommerce(LPAC) enables store owners to get more precise location details without having to contact customers via other means for location information or directions. With this plugin, lots of time can be saved by allowing customers to select their exact location on Google Maps at checkout with WooCommerce.
 
@@ -69,7 +71,7 @@ Though the primary focus of the plugin is to allow customers to select accurate 
 
 Allow customers to save multiple different addresses to their account that they can select from when placing an order. This feature is useful for customers who might be placing orders on your store from multiple locations. 
 
-A customer placing an order might not always be at the previously used address, with this feature they can select any previously saved address such as "Work" or "Home".
+A customer placing an order might not always be at the previously used address, with this feature they can select any previously saved address such as "Work", "Home", "Grandma's" etc. Think of it as an address book for WooCommerce.
 
 ### WooCommerce Custom Shipping Zones Plugin
 
@@ -91,48 +93,53 @@ LPAC comes with multiple features to fine tune where you deliver to and how much
 - Taxi and pickup scheduling websites
 - And more
 
-### Features:
+### Free Features:
 
-- Detect current location of customer at checkout (Automatically or on click of a button) [FREE]
-- Allow customers to pick their exact location using Google Maps [FREE]
-- Autofill checkout fields with information pulled from Google Maps [FREE]
+- Detect current location of customer at checkout (Automatically or on click of a button)
+- Allow customers to pick their exact location using Google Maps
+- Autofill checkout fields with information pulled from Google Maps
 - Store Location Selector - Create multiple store locations and allow customers to choose the one they'd like to order from.
-- Show/Hide Map based on Shipping Method [FREE]
-- Show/Hide Map based on Shipping Class [FREE]
-- Show Map based on Coupon Code [FREE]
-- Hide Map for Guest Checkout [FREE]
-- Include a QR Code, Static Map or Button link to the customer's selected location in the WooCommerce order emails. [FREE]
-- "View on map" button to allow admin to view exact location for delivery of any order. [FREE]
-- Customers can see the delivery location they selected on past orders. [FREE]
-- Option to turn on Places Autocomplete feature. [Learn More](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/) [FREE]
-- Customizable Map container [FREE]
-- Automatically translated map buttons based on the website's language (set in WordPress' general settings) [FREE]
-- Store locations - display your store locations on the map [FREE]
-- Custom Google Maps designs [PRO]
-- Custom Marker Icons [PRO]
-- Export Order Locations [PRO]
-- Plot Orders on a map - See where your orders are coming from and determine your most popular order locations [PRO]
-- Multiple Customer Saved Addresses [PRO]
-- Shipping Cost by Region [PRO]
-- Shipping Cost by Distance [PRO]
-- Shipping Cost by Store Location [PRO]
-- Shipping Cost by Store Location Distance [PRO]
-- Multi-store distance pricing - Set the cost by distanced based on the origin store the customer selected. [PRO]
-- Show/Hide Map based on Shipping Zone [PRO]
-- Hide Map until a minimum cart total is reached [PRO]
-- Hide Map when a maximum cart total is reached [PRO]
-- More Map Visibility Rules [PRO]
-- Restrict Places Autocomplete feature to selected countries [PRO]
-- Have a feature in mind? Feel free to submit it on the support forum.
+- Show/Hide Map based on Shipping Method
+- Show/Hide Map based on Shipping Class
+- Show Map based on Coupon Code
+- Hide Map for Guest Checkout
+- Include a QR Code, Static Map or Button link to the customer's selected location in the WooCommerce order emails.
+- "View on map" button to allow admin to view exact location for delivery of any order.
+- Customers can see the delivery location they selected on past orders.
+- Option to turn on Places Autocomplete(Google Autofill) feature. [Learn More](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/)
+- Customizable Map container
+- Automatically translated map buttons based on the website's language (set in WordPress' general settings)
+- Store locations - display your store locations on the map
+
+### Premium Features:
+
+- Custom Google Maps designs
+- Custom Marker Icons
+- Export Order Locations
+- Plot Orders on a map - See where your orders are coming from and determine your most popular order locations
+- Multiple Customer Saved Addresses
+- Shipping Cost by Region
+- Shipping Cost by Distance
+- Shipping Cost by Store Location
+- Shipping Cost by Store Location Distance
+- Multi-store distance pricing - Set the cost by distanced based on the origin store the customer selected.
+- Show/Hide Map based on Shipping Zone
+- Hide Map until a minimum cart total is reached
+- Hide Map when a maximum cart total is reached
+- More Map Visibility Rules
+- Restrict Places Autocomplete feature to selected countries
 - And More
+
+Have a feature in mind? Feel free to submit it on the support forum.
 
 ### LPAC has support for the following custom checkout page plugins:
 
 - WooFunnels Funnel Builder Plugin for WordPress
 - Fluid Checkout for WooCommerce
 - Online Ordering System For Restaurants & Local Retail by Orderable
+- CheckoutWC custom checkout plugin
 
-#### Location Picker at Checkout is the last WooCommerce checkout map plugin you'll need.
+**_Location Picker at Checkout is the last WooCommerce checkout map plugin you'll need._**
 
 ### Configuring Plugin:
 
@@ -209,16 +216,25 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 == Upgrade Notice ==
 
 == Changelog ==
+= 1.6.3 = 
+* [New PRO] Option to append cost per unit and measure unit (e.g $0.50/km) at the end of the shipping method when using the Cost by Distance feature.
+* [Fix PRO] Cost by Store Distance checkout validation was still running even though feature was turned off.
+* [Fix PRO] Kilometer distance was being cast as an integer instead of a float which would cause slightly off conversions when converting Kilometer to Miles for Cost by Distance feature.
+* [Fix] Store Location selector was still being moved below shipping address in some cases even when map was being shown on checkout.
+* [Fix] Wrong checkout validation error would show even when Store Location feature was not in use.
+* [Dev] It is no longer possible to filter the entire checkout page's map markup. Action Hooks have instead been added at different points of the map's markup. [Learn more](https://lpacwp.com/docs/advanced/plugin-hooks/).
+* [Info] Tested on WC 6.8
+* [Info] Added a few initial admin pointers to help a bit with onboarding.
+
 = 1.6.2 = 
 * [New] Option to show selected store location in order emails.
 * [New] New address field when creating Store Locations.
 * [Fix] JS error when Store Location selector is not present on checkout page.
 * [Fix] Store Location selector was always being moved below shipping address even when map was being shown on checkout.
-* [Fix] Store Location validation was not being enforced in the free version of the plugin.
+* [Fix] Store Location checkout validation was not being enforced in the free version of the plugin.
 * [Fix] Default Store Location selector would not display on checkout page unless "Cost by Store Distance" feature was explicitly disabled.
 * [Fix] Prevent plugin from trying to redirect to its settings if WooCommerce is not active.
 * [Compatibility] Support for CheckoutWC - WooCommerce custom checkout plugin.
-
 
 = 1.6.1 = 
 * [Fix] Migration error for old store location settings to new store location feature.

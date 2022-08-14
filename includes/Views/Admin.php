@@ -96,7 +96,7 @@ HTML;
 			return;
 		}
 
-		add_meta_box( 'lpac_delivery_map_metabox', __( 'Delivery Location', 'map-location-picker-at-checkout-for-woocommerce' ), array( $this, 'lpac_output_custom_order_details_metabox' ), 'shop_order', 'normal', 'high' );
+		add_meta_box( 'lpac_delivery_map_metabox', __( 'Location', 'map-location-picker-at-checkout-for-woocommerce' ), array( $this, 'lpac_output_custom_order_details_metabox' ), 'shop_order', 'normal', 'high' );
 	}
 
 	/**
@@ -289,7 +289,7 @@ HTML;
 		$current_saved_settings_array  = $value['current_saved_settings'] ?? '';
 		$table_columns                 = $value['table_columns'];
 		$list_name                     = $value['id'];
-		$row_id                        = $value['row_id'] ?? '';
+		$row_id                        = $value['row_id'] ?? ''; // This is simply a CSS id for the repeater row so that the whole thing can be hidden in JS
 		$id_field                      = $value['id_field'] ?? ''; // The field that will be used as the unique identifier for the entry
 		$entity_name                   = $value['entity_name']; // The name of the entity we are allowing the user to create
 		$select_field_dropdown_options = $value['select_field_dropdown_options'] ?? ''; // The options to populate the select field dropdown with

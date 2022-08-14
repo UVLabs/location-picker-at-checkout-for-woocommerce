@@ -113,6 +113,7 @@ class Lpac_Uninstall {
 			'lpac_distance_matrix_store_origin_cords',
 			'lpac_distance_matrix_cost_per_unit',
 			'lpac_distance_matrix_distance_unit',
+			'lpac_show_distance_unit_cost_in_checkout',
 			'lpac_distance_matrix_travel_mode',
 			'lpac_distance_matrix_shipping_methods',
 			'lpac_shipping_cost_by_region_enabled',
@@ -143,6 +144,7 @@ class Lpac_Uninstall {
 			'lpac_cost_by_store_location_shipping_methods',
 			'lpac_migrated__add_address_to_store_locations',
 			'lpac_show_selected_store_in_emails',
+			'lpac_debug_shipping_distance',
 		);
 
 		foreach ( $option_keys as $key ) {
