@@ -14,10 +14,17 @@
 */
 namespace Lpac\Compatibility\WooFunnels;
 
+
+if ( !defined( 'ABSPATH' ) ) {
+    exit;
+    // Exit if accessed directly
+}
+
 /**
 * WooFunnels compatibility Class.
 *
 */
+use  Lpac\Helpers\Functions ;
 class WooFunnels
 {
     /**
@@ -68,20 +75,7 @@ class WooFunnels
      */
     private function get_store_locations()
     {
-        return $this->normalize_store_locations();
-    }
-    
-    /**
-     * Normalize our store locations for displaying in a dropdown.
-     * @return array
-     */
-    private function normalize_store_locations()
-    {
-        $store_locations = get_option( 'lpac_store_locations', array() );
-        $location_ids = array_column( $store_locations, 'store_location_id' );
-        $location_names = array_column( $store_locations, 'store_name_text' );
-        $store_locations_normalized = array_combine( $location_ids, $location_names );
-        return $store_locations_normalized;
+        return Functions::normalize_store_locations();
     }
     
     /**

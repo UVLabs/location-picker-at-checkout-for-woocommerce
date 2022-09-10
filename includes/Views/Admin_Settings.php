@@ -11,6 +11,12 @@
  */
 namespace Lpac\Views;
 
+
+if ( !defined( 'ABSPATH' ) ) {
+    exit;
+    // Exit if accessed directly
+}
+
 use  Lpac\Helpers\Functions as Functions_Helper ;
 use  Lpac\Controllers\Map_Visibility_Controller ;
 class Admin_Settings extends \WC_Settings_Page
@@ -122,7 +128,7 @@ class Admin_Settings extends \WC_Settings_Page
         $external_icon = '<strong><span style="text-decoration: none" class="dashicons dashicons-external"></span></strong>';
         
         if ( empty(get_option( 'lpac_google_maps_api_key', '' )) ) {
-            $no_api_key = __( 'You need an API Key to use Google Maps. Please see this document for how to get it ', 'map-location-picker-at-checkout-for-woocommerce' );
+            $no_api_key = '❌ &nbsp;&nbsp;' . __( 'You need an API Key to use Google Maps. Please see this document for how to get it ', 'map-location-picker-at-checkout-for-woocommerce' );
             $no_api_key .= "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=freedocs' target='_blank'>{$here}</a>";
         } else {
             $no_api_key = '';
@@ -133,15 +139,20 @@ class Admin_Settings extends \WC_Settings_Page
         $issues .= "<a href='https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
         $documentation = __( 'Read the documentation ', 'map-location-picker-at-checkout-for-woocommerce' );
         $documentation .= "<a href='https://lpacwp.com/docs/?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=docshome' target='_blank'>{$here}</a>";
+        $feature_requests = __( 'Have a feature in mind? Add it to our list of feature requests ', 'map-location-picker-at-checkout-for-woocommerce' );
+        $feature_requests .= "<a href='https://lpacwp.com/docs/?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=docshome' target='_blank'>{$here}</a>";
         $translate_plugin = __( 'Plugin settings not in your Language? Help translate it ', 'map-location-picker-at-checkout-for-woocommerce' );
         $translate_plugin .= "<a href='hhttps://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
         $markup = <<<HTML
 \t\t<div class="lpac-banner">
+\t\t<div style="text-align: left">
 \t\t<h2>{$title}</h2>
 \t\t<p>{$no_api_key}</p>
-\t\t<p>{$documentation}</p>
-\t\t<p>{$translate_plugin}</p>
-\t\t<p>{$issues}</p>
+\t\t<p>📖 &nbsp;&nbsp;{$documentation}</p>
+\t\t<p>🌟 &nbsp;&nbsp;{$feature_requests}</p>
+\t\t<p>🌐 &nbsp;&nbsp;{$translate_plugin}</p>
+\t\t<p>✋🏾 &nbsp;&nbsp;{$issues}</p>
+\t\t</div>
 \t\t</div>
 HTML;
         return $markup;
@@ -534,11 +545,13 @@ HTML;
             'name'        => __( 'Name', 'map-location-picker-at-checkout-for-woocommerce' ),
             'readonly'    => false,
             'placeholder' => __( 'Enter a store name', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required'    => true,
         ),
             'store_cords_text'   => array(
             'name'        => __( 'Coordinates', 'map-location-picker-at-checkout-for-woocommerce' ),
             'readonly'    => false,
             'placeholder' => '13.856098,-61.057016',
+            'required'    => true,
         ),
             'store_address_text' => array(
             'name'        => __( 'Address', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -562,7 +575,7 @@ HTML;
         $lpac_settings[] = array(
             'name'     => __( 'Display Store Selector on Checkout Page', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc_tip' => __( 'Turning on this option adds a store selector dropdown field on your checkout page. The selected store would show on the order details for both customers and on the admin order page.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => __( 'Turning on this option adds a store selector dropdown field in your checkout page. The selected store would show on the order details for both customers and on the admin order page.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'       => 'lpac_enable_store_location_selector',
             'type'     => 'checkbox',
         );
@@ -583,6 +596,18 @@ HTML;
             'type'     => 'checkbox',
             'default'  => 'yes',
             'css'      => 'max-width:200px;',
+        );
+        $lpac_settings[] = array(
+            'name'      => __( 'Shortcode', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'        => 'lpac_store_selector Shortcode',
+            'text'      => sprintf(
+            esc_html__( 'You can use the shortcode: %1$s[lpac-store-selector]%2$s anywhere on your website to allow customers (including guests) to set their preferred store to order from. The selected store will automatically be chosen at checkout.  %3$s', 'map-location-picker-at-checkout-for-woocommerce' ),
+            '<code>',
+            '</code>',
+            '<a href="https://lpacwp.com/docs/getting-started/plugin-settings/store-locations/?utm_source=storelocationstab&utm_medium=lpacdashboard&utm_campaign=freedocs#shortcode" target="_blank">' . self::$learn_more . '</a>'
+        ),
+            'type'      => 'info_text',
+            'is_option' => false,
         );
         $lpac_settings[] = array(
             'type' => 'sectionend',
@@ -1581,7 +1606,7 @@ HTML;
         $signup_text = sprintf( __( 'Custom Maps, Custom Marker Icons, Saved Addresses, More Visibility Rules, Cost by Region, Cost by Distance, Cost by Store Location, Multi-Store Distance Pricing, , Export Order Locations & More. %s Get the most out of LPAC with the PRO version.', 'map-location-picker-at-checkout-for-woocommerce' ), '<br/><br/>' );
         $learn_more = self::$learn_more;
         $markup = <<<HTML
-\t\t<div class="lpac-banner">
+\t\t<div class="lpac-banner-pro">
 \t\t\t<p style="font-size: 18px"><strong>{$signup_text}</strong></p>
 \t\t\t<br/>
 \t\t\t<p><a class="lpac-button" href="https://lpacwp.com/pricing?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=proupsell" target="_blank">{$learn_more}</a></p>

@@ -152,6 +152,7 @@ class Lpac_Uninstall {
 		}
 
 		delete_metadata( 'user', 0, 'lpac_dismissed_notices', '', true );
+		delete_metadata( 'user', 0, 'lpac_user_preferred_store_location_id', '', true );
 
 		$lpac_directory = wp_upload_dir()['basedir'] . '/lpac';
 

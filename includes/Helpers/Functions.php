@@ -291,4 +291,21 @@ class Functions {
 		return false;
 	}
 
+	/**
+	 * Normalize our store locations for displaying in a dropdown.
+	 *
+	 * @since 1.6.0
+	 * @since 1.6.4 Made method a helper function.
+	 * @return array
+	 */
+	public static function normalize_store_locations() {
+
+		$store_locations            = get_option( 'lpac_store_locations', array() );
+		$location_ids               = array_column( $store_locations, 'store_location_id' );
+		$location_names             = array_column( $store_locations, 'store_name_text' );
+		$store_locations_normalized = array_combine( $location_ids, $location_names );
+
+		return $store_locations_normalized;
+	}
+
 }

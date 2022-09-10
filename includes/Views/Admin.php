@@ -12,6 +12,10 @@
  */
 namespace Lpac\Views;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 use Lpac\Helpers\Functions;
 
 class Admin {
@@ -53,8 +57,8 @@ class Admin {
 		}
 
 		$customer_location_meta_text = esc_html__( 'Customer Location', 'map-location-picker-at-checkout-for-woocommerce' );
-		$store_origin_name_meta_text = esc_html__( 'Origin Store' );
-		$view_on_map_text            = esc_html( __( 'View on Map', 'map-location-picker-at-checkout-for-woocommerce' ) );
+		$store_origin_name_meta_text = esc_html__( 'Origin Store', 'map-location-picker-at-checkout-for-woocommerce' );
+		$view_on_map_text            = esc_html__( 'View on Map', 'map-location-picker-at-checkout-for-woocommerce' );
 
 		$places_autocomplete_used_text = '';
 		if ( ! empty( $places_autocomplete_used ) ) {
@@ -326,6 +330,9 @@ HTML;
 					$readonly = $table_columns[ $field_name ]['readonly'] ?? '';
 					$readonly = ( $readonly ) ? 'readonly' : '';
 
+					$required = $table_columns[ $field_name ]['required'] ?? '';
+					$required = ( $required ) ? 'required' : '';
+
 					$placeholder = $table_columns[ $field_name ]['placeholder'] ?? '';
 
 					$type = $this->get_field_type( $field_name );
@@ -360,7 +367,7 @@ HTML;
 							break;
 
 						default:
-							$hold_inputs .= "<td><input type='text' class='$field_name' name='$field_name' value='$current_saved_settings[$field_name]' placeholder='$placeholder' $readonly $fields_disabled/></td>";
+							$hold_inputs .= "<td><input type='text' class='$field_name' name='$field_name' value='$current_saved_settings[$field_name]' placeholder='$placeholder' $readonly $fields_disabled $required/></td>";
 							break;
 					}
 				}
@@ -378,6 +385,9 @@ HTML;
 
 				$readonly    = ( $value['readonly'] ) ? 'readonly' : '';
 				$placeholder = $value['placeholder'] ?? '';
+
+				$required = $value['required'] ?? '';
+				$required = ( $required ) ? 'required' : '';
 
 				switch ( $type ) {
 					case 'select':
@@ -403,7 +413,7 @@ HTML;
 						break;
 
 					default:
-						$hold_inputs .= "<td><input type='text' name='$key' placeholder='$placeholder' $readonly $fields_disabled/></td>";
+						$hold_inputs .= "<td><input type='text' name='$key' placeholder='$placeholder' $readonly $fields_disabled $required/></td>";
 						break;
 				}
 			}

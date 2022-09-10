@@ -38,6 +38,7 @@ use  Lpac\Controllers\Emails_Controller ;
 use  Lpac\Controllers\Map_Visibility_Controller ;
 use  Lpac\Controllers\Admin_Settings_Controller ;
 use  Lpac\Controllers\Checkout_Page_Controller ;
+use  Lpac\Controllers\Shortcodes as Shortcodes_Controller ;
 use  Lpac\Views\Admin as Admin_Display ;
 use  Lpac\Notices\Admin as Admin_Notices ;
 use  Lpac\Notices\Notice ;
@@ -47,6 +48,7 @@ use  Lpac\Compatibility\WooFunnels\WooFunnels ;
 use  Lpac\Models\Location_Details ;
 use  Lpac\Models\Migrations ;
 use  Lpac\Controllers\API\Order as API_Order ;
+use  Lpac\Views\Shortcodes ;
 /**
 * Class Main.
 *
@@ -108,6 +110,7 @@ class Main
         // Right now it runs on both
         $this->define_admin_hooks();
         $this->define_public_hooks();
+        $this->create_shortcodes();
     }
     
     /**
@@ -254,6 +257,7 @@ class Main
         $controller_map_visibility = new Map_Visibility_Controller();
         $controller_checkout_page = new Checkout_Page_Controller();
         $model_location_details = new Location_Details();
+        $controller_shortcodes = new Shortcodes_Controller();
         /*
          * If plugin not enabled don't continue
          */
@@ -404,6 +408,8 @@ class Main
             10,
             2
         );
+        $this->loader->add_action( 'wp_ajax_lpac_save_selected_store_location', $controller_shortcodes, 'save_selected_store_location' );
+        $this->loader->add_action( 'wp_ajax_nopriv_lpac_save_selected_store_location', $controller_shortcodes, 'save_selected_store_location' );
     }
     
     /**
@@ -468,6 +474,15 @@ class Main
         }
         
         return array_merge( $plugin_actions, $new_actions );
+    }
+    
+    /**
+     * Create our shortcodes
+     * @return void
+     */
+    public function create_shortcodes() : void
+    {
+        new Shortcodes();
     }
 
 }

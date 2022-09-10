@@ -12,13 +12,28 @@
  */
 namespace Lpac\Views;
 
+
+if ( !defined( 'ABSPATH' ) ) {
+    exit;
+    // Exit if accessed directly
+}
+
 use  Freemius_Exception ;
 use  Lpac\Controllers\Map_Visibility_Controller ;
 use  Lpac\Controllers\Checkout_Page_Controller ;
 use  Lpac\Compatibility\Checkout_Provider ;
+use  Lpac\Helpers\Functions ;
 class Frontend
 {
+    /**
+     * Checkout page handler.
+     * @var string
+     */
     private  $checkout_provider = 'wc' ;
+    /**
+     * Class constructor
+     * @return void
+     */
     public function __construct()
     {
         $this->checkout_provider = ( new Checkout_Provider() )->get_checkout_provider();
@@ -41,6 +56,7 @@ class Frontend
             $store_locations = $controller_checkout_page->get_store_locations();
         }
         $map_options = array_merge( $map_options, $additional );
+        $map_options['fill_in_fields'] = apply_filters( 'lpac_fill_checkout_fields', true );
         $map_options = json_encode( $map_options );
         $last_order_location = json_encode( $last_order_location );
         $store_locations = json_encode( $store_locations );
@@ -63,22 +79,7 @@ JAVASCRIPT;
      */
     private function get_store_locations()
     {
-        return $this->normalize_store_locations();
-    }
-    
-    /**
-     * Normalize our store locations for displaying in a dropdown.
-     *
-     * @since 1.6.0
-     * @return array
-     */
-    private function normalize_store_locations() : array
-    {
-        $store_locations = get_option( 'lpac_store_locations', array() );
-        $location_ids = array_column( $store_locations, 'store_location_id' );
-        $location_names = array_column( $store_locations, 'store_name_text' );
-        $store_locations_normalized = array_combine( $location_ids, $location_names );
-        return $store_locations_normalized;
+        return Functions::normalize_store_locations();
     }
     
     /**

@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, checkout map, geolocation, google map, map, 
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 6.1
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -216,6 +216,16 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 == Upgrade Notice ==
 
 == Changelog ==
+= 1.6.4 = 
+* [Fix PRO] Saved Addresses features were showing for guest customers.
+* [New] Store Location Selector shortcode `[lpac-store-selector]` Add shortcode anywhere to allow users to set their preferred store to order from.
+* [New] Feature Requests: Do you have a feature in mind for LPAC? Submit it or vote on others [here](https://lpacwp.com/feature-requests/).
+* [Fix] Duplicate validation errors for store location feature.
+* [Fix] Wrong order of filtering shipping method HTML when required conditions aren't met.
+* [Improvement] Made some repeater fields required.
+* [Dev] New filter to prevent map from filling out checkout fields `lpac_fill_checkout_fields`.
+* [Info] Tested on WC 6.9 RC1
+
 = 1.6.3 = 
 * [New PRO] Option to append cost per unit and measure unit (e.g $0.50/km) at the end of the shipping method when using the Cost by Distance feature.
 * [Fix PRO] Cost by Store Distance checkout validation was still running even though feature was turned off.

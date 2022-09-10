@@ -67,6 +67,8 @@
   text-align: center;
 }
 
+/* Saved Addresses */
+
 #lpac-saved-addresses ul {
   margin-left: 0;
 }
@@ -75,4 +77,10 @@
   font-size: 16px;
   margin-top: 10px;
   text-decoration: underline;
+}
+
+/* Shortcodes */
+
+#lpac-store-selector-shortcode select {
+  padding: 10px;
 }
