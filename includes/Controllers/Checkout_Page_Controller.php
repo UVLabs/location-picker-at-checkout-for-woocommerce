@@ -120,9 +120,17 @@ class Checkout_Page_Controller {
 
 		// Backwards compatibility, previously we stored location coords as private meta.
 		// TODO: Remove backwards compatibility once we're satisfied users have updated the plugin. This was added in v1.5.4
-		$latitude        = $last_order->get_meta( 'lpac_latitude', true ) ?: $last_order->get_meta( '_lpac_latitude', true );
-		$longitude       = $last_order->get_meta( 'lpac_longitude', true ) ?: $last_order->get_meta( '_lpac_longitude', true );
-		$store_origin_id = $last_order->get_meta( '_lpac_order__origin_store_id', true ) ?: ''; // Value exists if the customer selected an origin store.
+		$latitude  = $last_order->get_meta( 'lpac_latitude', true ) ?: $last_order->get_meta( '_lpac_latitude', true );
+		$longitude = $last_order->get_meta( 'lpac_longitude', true ) ?: $last_order->get_meta( '_lpac_longitude', true );
+
+		$user_preferred_store = get_user_meta( $user_id, 'lpac_user_preferred_store_location_id', true );
+
+		// If the user has selected a preferred store...then we should override the last order with the preferred store.
+		if ( empty( $user_preferred_store ) ) {
+			$store_origin_id = $last_order->get_meta( '_lpac_order__origin_store_id', true ) ?: ''; // Value exists if the customer selected an origin store.
+		} else {
+			$store_origin_id = $user_preferred_store;
+		}
 
 		return array(
 			'address'         => $last_order->get_formatted_shipping_address(),
@@ -138,7 +146,7 @@ class Checkout_Page_Controller {
 	 *
 	 * @since 1.5.7
 	 * @since 1.6.0 use new store locations array
-	 * @see setup_global_js_vars()
+	 * @see Lpac\Views\Frontend::setup_global_js_vars()
 	 * @return array
 	 */
 	public function get_store_locations() {

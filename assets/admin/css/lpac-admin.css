@@ -25,6 +25,16 @@
 .lpac-banner {
   background: #fff;
   border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 30px;
+  text-align: center;
+}
+
+.lpac-banner-pro {
+  background: #fff;
+  border-radius: 5px;
   margin-bottom: 20px;
   padding: 30px;
   text-align: center;

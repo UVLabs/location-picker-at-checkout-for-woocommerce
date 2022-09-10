@@ -278,6 +278,11 @@ function lpac_fill_in_latlng(latlng) {
 function lpac_fill_in_address_fields(results, latLng = "") {
   lpac_fill_in_latlng(latLng);
 
+  // Filter to allow users to prevent filling of fields by the map.
+  if (mapOptions.fill_in_fields === false) {
+    return;
+  }
+
   /** Fluid checkout does things differently **/
   if (checkoutProvider && checkoutProvider === "fluidcheckout") {
     lpac_fill_in_shipping_fields(results);
@@ -1127,11 +1132,6 @@ addPlacesAutoComplete();
      * Set the store location selector to the last selected store.
      */
     function setLastSelectedStore() {
-      // This might be null if the user has never ordered from this site before.
-      if (lpacLastOrder === null) {
-        return;
-      }
-
       const field = $("#lpac_order__origin_store");
 
       if (field.length < 1) {
@@ -1145,16 +1145,39 @@ addPlacesAutoComplete();
         }
       );
 
+      const isLoggedIn = $("body").hasClass("logged-in");
+
       /**
-       * Set the currently selected option to be the last order's selected option.
-       *
-       * If that store location no longer exists, then set the option to the default empty option.
+       * For guest checkout we're storing the preferred store location in localStorage
+       * For logged in users we're replacing the store_origin_id with the one selected from the shortcode if it's been used, see Lpac\Controllers\Checkout_Page_Controller::get_last_order_location()
        */
-      if (
-        lpacLastOrder.store_origin_id.length > 0 &&
-        storeLocations.indexOf(lpacLastOrder.store_origin_id) > -1
-      ) {
-        field.val(lpacLastOrder.store_origin_id).change();
+      if (isLoggedIn === true) {
+        // This might be null if the user has never ordered from this site before.
+        if (lpacLastOrder === null) {
+          return;
+        }
+
+        /**
+         * Set the currently selected option to be the last order's selected option.
+         *
+         * If that store location no longer exists, then set the option to the default empty option.
+         */
+        if (
+          lpacLastOrder.store_origin_id.length > 0 &&
+          storeLocations.indexOf(lpacLastOrder.store_origin_id) > -1
+        ) {
+          field.val(lpacLastOrder.store_origin_id).change();
+        }
+      } else {
+        const preferredOriginStore = localStorage.getItem(
+          "lpac_user_preferred_store_location_id"
+        );
+
+        if (!preferredOriginStore.length > 0) {
+          return;
+        }
+
+        field.val(preferredOriginStore).change();
       }
     }
     setLastSelectedStore();

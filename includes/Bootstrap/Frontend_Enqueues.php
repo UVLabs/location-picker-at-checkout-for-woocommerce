@@ -68,17 +68,6 @@ class Frontend_Enqueues
      */
     public function enqueue_styles()
     {
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Lpac_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Lpac_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
         wp_enqueue_style(
             $this->plugin_name,
             LPAC_PLUGIN_ASSETS_PATH_URL . 'public/css/lpac-public.css',
@@ -95,25 +84,16 @@ class Frontend_Enqueues
      */
     public function enqueue_scripts()
     {
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Lpac_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Lpac_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
         $path = ( LPAC_DEBUG ? '' : 'build/' );
         wp_enqueue_script(
             $this->plugin_name,
             LPAC_PLUGIN_ASSETS_PATH_URL . 'public/js/lpac-public.js',
-            array( 'jquery' ),
+            array( 'jquery', 'wp-util' ),
             $this->version,
             false
         );
+        $plugin_version = json_encode( LPAC_VERSION );
+        wp_add_inline_script( $this->plugin_name, "const lpacVersion = {$plugin_version}" );
         // Only enqueue the Google Map CDN script on the needed pages
         
         if ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) || is_checkout() ) {
