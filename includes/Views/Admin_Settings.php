@@ -1203,6 +1203,48 @@ HTML;
             'is_option'         => false,
         );
         $lpac_dummy_pro_settings[] = array(
+            'name'  => __( 'Cost by Distance Range', 'map-location-picker-at-checkout-for-woocommerce' ) . $this->pro_label,
+            'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
+            'type'  => 'hr',
+            'id'    => 'lpac_cost_by_distance_range_hr',
+            'desc'  => sprintf( __( 'Create your distance ranges and set the Price. It is highly recommended that you read the official documentation for this feature to fully understand how it works. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/shipping/?utm_source=shippingtab&utm_medium=lpacdashboard&utm_campaign=prodocs#cost-by-distance-range' target='_blank'>" . self::$learn_more . '</a>' ),
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'Enable Feature', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_enable_cost_by_distance_range',
+            'type'              => 'checkbox',
+            'css'               => 'max-width:80px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'                   => __( 'Create Ranges', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                     => 'lpac_cost_by_distance_range_rangelist',
+            'row_id'                 => 'lpac_cost_by_distance_range_row_id',
+            'type'                   => 'repeater',
+            'current_saved_settings' => get_option( 'lpac_cost_by_distance_range_rangelist', array() ),
+            'entity_name'            => __( 'range', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'table_columns'          => array(
+            'start_range_text' => array(
+            'name'     => __( 'Start Range', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_option( 'lpac_distance_matrix_distance_unit', 'km' ) . ')',
+            'readonly' => false,
+        ),
+            'end_range_text'   => array(
+            'name'     => __( 'End Range', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_option( 'lpac_distance_matrix_distance_unit', 'km' ) . ')',
+            'readonly' => false,
+        ),
+            'range_price_text' => array(
+            'name'     => __( 'Price', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_woocommerce_currency_symbol() . ')',
+            'readonly' => false,
+        ),
+        ),
+            'fields_disabled'        => true,
+            'is_option'              => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
             'name'  => __( 'Cost by Store Distance', 'map-location-picker-at-checkout-for-woocommerce' ) . $this->pro_label,
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
             'id'    => 'lpac_cost_by_store_distance_pricing_hr',

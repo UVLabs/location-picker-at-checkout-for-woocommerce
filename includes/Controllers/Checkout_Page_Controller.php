@@ -47,6 +47,20 @@ class Checkout_Page_Controller {
 			return;
 		}
 
+		$local_pickup_override = apply_filters( 'lpac_local_pickup_override_map_validation', true, $fields, $errors );
+
+		if ( $local_pickup_override !== false ) {
+
+			if ( function_exists( 'WC' ) ) {
+				$chosen_shipping_method = WC()->session->get( 'chosen_shipping_methods' );
+				$chosen_shipping_method = $chosen_shipping_method[0] ?? '';
+
+				if ( strpos( $chosen_shipping_method, 'local_pickup' ) !== false ) {
+					return;
+				}
+			}
+		}
+
 		/**
 		 * Allow users to override this setting
 		 */
@@ -56,11 +70,14 @@ class Checkout_Page_Controller {
 			return;
 		}
 
-		$error_msg = '<strong>' . __( 'Please select your location using the Google Map.', 'map-location-picker-at-checkout-for-woocommerce' ) . '</strong>';
+		$error_msg = '<strong>' . __( 'Please select your location using the Map.', 'map-location-picker-at-checkout-for-woocommerce' ) . '</strong>';
 
 		$error_msg = apply_filters( 'lpac_checkout_empty_cords_error_msg', $error_msg );
 
-		if ( empty( $_POST['lpac_latitude'] ) || empty( $_POST['lpac_longitude'] ) ) {
+		$latitude  = $_POST['lpac_latitude'] ?? '';
+		$longitude = $_POST['lpac_longitude'] ?? '';
+
+		if ( $latitude === '' || $longitude === '' ) {
 			$errors->add( 'validation', $error_msg );
 		}
 

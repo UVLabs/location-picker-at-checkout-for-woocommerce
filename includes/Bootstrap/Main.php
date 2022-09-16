@@ -240,6 +240,16 @@ class Main
             99999,
             2
         );
+        // Custom admin order columns
+        $this->loader->add_filter( 'manage_edit-shop_order_columns', $plugin_admin_view, 'add_map_btn_admin_list_column' );
+        $this->loader->add_action( 'manage_shop_order_posts_custom_column', $plugin_admin_view, 'add_map_btn_admin_list_column_content' );
+        // We're checking if both "Cost by Distance" and "Cost by Store Distance" is enabled because "Cost by Store Distance" might be turned on while "Cost by Distance" is turned off, which means we would not want to actually show the column because the selector would not be getting outputted on the checkout page.
+        
+        if ( get_option( 'lpac_enable_shipping_cost_by_distance_feature' ) === 'yes' && get_option( 'lpac_enable_cost_by_store_distance' ) === 'yes' || get_option( 'lpac_enable_cost_by_store_location' ) === 'yes' || get_option( 'lpac_enable_store_location_selector' ) === 'yes' ) {
+            $this->loader->add_filter( 'manage_edit-shop_order_columns', $plugin_admin_view, 'add_store_location_admin_list_column' );
+            $this->loader->add_action( 'manage_shop_order_posts_custom_column', $plugin_admin_view, 'add_store_location_admin_list_column_content' );
+        }
+    
     }
     
     /**

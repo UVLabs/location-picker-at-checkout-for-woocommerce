@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, checkout map, geolocation, google map, map, 
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 6.1
-Stable tag: 1.6.3
+Stable tag: 1.6.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -109,7 +109,6 @@ LPAC comes with multiple features to fine tune where you deliver to and how much
 - Option to turn on Places Autocomplete(Google Autofill) feature. [Learn More](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/)
 - Customizable Map container
 - Automatically translated map buttons based on the website's language (set in WordPress' general settings)
-- Store locations - display your store locations on the map
 
 ### Premium Features:
 
@@ -151,7 +150,15 @@ Have a feature in mind? Feel free to submit it on the support forum.
 
 ### Feature Requests
 
-- If you have any feature requests in mind then please submit them [Here >>>](https://lpacwp.com/contact/)
+- If you have any feature requests in mind then please submit them [Here >>>](https://lpacwp.com/feature-requests/)
+
+### Shortcodes
+
+- `[lpac-store-selector]` - Adds a store selector dropdown that lets user's choose their preferred store to order from.
+
+### Translating
+
+- Translators are welcome! Please consider translating to your language [Here >>>](https://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/)
 
 ### Misc
 
@@ -216,6 +223,21 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 1.6.6 = 
+* [New PRO] Cost by Distance Range feature. [Learn more](https://lpacwp.com/docs/getting-started/plugin-settings/shipping/#cost-by-distance-range)
+* [Fix PRO] Store location selector was not showing in checkout page when option is enabled in Store locations area and cost by distance was enabled.
+* [Fix] JS Console error for Guest customers.
+* [Fix] Cart was not updating when filter to disable checkout fields autofilling was set to true.
+* [Improvement] Allow setting of location on map manually if customer denied website access to their location.
+* [Improvement] Add 3 new columns to order page view: Location, Store and Distance. They can all be turned off via the screen options on the order list page.
+* [Improvement] Changed a few text strings.
+* [Improvement] Don't output the google map on the checkout page if an API key hasn't been entered.
+
+
+= 1.6.5 = 
+* [Fix PRO] Issue with saving PRO shipping settings.
+
 = 1.6.4 = 
 * [Fix PRO] Saved Addresses features were showing for guest customers.
 * [New] Store Location Selector shortcode `[lpac-store-selector]` Add shortcode anywhere to allow users to set their preferred store to order from.
