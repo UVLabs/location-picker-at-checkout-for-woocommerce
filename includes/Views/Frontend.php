@@ -63,6 +63,7 @@ class Frontend
         $checkout_provider = $this->checkout_provider;
         $checkout_provider = json_encode( $checkout_provider );
         $global_variables = <<<JAVASCRIPT
+\t\t// LPAC JS
 \t\tvar mapOptions = {$map_options};
 \t\tvar lpacLastOrder = {$last_order_location};
 \t\tvar checkoutProvider = {$checkout_provider};
@@ -86,7 +87,7 @@ JAVASCRIPT;
      * Get the setting for whether the cost by distance feature is enabled.
      *
      * @since 1.6.0
-     * @return mixed
+     * @return bool
      */
     private function get_cost_by_distance_setting()
     {
@@ -98,7 +99,7 @@ JAVASCRIPT;
      * Get the setting for whether the cost by store distance feature is enabled, reliant on the cost by distance feature.
      *
      * @since 1.6.0
-     * @return mixed
+     * @return bool
      */
     private function get_cost_by_store_distance_setting()
     {
@@ -110,7 +111,7 @@ JAVASCRIPT;
      * Get the setting for whether the cost by store location feature is enabled.
      *
      * @since 1.6.0
-     * @return mixed
+     * @return bool
      */
     private function get_cost_by_store_location_setting()
     {
@@ -124,7 +125,7 @@ JAVASCRIPT;
      * This setting is set on the Store Locations settings page.
      *
      * @since 1.6.0
-     * @return mixed
+     * @return bool
      */
     private function get_store_location_selector_setting()
     {
@@ -136,7 +137,7 @@ JAVASCRIPT;
      * Get the setting for store selector label
      *
      * @since 1.6.0
-     * @return mixed
+     * @return string
      */
     private function get_store_selector_label_setting()
     {
@@ -156,7 +157,7 @@ JAVASCRIPT;
          * the latter can be turned on while the former is turned off resulting in unexpected results.
          */
         
-        if ( $this->get_cost_by_distance_setting() === false && $this->get_cost_by_store_location_setting() === false && $this->get_store_location_selector_setting() === true ) {
+        if ( ($this->get_cost_by_distance_setting() === false || $this->get_cost_by_store_distance_setting() === false) && $this->get_cost_by_store_location_setting() === false && $this->get_store_location_selector_setting() === true ) {
             $store_locations = array_merge( array(
                 '' => '--' . __( 'Please choose an option', 'map-location-picker-at-checkout-for-woocommerce' ) . '--',
             ), $this->get_store_locations() );
@@ -211,6 +212,10 @@ JAVASCRIPT;
      */
     public function lpac_output_map_on_checkout_page()
     {
+        $maps_api_key = get_option( 'lpac_google_maps_api_key' );
+        if ( empty($maps_api_key) ) {
+            return;
+        }
         // Map div display visibility
         $display = 'block';
         if ( Map_Visibility_Controller::lpac_show_map( 'checkout' ) === false ) {
@@ -504,7 +509,7 @@ HTML;
     {
         $strings = array(
             'geolocation_not_supported' => __( 'Geolocation is not possible on this web browser. Please switch to a different web browser to use our interactive map.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'error_getting_location'    => __( 'Something went wrong while trying to detect your location. Click on the location icon in the address bar and allow our website to detect your location. Please contact us if you need additional assistance.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'manually_select_location'  => __( 'Please select your location manually using the map.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'no_results_found'          => __( 'No address results found for your location.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'moving_too_quickly'        => __( 'Slow down, you are moving too quickly, use the zoom out button to move the marker across larger distances.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'generic_error'             => __( 'An error occurred while trying to detect your location. Please try again after the page has refreshed.', 'map-location-picker-at-checkout-for-woocommerce' ),

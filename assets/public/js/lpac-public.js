@@ -33,7 +33,7 @@
    * Output plugin version to console.
    */
   function outputLpacVersion() {
-    console.log("LPAC version:", lpacVersion);
+    console.log("Location Picker at Checkout version:", lpacVersion);
   }
   /**
    * Sets the selected store location for guests.
@@ -45,12 +45,11 @@
     if (isLoggedIn === true) {
       return;
     }
-
     const preferredOriginStore = localStorage.getItem(
       "lpac_user_preferred_store_location_id"
     );
 
-    if (!preferredOriginStore.length > 0) {
+    if (!preferredOriginStore) {
       return;
     }
 

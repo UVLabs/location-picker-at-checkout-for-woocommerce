@@ -13,6 +13,8 @@
 namespace Lpac\Models;
 
 use Lpac\Controllers\Map_Visibility_Controller;
+use Lpac\Helpers\Functions;
+
 /**
 * Location_Details class.
 *
@@ -43,8 +45,11 @@ class Location_Details {
 			return;
 		}
 
-		$lat  = (float) $post_data['lpac_latitude'] ?? 0.0;
-		$long = (float) $post_data['lpac_longitude'] ?? 0.0;
+		$lat = $post_data['lpac_latitude'] ?? 0.0;
+		$lat = Functions::normalize_coordinates( $lat );
+
+		$long = $post_data['lpac_longitude'] ?? 0.0;
+		$long = Functions::normalize_coordinates( $long );
 
 		$this->save_order_meta_cords( $order_id, $lat, $long );
 		$this->save_order_delivery_origin( $order_id, $post_data );

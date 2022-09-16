@@ -308,4 +308,18 @@ class Functions {
 		return $store_locations_normalized;
 	}
 
+	/**
+	 * Normalizes and Sanitizes coordinates for use.
+	 *
+	 * @param mixed $value
+	 * @since 1.6.6
+	 * @return float
+	 */
+	public static function normalize_coordinates( $value ) {
+		// Allow only numbers, dot and dash e.g: -61.1234567
+		$value = preg_replace( '/[^0-9.-]/', '', $value );
+		$value = sanitize_text_field( $value );
+		return (float) $value;
+	}
+
 }

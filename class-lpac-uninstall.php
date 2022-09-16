@@ -145,6 +145,8 @@ class Lpac_Uninstall {
 			'lpac_migrated__add_address_to_store_locations',
 			'lpac_show_selected_store_in_emails',
 			'lpac_debug_shipping_distance',
+			'lpac_enable_cost_by_distance_range',
+			'lpac_cost_by_distance_range_rangelist',
 		);
 
 		foreach ( $option_keys as $key ) {

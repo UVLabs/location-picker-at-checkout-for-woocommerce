@@ -56,7 +56,7 @@ function get_navigator_coordinates() {
 
     if (error.code === 1) {
       // TODO add input fields so users can change this text
-      alert(lpacTranslatedAlerts.error_getting_location);
+      alert(lpacTranslatedAlerts.manually_select_location);
       return;
     }
 
@@ -70,15 +70,16 @@ function get_navigator_coordinates() {
 async function lpac_bootstrap_map_functionality(geocoder, map, infowindow) {
   const position = await get_navigator_coordinates();
 
-  if (!position) {
+  if (position) {
+    var latitude = position.coords.latitude;
+    var longitude = position.coords.longitude;
+  } else {
     console.log(
       "Location Picker At Checkout Plugin: Position object is empty. Navigator might be disabled or this site might be detected as insecure."
     );
-    return;
+    var latitude = mapOptions.lpac_map_default_latitude;
+    var longitude = mapOptions.lpac_map_default_longitude;
   }
-
-  let latitude = position.coords.latitude;
-  let longitude = position.coords.longitude;
 
   const latlng = {
     lat: parseFloat(latitude),
@@ -86,14 +87,27 @@ async function lpac_bootstrap_map_functionality(geocoder, map, infowindow) {
   };
 
   /**
-   * Place our initial map marker.
+   * We're setting this to '' so that we can force the user to make use of the map if the option is enabled.
+   * So that if we do not receive a location, the user can enter one manually.
+   */
+  const latlngEmpty = {
+    lat: "",
+    lng: "",
+  };
+
+  /**
+   * Setup our initial map marker and listening events.
    */
   lpac_setup_initial_map_marker_position(latlng);
 
   /**
    * Fill in latitude and longitude fields.
    */
-  lpac_fill_in_latlng(latlng);
+  if (position) {
+    lpac_fill_in_latlng(latlng);
+  } else {
+    lpac_fill_in_latlng(latlngEmpty);
+  }
 
   places_autocomplete_used.value = 0;
 }
@@ -141,7 +155,7 @@ async function lpac_geocode_coordinates(latlng) {
 }
 
 /**
- * Setup the intial marker location.
+ * Setup the intial marker location and listening events.
  */
 async function lpac_setup_initial_map_marker_position(latlng) {
   const results = await lpac_geocode_coordinates(latlng);
@@ -162,7 +176,7 @@ async function lpac_setup_initial_map_marker_position(latlng) {
   infowindow.setContent(detected_address);
   infowindow.open(map, marker);
 
-  lpac_fill_in_address_fields(results, latlng);
+  lpac_fill_in_address_fields(results);
   lpac_marker_listen_to_drag();
   lpac_map_listen_to_clicks();
 }
@@ -189,7 +203,8 @@ function lpac_map_listen_to_clicks() {
       lng: parseFloat(lng),
     };
 
-    lpac_fill_in_address_fields(results, latLng);
+    lpac_fill_in_address_fields(results);
+    lpac_fill_in_latlng(latLng);
 
     marker.setPosition(event.latLng);
 
@@ -213,12 +228,12 @@ function lpac_marker_listen_to_drag() {
     const moved_to_lat = event.latLng.lat();
     const moved_to_lng = event.latLng.lng();
 
-    const moved_to_latlng = {
+    const latlng = {
       lat: parseFloat(moved_to_lat),
       lng: parseFloat(moved_to_lng),
     };
 
-    let results = await lpac_geocode_coordinates(moved_to_latlng);
+    let results = await lpac_geocode_coordinates(latlng);
 
     if (!results[0]) {
       console.log("Results not as expected. See lpac_marker_listen_to_drag()");
@@ -231,7 +246,9 @@ function lpac_marker_listen_to_drag() {
 
     infowindow.setContent(moved_to_address);
 
-    lpac_fill_in_address_fields(results, moved_to_latlng);
+    lpac_fill_in_address_fields(results);
+    lpac_fill_in_latlng(latlng);
+
     places_autocomplete_used.value = 0;
   });
 }
@@ -245,7 +262,6 @@ function lpac_fill_in_latlng(latlng) {
     console.log(
       "Location Picker At Checkout Plugin: Empty latlng. See lpac_fill_in_latlng()"
     );
-    return;
   }
 
   let latitude = document.querySelector("#lpac_latitude");
@@ -270,14 +286,24 @@ function lpac_fill_in_latlng(latlng) {
 
   latitude.dispatchEvent(new Event("input", { bubbles: false }));
   longitude.dispatchEvent(new Event("input", { bubbles: false }));
+
+  if (mapOptions.fill_in_fields === false) {
+    /**
+     * Ensure that this event is fired and the checkout is updated.
+     *
+     * If the filter(lpac_fill_checkout_fields) to not fill in address fields is set to true, we need to call this event here so that the cart can update and
+     * operations such as the cost by distance feature that require the new Lat and Long can be updated accordingly to show the new price.
+     */
+    if (jQuery) {
+      jQuery(document.body).trigger("update_checkout");
+    }
+  }
 }
 
 /**
  * Function responsible for ochestrating the address filling methods.
  */
-function lpac_fill_in_address_fields(results, latLng = "") {
-  lpac_fill_in_latlng(latLng);
-
+function lpac_fill_in_address_fields(results) {
   // Filter to allow users to prevent filling of fields by the map.
   if (mapOptions.fill_in_fields === false) {
     return;
@@ -756,7 +782,7 @@ function lpacSetLastOrderForAutocompleteWithoutMap() {
   const hideMapForAutocomplete = mapOptions.lpac_places_autocomplete_hide_map;
   const enablePlacesAutoComplete = mapOptions.lpac_enable_places_autocomplete;
 
-  if (enablePlacesAutoComplete === false && hideMapForAutocomplete === false) {
+  if (enablePlacesAutoComplete === false || hideMapForAutocomplete === false) {
     return;
   }
 
@@ -999,8 +1025,14 @@ addPlacesAutoComplete();
       });
     }
 
-    // If the auto detect location feature is turned on, then detect the location but don't output the last order details.
-    if (mapOptions.lpac_auto_detect_location) {
+    /**
+     * If the auto detect location feature is turned on, then detect the location but don't output the last order details.
+     * Do this only when we don't have a last order location.
+     */
+    if (
+      mapOptions.lpac_auto_detect_location &&
+      (typeof lpacLastOrder === "undefined" || lpacLastOrder === null)
+    ) {
       lpac_bootstrap_map_functionality(geocoder, map, infowindow);
     } else {
       lpacSetLastOrderMarker();
@@ -1173,7 +1205,7 @@ addPlacesAutoComplete();
           "lpac_user_preferred_store_location_id"
         );
 
-        if (!preferredOriginStore.length > 0) {
+        if (!preferredOriginStore) {
           return;
         }
 

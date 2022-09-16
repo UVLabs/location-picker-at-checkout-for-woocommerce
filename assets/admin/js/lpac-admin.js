@@ -87,33 +87,6 @@
     checkAPIKeyPresence();
 
     /**
-     * Toggle AutoDetect customer location option on Generals Settings page.
-     */
-    function toggleAutoDetectOptions() {
-      const autoDetectLocation = $("#lpac_auto_detect_location");
-
-      if (!autoDetectLocation) {
-        return;
-      }
-
-      const autoDetectLocationChecked = autoDetectLocation.is(":checked");
-      const forceMapUse = $("#lpac_force_map_use");
-
-      // Hide suboptions if feature disabled
-      if (autoDetectLocationChecked) {
-        forceMapUse.closest("tr").hide();
-      }
-
-      autoDetectLocation.on("click", () => {
-        if (autoDetectLocation.is(":checked")) {
-          forceMapUse.closest("tr").hide();
-        } else {
-          forceMapUse.closest("tr").show();
-        }
-      });
-    }
-
-    /**
      * Toggle "Add Map Link to Order Emails?" on Generals Settings page.
      */
     function toggleMapLinkOrderEmailOptions() {
@@ -278,7 +251,6 @@
     }
     testAPIConnection();
 
-    toggleAutoDetectOptions();
     toggleMapLinkOrderEmailOptions();
     togglePlacesAutoCompleteOptions();
     setPlottedOrdersDummyMapImage();

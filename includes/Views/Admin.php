@@ -57,8 +57,8 @@ class Admin {
 		}
 
 		$customer_location_meta_text = esc_html__( 'Customer Location', 'map-location-picker-at-checkout-for-woocommerce' );
-		$store_origin_name_meta_text = esc_html__( 'Origin Store', 'map-location-picker-at-checkout-for-woocommerce' );
-		$view_on_map_text            = esc_html__( 'View on Map', 'map-location-picker-at-checkout-for-woocommerce' );
+		$view_on_map_text            = esc_html__( 'View', 'map-location-picker-at-checkout-for-woocommerce' );
+		$store_origin_name_meta_text = esc_html__( 'Selected Store', 'map-location-picker-at-checkout-for-woocommerce' );
 
 		$places_autocomplete_used_text = '';
 		if ( ! empty( $places_autocomplete_used ) ) {
@@ -69,7 +69,7 @@ class Admin {
 
 		$markup = <<<HTML
 		<p><strong>$customer_location_meta_text:</strong></p>
-		<p><a href="$map_link" target="_blank"><button style="cursor:pointer" type='button'>$view_on_map_text</button></a></p>
+		<p><a href="$map_link" target="_blank"><button class='btn button' style='cursor:pointer' type='button'>$view_on_map_text</button></a></p>
 		<p style="font-size: 12px">$places_autocomplete_used_text</p>
 HTML;
 
@@ -460,6 +460,90 @@ HTML;
 		$type = end( $type );
 
 		return $type;
+	}
+
+	/**
+	 * Add our custom column to the list of columns.
+	 *
+	 * @param array $columns
+	 * @since v1.6.6
+	 * @return mixed
+	 */
+	public function add_map_btn_admin_list_column( $columns ) {
+		$columns['lpac_location'] = __( 'Location', 'map-location-picker-at-checkout-for-woocommerce' );
+		return $columns;
+	}
+
+	/**
+	 * Add our content to our custom column.
+	 *
+	 * @param mixed $column
+	 * @since v1.6.6
+	 * @return void
+	 */
+	public function add_map_btn_admin_list_column_content( $column ) {
+
+		global $post;
+
+		if ( $column !== 'lpac_location' ) {
+			return;
+		}
+
+		$order = wc_get_order( $post->ID );
+
+		$latitude  = $order->get_meta( 'lpac_latitude' );
+		$longitude = $order->get_meta( 'lpac_longitude' );
+
+		if ( empty( $latitude ) || empty( $longitude ) ) {
+			return;
+		}
+
+		$map_link = apply_filters( 'lpac_map_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
+
+		$text = esc_html__( 'View', 'map-location-picker-at-checkout-for-woocommerce' );
+		echo "
+			<p><a href='$map_link' target='_blank'><button class='btn button' style='cursor:pointer' type='button'>$text</button></a></p>
+		";
+	}
+
+	/**
+	 * Add our custom column to the list of columns.
+	 *
+	 * @param array $columns
+	 * @since v1.6.6
+	 * @return mixed
+	 */
+	public function add_store_location_admin_list_column( $columns ) {
+		$columns['lpac_selected_store'] = __( 'Store', 'map-location-picker-at-checkout-for-woocommerce' );
+		return $columns;
+	}
+
+	/**
+	 * Add our content to our custom column.
+	 *
+	 * @param mixed $column
+	 * @since v1.6.6
+	 * @return void
+	 */
+	public function add_store_location_admin_list_column_content( $column ) {
+
+		global $post;
+
+		if ( $column !== 'lpac_selected_store' ) {
+			return;
+		}
+
+		$order = wc_get_order( $post->ID );
+
+		$store_name = $order->get_meta( '_lpac_order__origin_store_name' );
+
+		if ( empty( $store_name ) ) {
+			return;
+		}
+
+		echo "
+			<p>$store_name</p>
+		";
 	}
 
 }
