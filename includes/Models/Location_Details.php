@@ -53,6 +53,7 @@ class Location_Details {
 
 		$this->save_order_meta_cords( $order_id, $lat, $long );
 		$this->save_order_delivery_origin( $order_id, $post_data );
+		$this->save_places_autocomplete( $order_id, $post_data );
 	}
 
 	/**
@@ -80,7 +81,7 @@ class Location_Details {
 	 * @param array $data
 	 * @return void
 	 */
-	public function save_places_autocomplete( int $order_id, array $data ) : void {
+	private function save_places_autocomplete( int $order_id, array $data ) : void {
 		$places_autocomplete_used = $_POST['lpac_places_autocomplete'] ?? '';
 		update_post_meta( $order_id, '_lpac_places_autocomplete', sanitize_text_field( $places_autocomplete_used ) );
 	}

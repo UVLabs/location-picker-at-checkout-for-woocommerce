@@ -45,6 +45,8 @@ class Migrations {
 	/**
 	 * Add new address field to store locations array.
 	 *
+	 * Remove function when v1.6 usage is depleted.
+	 *
 	 * @since 1.6.2
 	 * @return void
 	 */

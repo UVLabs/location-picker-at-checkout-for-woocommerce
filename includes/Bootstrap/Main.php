@@ -198,26 +198,13 @@ class Main
             10,
             3
         );
-        $this->loader->add_filter(
-            'woocommerce_admin_settings_sanitize_option_lpac_cost_by_store_location_delivery_prices',
-            $admin_settings_controller,
-            'sanitize_pricing_inputs',
-            10,
-            3
-        );
-        $this->loader->add_filter(
-            'woocommerce_admin_settings_sanitize_option_lpac_cost_by_store_distance_delivery_prices',
-            $admin_settings_controller,
-            'sanitize_pricing_inputs',
-            10,
-            3
-        );
         /* Custom elements created for WooCommerce settings */
         $this->loader->add_action( 'woocommerce_admin_field_button', $plugin_admin_view, 'create_custom_wc_settings_button' );
         $this->loader->add_action( 'woocommerce_admin_field_hr', $plugin_admin_view, 'create_custom_wc_settings_hr' );
         $this->loader->add_action( 'woocommerce_admin_field_div', $plugin_admin_view, 'create_custom_wc_settings_div' );
         $this->loader->add_action( 'woocommerce_admin_field_repeater', $plugin_admin_view, 'create_custom_wc_settings_repeater' );
         $this->loader->add_action( 'woocommerce_admin_field_info_text', $plugin_admin_view, 'create_custom_wc_settings_info_text' );
+        $this->loader->add_action( 'woocommerce_admin_field_upsell_banner', $plugin_admin_view, 'create_custom_wc_settings_upsell_banner' );
         $this->loader->add_filter(
             'plugin_action_links',
             $this,
@@ -225,19 +212,19 @@ class Main
             999999,
             2
         );
-        // We need both of these hooks to be able to get our coordinates and build our payload
+        // We need both of these hooks to be able to get our coordinates and build our payload. This should be ran last after all plugins have done their work.
         $this->loader->add_action(
             'woocommerce_checkout_update_order_meta',
             $api_orders,
             'prepare_order_checkout',
-            99999,
+            PHP_INT_MAX,
             2
         );
         $this->loader->add_action(
             'woocommerce_process_shop_order_meta',
             $api_orders,
             'prepare_order_admin',
-            99999,
+            PHP_INT_MAX,
             2
         );
         // Custom admin order columns
@@ -283,7 +270,7 @@ class Main
          */
         $checkout_page_map_location = get_option( 'lpac_checkout_map_orientation', 'woocommerce_before_checkout_billing_form' );
         $checkout_page_map_location = apply_filters( 'lpac_checkout_map_orientation', $checkout_page_map_location );
-        $this->loader->add_action( $checkout_page_map_location, $plugin_public_display, 'lpac_output_map_on_checkout_page' );
+        $this->loader->add_action( $checkout_page_map_location, $plugin_public_display, 'output_map_on_checkout_page' );
         /*
          * WooFunnels compatibility
          */
@@ -306,8 +293,8 @@ class Main
             // Remove map from default position and set it to above the customer information fields.
             
             if ( $checkout_page_map_location !== 'woocommerce_checkout_before_customer_details' ) {
-                remove_action( $checkout_page_map_location, 'lpac_output_map_on_checkout_page' );
-                $this->loader->add_action( 'woocommerce_checkout_before_customer_details', $plugin_public_display, 'lpac_output_map_on_checkout_page' );
+                remove_action( $checkout_page_map_location, 'output_map_on_checkout_page' );
+                $this->loader->add_action( 'woocommerce_checkout_before_customer_details', $plugin_public_display, 'output_map_on_checkout_page' );
             }
         
         }
@@ -405,16 +392,6 @@ class Main
             'woocommerce_checkout_update_order_meta',
             $model_location_details,
             'validate_map_visibility',
-            10,
-            2
-        );
-        /*
-         * Add places autocomplete order meta.
-         */
-        $this->loader->add_action(
-            'woocommerce_checkout_update_order_meta',
-            $model_location_details,
-            'save_places_autocomplete',
             10,
             2
         );

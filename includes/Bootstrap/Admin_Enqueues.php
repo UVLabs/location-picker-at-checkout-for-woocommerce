@@ -49,7 +49,7 @@ class Admin_Enqueues
     {
         $this->plugin_name = LPAC_PLUGIN_NAME;
         $this->version = LPAC_VERSION;
-        $this->lpac_google_maps_resource = LPAC_GOOGLE_MAPS_LINK . LPAC_GOOGLE_MAPS_API_KEY . LPAC_GOOGLE_MAPS_PARAMS;
+        $this->lpac_google_maps_resource = LPAC_GOOGLE_MAPS_API_LINK . LPAC_GOOGLE_MAPS_API_KEY . LPAC_GOOGLE_MAPS_PARAMS;
     }
     
     /**

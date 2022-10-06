@@ -30,6 +30,7 @@ class Shortcodes {
 	public function save_selected_store_location() : void {
 
 		$store_id = $_REQUEST['store_location_id'] ?? '';
+		$store_id = sanitize_text_field( $store_id );
 
 		if ( empty( $store_id ) ) {
 			wp_send_json_error( 'LPAC: Received empty store_id' );

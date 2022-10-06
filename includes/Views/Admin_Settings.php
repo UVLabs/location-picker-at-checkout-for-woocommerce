@@ -88,7 +88,7 @@ class Admin_Settings extends \WC_Settings_Page
             'visibility_rules' => __( 'Visibility Rules', 'map-location-picker-at-checkout-for-woocommerce' ),
             'shipping'         => __( 'Shipping', 'map-location-picker-at-checkout-for-woocommerce' ),
             'export'           => __( 'Export', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'debug'            => __( 'Debug', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'tools'            => __( 'Tools', 'map-location-picker-at-checkout-for-woocommerce' ),
         );
         if ( defined( 'LPAC_SAAS_EARLY_ACCESS' ) ) {
             $sections['api'] = __( 'API', 'map-location-picker-at-checkout-for-woocommerce' );
@@ -125,7 +125,6 @@ class Admin_Settings extends \WC_Settings_Page
     public static function create_plugin_settings_banner()
     {
         $here = __( 'HERE', 'map-location-picker-at-checkout-for-woocommerce' ) . '<strong><span style="text-decoration: none" class="dashicons dashicons-external"></span></strong>';
-        $external_icon = '<strong><span style="text-decoration: none" class="dashicons dashicons-external"></span></strong>';
         
         if ( empty(get_option( 'lpac_google_maps_api_key', '' )) ) {
             $no_api_key = '❌ &nbsp;&nbsp;' . __( 'You need an API Key to use Google Maps. Please see this document for how to get it ', 'map-location-picker-at-checkout-for-woocommerce' );
@@ -140,7 +139,7 @@ class Admin_Settings extends \WC_Settings_Page
         $documentation = __( 'Read the documentation ', 'map-location-picker-at-checkout-for-woocommerce' );
         $documentation .= "<a href='https://lpacwp.com/docs/?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=docshome' target='_blank'>{$here}</a>";
         $feature_requests = __( 'Have a feature in mind? Add it to our list of feature requests ', 'map-location-picker-at-checkout-for-woocommerce' );
-        $feature_requests .= "<a href='https://lpacwp.com/docs/?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=docshome' target='_blank'>{$here}</a>";
+        $feature_requests .= "<a href='https://lpacwp.com/feature-requests/?utm_source=banner&utm_medium=lpacdashboard' target='_blank'>{$here}</a>";
         $translate_plugin = __( 'Plugin settings not in your Language? Help translate it ', 'map-location-picker-at-checkout-for-woocommerce' );
         $translate_plugin .= "<a href='hhttps://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
         $markup = <<<HTML
@@ -227,7 +226,7 @@ HTML;
         $lpac_settings[] = array(
             'name'     => __( 'Force Use of Map', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc_tip' => __( 'Prevent the customer from checking out until they select a location on the map.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => sprintf( __( 'Prevent the customer from checking out until they select a location on the map. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/general-settings/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs#force-use-of-map' target='blank'>" . self::$learn_more . '</a>' ),
             'id'       => 'lpac_force_map_use',
             'type'     => 'checkbox',
             'css'      => 'max-width:80px;',
@@ -318,6 +317,22 @@ HTML;
             'customer_invoice'          => __( 'Customer Invoice', 'map-location-picker-at-checkout-for-woocommerce' ),
         ),
             'css'     => 'min-width:300px;height: 100px',
+        );
+        $lpac_settings[] = array(
+            'name'  => __( 'Directions to Customer', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'class' => 'dashicons-before dashicons-admin-generic',
+            'type'  => 'hr',
+        );
+        $lpac_settings[] = array(
+            'name'    => __( 'Provider', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'      => 'lpac_map_directions_provider',
+            'type'    => 'select',
+            'desc'    => __( 'Select whether to open the directions to customer locations in Google Maps or Waze. This option only applies to admin related directions links.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'options' => array(
+            'google_maps' => __( 'Google Maps', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'waze'        => __( 'Waze', 'map-location-picker-at-checkout-for-woocommerce' ),
+        ),
+            'css'     => 'min-width:300px;',
         );
         $lpac_settings[] = array(
             'name'  => __( 'Places Autocomplete', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -623,7 +638,7 @@ HTML;
     private function create_dummy_display_settings_fields()
     {
         $lpac_dummy_display_pro_settings[] = array(
-            'name'  => __( 'Map ID', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'name'  => __( 'Map ID', 'map-location-picker-at-checkout-for-woocommerce' ) . $this->pro_label,
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
             'type'  => 'hr',
             'desc'  => sprintf( __( 'Set the Map ID for the respective Maps. You can create a custom map for each entry. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/display-settings/?utm_source=displaytab&utm_medium=lpacdashboard&utm_campaign=prodocs#map-id' target='blank'>" . self::$learn_more . '</a>' ),
@@ -665,7 +680,7 @@ HTML;
         ),
         );
         $lpac_dummy_display_pro_settings[] = array(
-            'name'  => __( 'Marker Icon', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'name'  => __( 'Marker Icon', 'map-location-picker-at-checkout-for-woocommerce' ) . $this->pro_label,
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
             'desc'  => sprintf( __( 'Set a custom icon to be used for the main map marker; the marker that customers move around on the map. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/display-settings/?utm_source=displaytab&utm_medium=lpacdashboard&utm_campaign=prodocs#marker-icon' target='blank'>" . self::$learn_more . '</a>' ),
             'type'  => 'hr',
@@ -849,6 +864,9 @@ HTML;
             'type' => 'title',
         );
         $dummy_export_pro_settings[] = array(
+            'type' => 'upsell_banner',
+        );
+        $dummy_export_pro_settings[] = array(
             'name'  => __( 'Export', 'map-location-picker-at-checkout-for-woocommerce' ),
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
             'type'  => 'hr',
@@ -912,6 +930,9 @@ HTML;
             'name' => __( 'Get More With PRO', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'   => 'lpac_premium',
             'type' => 'title',
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'type' => 'upsell_banner',
         );
         $lpac_dummy_pro_settings[] = array(
             'name'  => __( 'Cost by Region', 'map-location-picker-at-checkout-for-woocommerce' ) . $this->pro_label,
@@ -1028,6 +1049,67 @@ HTML;
             'placeholder'       => '#ff0000',
             'default'           => '#FF0000',
             'css'               => 'max-width:80px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'                          => __( 'Shipping Restrictions', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                            => 'lpac_regions_min_max_order_total',
+            'row_id'                        => 'lpac_regions_min_max_order_total_row_id',
+            'desc'                          => sprintf( __( 'Set the minimum and maximum order total a customer needs to have based on the region they are trying to checkout from. If a region only has a minimum order total, then simply leave the maximum order total field blank. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/shipping/?utm_source=shippingtab&utm_medium=lpacdashboard&utm_campaign=prodocs#cost-by-region' target='_blank'>" . self::$learn_more . '</a>' ),
+            'type'                          => 'repeater',
+            'current_saved_settings'        => array(),
+            'entity_name'                   => __( 'entry', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'table_columns'                 => array(
+            'region_name_select'          => array(
+            'name' => __( 'Select region', 'map-location-picker-at-checkout-for-woocommerce' ),
+        ),
+            'region_min_order_total_text' => array(
+            'name' => __( 'Minimum order total', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_woocommerce_currency_symbol() . ')',
+        ),
+            'region_max_order_total_text' => array(
+            'name' => __( 'Max order total', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_woocommerce_currency_symbol() . ')',
+        ),
+        ),
+            'select_field_dropdown_options' => array( array(
+            'name' => '',
+        ) ),
+            'is_option'                     => false,
+            'fields_disabled'               => true,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'Order Total Insufficient Notice', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => sprintf(
+            __( "Enter the text for the notice that displays when a customer current order total is lower than what you have set for their detected region's %1\$sMinimum order total%2\$s. %3\$sNOTE: The minimum amount needed is automatically appended to the text on the checkout page.%4\$s", 'map-location-picker-at-checkout-for-woocommerce' ),
+            '<strong>',
+            '</strong>',
+            '<code>',
+            '</code>'
+        ),
+            'id'                => 'lpac_order_total_insufficient_text',
+            'default'           => __( 'Order total for your selected region needs to be at least', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'type'              => 'textarea',
+            'css'               => 'min-width:700px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'Order Total Beyond Limit Notice', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => sprintf(
+            __( "Enter the text for the notice that displays when a customer current order total is beyond what you have set for their detected region's %1\$sMaximum order total%2\$s. %3\$sNOTE: The maximum allowed order total is automatically appended to the text on the checkout page.%4\$s", 'map-location-picker-at-checkout-for-woocommerce' ),
+            '<strong>',
+            '</strong>',
+            '<code>',
+            '</code>'
+        ),
+            'id'                => 'lpac_order_total_limit_passed_text',
+            'default'           => __( 'Order total for your selected region needs to be at most', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'type'              => 'textarea',
+            'css'               => 'min-width:700px;',
             'custom_attributes' => array(
             'disabled' => 'disabled',
         ),
@@ -1229,11 +1311,11 @@ HTML;
             'entity_name'            => __( 'range', 'map-location-picker-at-checkout-for-woocommerce' ),
             'table_columns'          => array(
             'start_range_text' => array(
-            'name'     => __( 'Start Range', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_option( 'lpac_distance_matrix_distance_unit', 'km' ) . ')',
+            'name'     => __( 'Start range', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_option( 'lpac_distance_matrix_distance_unit', 'km' ) . ')',
             'readonly' => false,
         ),
             'end_range_text'   => array(
-            'name'     => __( 'End Range', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_option( 'lpac_distance_matrix_distance_unit', 'km' ) . ')',
+            'name'     => __( 'End range', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_option( 'lpac_distance_matrix_distance_unit', 'km' ) . ')',
             'readonly' => false,
         ),
             'range_price_text' => array(
@@ -1434,11 +1516,11 @@ HTML;
      *
      * @return array
      */
-    private function create_debug_setting_fields()
+    private function create_tools_setting_fields()
     {
         $lpac_settings = array();
         $lpac_settings[] = array(
-            'name' => __( 'LPAC Debug Settings', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'name' => __( 'LPAC Tools', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'   => 'lpac_debug_settings',
             'type' => 'title',
             'desc' => self::create_plugin_settings_banner(),
@@ -1580,12 +1662,9 @@ HTML;
         
         if ( $current_section === 'display' ) {
             $lpac_settings = $this->create_display_settings_fields();
-            
             if ( lpac_fs()->is_not_paying() ) {
-                $this->output_pro_upsell_banner();
                 $lpac_settings = array_merge( $lpac_settings, $this->create_dummy_display_settings_fields() );
             }
-            
             $lpac_settings[] = array(
                 'type' => 'sectionend',
                 'id'   => 'lpac_display_settings_section_end',
@@ -1600,27 +1679,21 @@ HTML;
         }
         // Add fields to Export tab
         if ( $current_section === 'export' ) {
-            
             if ( lpac_fs()->is_not_paying() ) {
-                $this->output_pro_upsell_banner();
                 $lpac_settings = $this->create_dummy_export_settings_fields();
             }
-        
         }
         if ( $current_section === 'shipping' ) {
-            
             if ( lpac_fs()->is_not_paying() ) {
-                $this->output_pro_upsell_banner();
                 $lpac_settings = array_merge( $lpac_settings, $this->create_dummy_shipping_setting_fields() );
             }
-        
         }
         // Add fields to API tab
         if ( $current_section === 'api' ) {
             $lpac_settings = $this->create_api_settings_fields();
         }
-        if ( $current_section === 'debug' ) {
-            $lpac_settings = $this->create_debug_setting_fields();
+        if ( $current_section === 'tools' ) {
+            $lpac_settings = $this->create_tools_setting_fields();
         }
         // Custom attributes example
         // https://woocommerce.github.io/code-reference/files/woocommerce-includes-admin-wc-meta-box-functions.html#source-view.146
@@ -1636,25 +1709,6 @@ HTML;
         // Default checkbox example
         // https://wordpress.stackexchange.com/questions/390270/woocommerce-settings-api-set-checkbox-checked-by-default?noredirect=1#comment567330_390270
         return apply_filters( 'woocommerce_get_settings_' . $this->id, $lpac_settings );
-    }
-    
-    /**
-     * Output Pro Upsell banner
-     * @return void
-     */
-    private function output_pro_upsell_banner()
-    {
-        /* translators: 1: HTML break element */
-        $signup_text = sprintf( __( 'Custom Maps, Custom Marker Icons, Saved Addresses, More Visibility Rules, Cost by Region, Cost by Distance, Cost by Store Location, Multi-Store Distance Pricing, , Export Order Locations & More. %s Get the most out of LPAC with the PRO version.', 'map-location-picker-at-checkout-for-woocommerce' ), '<br/><br/>' );
-        $learn_more = self::$learn_more;
-        $markup = <<<HTML
-\t\t<div class="lpac-banner-pro">
-\t\t\t<p style="font-size: 18px"><strong>{$signup_text}</strong></p>
-\t\t\t<br/>
-\t\t\t<p><a class="lpac-button" href="https://lpacwp.com/pricing?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=proupsell" target="_blank">{$learn_more}</a></p>
-\t\t</div>
-HTML;
-        echo  $markup ;
     }
     
     /**
@@ -1695,11 +1749,11 @@ HTML;
     {
         $locations = array(
             ''                                             => __( 'Select', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'woocommerce_before_checkout_billing_form'     => __( 'Billing Address Area - Top', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'woocommerce_after_checkout_billing_form'      => __( 'Billing Address Area - Bottom', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'woocommerce_checkout_before_customer_details' => __( 'Checkout Form - Top', 'map-location-picker-at-checkout-for-woocommerce' ),
             'woocommerce_before_checkout_shipping_form'    => __( 'Shipping Address Area - Top', 'map-location-picker-at-checkout-for-woocommerce' ),
             'woocommerce_after_checkout_shipping_form'     => __( 'Shipping Address Area - Bottom', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'woocommerce_checkout_before_customer_details' => __( 'Checkout Form - Top', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'woocommerce_before_checkout_billing_form'     => __( 'Billing Address Area - Top', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'woocommerce_after_checkout_billing_form'      => __( 'Billing Address Area - Bottom', 'map-location-picker-at-checkout-for-woocommerce' ),
         );
         /*
          * Fluid Checkout compatibility
@@ -1711,7 +1765,7 @@ HTML;
                 'woocommerce_checkout_before_customer_details' => __( 'Checkout Form - Top (Fluid Checkout)', 'map-location-picker-at-checkout-for-woocommerce' ),
                 'fc_checkout_before_step_shipping_fields'      => __( 'Shipping Address Area - Top (Fluid Checkout)', 'map-location-picker-at-checkout-for-woocommerce' ),
             );
-            $current_set_location = get_option( 'lpac_checkout_map_orientation' );
+            $current_set_location = get_option( 'lpac_checkout_map_orientation', '' );
             if ( !array_key_exists( $current_set_location, $locations ) ) {
                 update_option( 'lpac_checkout_map_orientation', 'woocommerce_checkout_before_customer_details' );
             }
@@ -1726,7 +1780,7 @@ HTML;
                 ''                                             => __( 'Select', 'map-location-picker-at-checkout-for-woocommerce' ),
                 'woocommerce_checkout_before_customer_details' => __( 'Checkout Form - Top (WooFunnels)', 'map-location-picker-at-checkout-for-woocommerce' ),
             );
-            $current_set_location = get_option( 'lpac_checkout_map_orientation' );
+            $current_set_location = get_option( 'lpac_checkout_map_orientation', '' );
             if ( !array_key_exists( $current_set_location, $locations ) ) {
                 update_option( 'lpac_checkout_map_orientation', 'woocommerce_checkout_before_customer_details' );
             }
@@ -1739,7 +1793,7 @@ HTML;
                 'cfw_start_shipping_address_container' => __( 'Shipping Address Area - Top (CheckoutWC)', 'map-location-picker-at-checkout-for-woocommerce' ),
                 'cfw_end_shipping_address_container'   => __( 'Shipping Address Area - Bottom (CheckoutWC)', 'map-location-picker-at-checkout-for-woocommerce' ),
             );
-            $current_set_location = get_option( 'lpac_checkout_map_orientation' );
+            $current_set_location = get_option( 'lpac_checkout_map_orientation', '' );
             if ( !array_key_exists( $current_set_location, $locations ) ) {
                 update_option( 'lpac_checkout_map_orientation', 'cfw_start_shipping_address_container' );
             }

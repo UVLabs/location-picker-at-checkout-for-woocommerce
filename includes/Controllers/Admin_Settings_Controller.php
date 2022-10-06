@@ -39,24 +39,6 @@ class Admin_Settings_Controller {
 	}
 
 	/**
-	 * Sanitize price input to drop letters and only accept numbers and fullstops.
-	 *
-	 * @param array $values
-	 * @param array $option
-	 * @param array $raw_value
-	 * @return array
-	 */
-	public function sanitize_pricing_inputs( array $values, array $option, array $raw_value ) : array {
-
-		foreach ( $values as $key => &$store_details ) {
-			$store_details['store_price_text'] = sanitize_text_field( preg_replace( '/[^0-9.]/', '', $store_details['store_price_text'] ) );
-		}
-		unset( $store_details );
-
-		return $values;
-	}
-
-	/**
 	 * Generate a store ID for store locations and sanitize fields.
 	 *
 	 * @param array $values

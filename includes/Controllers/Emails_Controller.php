@@ -14,6 +14,7 @@
 namespace Lpac\Controllers;
 
 use Lpac\Helpers\QR_Code_Generator;
+use Lpac\Helpers\Functions;
 use Lpac\Traits\Upload_Folders;
 
 /**
@@ -52,7 +53,12 @@ class Emails_Controller {
 			return;
 		}
 
-		$map_link = apply_filters( 'lpac_email_map_link_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
+		// For admin emails get directions link based on settings. But always use google maps for customers.
+		if ( $sent_to_admin ) {
+			$map_link = Functions::create_customer_directions_link( $latitude, $longitude );
+		} else {
+			$map_link = apply_filters( 'lpac_email_map_link_provider', "https://www.google.com/maps/search/?api=1&query={$latitude},{$longitude}", $latitude, $longitude );
+		}
 
 		$map_link_type = get_option( 'lpac_email_delivery_map_link_type' );
 
@@ -227,7 +233,11 @@ HTML;
 			$cords   = $store_locations[ $key ]['store_cords_text'] ?? '';
 		}
 
-		$link = ( ! empty( $cords ) ) ? "https://www.google.com/maps/search/?api=1&query=$cords" : '#';
+		$cords_array = explode( ',', $cords );
+		$latitude    = $cords_array[0] ?? '';
+		$longitude   = $cords_array[1] ?? '';
+
+		$link = ( ! empty( $cords ) ) ? apply_filters( 'lpac_email_map_link_provider', "https://www.google.com/maps/search/?api=1&query=$cords", $latitude, $longitude ) : '#';
 
 		$markup = "<hr><p>
 				   		<span style='font-size: 18px'>$label:</span> <br/><br/>
