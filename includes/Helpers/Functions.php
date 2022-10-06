@@ -322,4 +322,32 @@ class Functions {
 		return (float) $value;
 	}
 
+	/**
+	 * Create the directions link to the customer.
+	 *
+	 * @param string $latitude
+	 * @param string $longitude
+	 * @return string
+	 * @since 1.6.8
+	 */
+	public static function create_customer_directions_link( $latitude = '', $longitude = '' ) : string {
+		$provider = get_option( 'lpac_map_directions_provider', 'google_maps' );
+
+		$cords = '';
+
+		if ( ! empty( $latitude ) && ! empty( $longitude ) ) {
+			$cords = $latitude . ',' . $longitude;
+		}
+
+		$link = '';
+		if ( $provider === 'google_maps' ) {
+			$link = LPAC_GOOGLE_MAPS_DIRECTIONS_LINK . $cords;
+		} else {
+			$link = LPAC_WAZE_DIRECTIONS_LINK . $cords;
+		}
+
+		$link = apply_filters( 'lpac_map_directions_provider', $link, $latitude, $longitude );
+
+		return $link;
+	}
 }

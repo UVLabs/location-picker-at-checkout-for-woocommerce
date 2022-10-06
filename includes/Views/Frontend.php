@@ -184,24 +184,36 @@ JAVASCRIPT;
     {
         $this->maybe_create_store_location_selector_fields();
         woocommerce_form_field( 'lpac_latitude', array(
-            'label'    => __( 'Latitude', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+            'label'             => __( 'Latitude', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required'          => false,
+            'class'             => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+            'custom_attributes' => array(
+            'readonly' => true,
+        ),
         ) );
         woocommerce_form_field( 'lpac_longitude', array(
-            'label'    => __( 'Longitude', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+            'label'             => __( 'Longitude', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required'          => false,
+            'class'             => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+            'custom_attributes' => array(
+            'readonly' => true,
+        ),
         ) );
         woocommerce_form_field( 'lpac_is_map_shown', array(
-            'label'    => __( 'Map Shown', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+            'label'             => __( 'Map Shown', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required'          => false,
+            'class'             => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+            'custom_attributes' => array(
+            'readonly' => true,
+        ),
         ) );
         woocommerce_form_field( 'lpac_places_autocomplete', array(
-            'label'    => __( 'Places Autocomplete', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'required' => false,
-            'class'    => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+            'label'             => __( 'Places Autocomplete', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'required'          => false,
+            'class'             => ( LPAC_DEBUG ? array( 'form-row-wide', 'fc-skip-hide-optional-field' ) : array( 'form-row-wide', 'hidden' ) ),
+            'custom_attributes' => array(
+            'readonly' => true,
+        ),
         ) );
     }
     
@@ -210,7 +222,7 @@ JAVASCRIPT;
      *
      * @since    1.0.0
      */
-    public function lpac_output_map_on_checkout_page()
+    public function output_map_on_checkout_page()
     {
         $maps_api_key = get_option( 'lpac_google_maps_api_key' );
         if ( empty($maps_api_key) ) {
@@ -226,7 +238,6 @@ JAVASCRIPT;
         $instuctions_text = __( 'Click the "Detect Current Location" button then move the red marker to your desired shipping address.', 'map-location-picker-at-checkout-for-woocommerce' );
         $instuctions_text = apply_filters( 'lpac_map_instuctions_text', $instuctions_text );
         $user_id = (int) get_current_user_id();
-        $edit_saved_addresses = '';
         do_action( 'lpac_before_checkout_map_container', '', $user_id );
         ?>
 		<div style='display: <?php 
@@ -264,9 +275,6 @@ JAVASCRIPT;
         do_action( 'lpac_saved_addresses', '', $user_id );
         ?>
 				</ul>
-				<p id='edit-saved-addresses'><?php 
-        echo  $edit_saved_addresses ;
-        ?></p>
 				<?php 
         do_action( 'lpac_after_saved_addresses', '', $user_id );
         ?>
@@ -359,18 +367,24 @@ HTML;
         if ( empty($order_id) ) {
             return;
         }
-        // TODO get_post_meta runs everytime when single option is used...
-        // We can simply just call it once without a key and only the order id and we'll receive the full array without needing multiple calls to the DB
-        // This might not be necessary if the data is cached
-        // Backwards compatibility, previously we stored location coords as private meta.
-        $latitude = ( (double) get_post_meta( $order_id, 'lpac_latitude', true ) ?: (double) get_post_meta( $order_id, '_lpac_latitude', true ) );
-        $longitude = ( (double) get_post_meta( $order_id, 'lpac_longitude', true ) ?: (double) get_post_meta( $order_id, '_lpac_longitude', true ) );
-        $shipping_address_1 = get_post_meta( $order_id, '_shipping_address_1', true );
-        $shipping_address_2 = get_post_meta( $order_id, '_shipping_address_2', true );
+        $order = wc_get_order( $order_id );
+        // Backwards compatibility, prior to v1.5.4 we stored location coords as private meta.
+        $latitude = ( (double) $order->get_meta( 'lpac_latitude' ) ?: (double) $order->get_meta( '_lpac_latitude' ) );
+        $longitude = ( (double) $order->get_meta( 'lpac_longitude' ) ?: (double) $order->get_meta( '_lpac_longitude' ) );
+        
+        if ( $order->has_shipping_address() ) {
+            $shipping_address_1 = $order->get_shipping_address_1();
+            $shipping_address_2 = $order->get_shipping_address_2();
+        } else {
+            // Highly likely that the user didnt check the "Shipping to a different address?" option, so shipping fields wouldnt be present.
+            $shipping_address_1 = $order->get_billing_address_1();
+            $shipping_address_2 = $order->get_billing_address_2();
+        }
+        
         if ( empty($latitude) || empty($longitude) ) {
             return;
         }
-        $user_location_collected_during_order = array(
+        $collected_during_order = array(
             'lpac_map_order_latitude'           => $latitude,
             'lpac_map_order_longitude'          => $longitude,
             'lpac_map_order_shipping_address_1' => $shipping_address_1,
@@ -391,7 +405,7 @@ HTML;
 		<?php 
         do_action( 'lpac_after_order_details_map_container', '', $user_id );
         // Add inline global JS so that we can use data fetched using PHP inside JS
-        $global_js_vars = $this->setup_global_js_vars( $user_location_collected_during_order );
+        $global_js_vars = $this->setup_global_js_vars( $collected_during_order );
         $added = wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_js_vars, 'before' );
         // On some websites our basemap might not enqueue in time. In those cases fall back to default wp jquery handle.
         if ( empty($added) ) {
@@ -473,7 +487,7 @@ HTML;
         $learn_more = esc_html__( 'Learn More', 'map-location-picker-at-checkout-for-woocommerce' );
         $api_key = get_option( 'lpac_google_maps_api_key' );
         $notice_text = esc_html__( 'Hi Admin, some websites might have issues with displaying or using the Google Map. If you\'re having issues then please have a look at your browser console for any errors.' );
-        $additional = esc_html__( 'Only Admins on your website can see this notice. You can turn it off in the plugin settings from the "Debug" submenu if everything works fine.' );
+        $additional = esc_html__( 'Only Admins on your website can see this notice. You can turn it off in the plugin settings from the "Tools" submenu if everything works fine.' );
         
         if ( empty($api_key) ) {
             $no_api_key = sprintf( esc_html__( 'You have not entered a Google Maps API Key! The plugin will not function how it should until you have entered the key. Please read the following doc for instructions on obtaining a Google Maps API Key %s' ), "<a style='color: blue !important' href='https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/' target='_blank'>{$learn_more} >></a>" );
@@ -508,13 +522,14 @@ HTML;
     public function create_checkoutpage_translated_strings()
     {
         $strings = array(
-            'geolocation_not_supported' => __( 'Geolocation is not possible on this web browser. Please switch to a different web browser to use our interactive map.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'manually_select_location'  => __( 'Please select your location manually using the map.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'no_results_found'          => __( 'No address results found for your location.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'moving_too_quickly'        => __( 'Slow down, you are moving too quickly, use the zoom out button to move the marker across larger distances.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'generic_error'             => __( 'An error occurred while trying to detect your location. Please try again after the page has refreshed.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'geolocation_not_supported'  => __( 'Geolocation is not possible on this web browser. Please switch to a different web browser to use our interactive map.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'manually_select_location'   => __( 'Please select your location manually using the map.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'no_results_found'           => __( 'No address results found for your location.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'moving_too_quickly'         => __( 'Slow down, you are moving too quickly, use the zoom out button to move the marker across larger distances.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'generic_error'              => __( 'An error occurred while trying to detect your location. Please try again after the page has refreshed.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'generic_last_order_address' => apply_filters( 'lpac_empty_last_order_address_default_text', __( 'Previous Address', 'map-location-picker-at-checkout-for-woocommerce' ) ),
         );
-        wp_localize_script( 'lpac-checkout-page-map', 'lpacTranslatedAlerts', $strings );
+        wp_localize_script( 'lpac-checkout-page-map', 'lpacTranslatedJsStrings', $strings );
     }
 
 }

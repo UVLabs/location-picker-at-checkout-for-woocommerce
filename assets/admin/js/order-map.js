@@ -5,7 +5,7 @@ function lpacSetupShopOrderMap() {
   const infowindow = window.lpac_infowindow;
 
   /**
-   * This variable is defined in lpac_output_custom_order_details_metabox().
+   * This variable is defined in output_custom_order_details_metabox().
    *
    * It does not exist when in cases where lat and long might not be present for an order.
    */

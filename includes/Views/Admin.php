@@ -40,11 +40,14 @@ class Admin {
 	public function lpac_display_lpac_admin_order_meta( $order ) {
 
 		// Backwards compatibility, previously(prior to v1.5.4) we stored location coords as private meta.
-		$latitude          = get_post_meta( $order->get_id(), 'lpac_latitude', true ) ?: get_post_meta( $order->get_id(), '_lpac_latitude', true );
-		$longitude         = get_post_meta( $order->get_id(), 'lpac_longitude', true ) ?: get_post_meta( $order->get_id(), '_lpac_longitude', true );
-		$store_origin_name = get_post_meta( $order->get_id(), '_lpac_order__origin_store_name', true );
+		$latitude  = $order->get_meta( 'lpac_latitude' ) ?: $order->get_meta( '_lpac_latitude' );
+		$latitude  = sanitize_text_field( $latitude );
+		$longitude = $order->get_meta( 'lpac_longitude' ) ?: $order->get_meta( '_lpac_longitude' );
+		$longitude = sanitize_text_field( $longitude );
 
-		$places_autocomplete_used = get_post_meta( $order->get_id(), '_lpac_places_autocomplete', true );
+		$store_origin_name = esc_html( $order->get_meta( '_lpac_order__origin_store_name' ) );
+
+		$places_autocomplete_used = sanitize_text_field( $order->get_meta( '_lpac_places_autocomplete' ) );
 
 		/* translators: 1: Dashicons outbound link icon*/
 		$learn_more = sprintf( __( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
@@ -58,28 +61,30 @@ class Admin {
 
 		$customer_location_meta_text = esc_html__( 'Customer Location', 'map-location-picker-at-checkout-for-woocommerce' );
 		$view_on_map_text            = esc_html__( 'View', 'map-location-picker-at-checkout-for-woocommerce' );
-		$store_origin_name_meta_text = esc_html__( 'Selected Store', 'map-location-picker-at-checkout-for-woocommerce' );
 
 		$places_autocomplete_used_text = '';
 		if ( ! empty( $places_autocomplete_used ) ) {
 			$places_autocomplete_used_text = sprintf( esc_html( __( 'It looks like this customer used the Places Autocomplete feature. The coordinates on the map might be an approximation. %s' ) ), "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/#accuracy-of-places-autocomplete' target='_blank'> $learn_more </a>" );
 		}
 
-		$map_link = apply_filters( 'lpac_map_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
+		$map_link = Functions::create_customer_directions_link( $latitude, $longitude );
 
 		$markup = <<<HTML
-		<p><strong>$customer_location_meta_text:</strong></p>
-		<p><a href="$map_link" target="_blank"><button class='btn button' style='cursor:pointer' type='button'>$view_on_map_text</button></a></p>
-		<p style="font-size: 12px">$places_autocomplete_used_text</p>
+			<div class="lpac-admin-order-meta-location">
+				<p><strong>$customer_location_meta_text:</strong></p>
+				<p><a href="$map_link" target="_blank"><button class='btn button' style='cursor:pointer' type='button'>$view_on_map_text</button></a></p>
+				<p style="font-size: 12px">$places_autocomplete_used_text</p>
+			</div>
 HTML;
 
 		if ( ! empty( $store_origin_name ) ) {
-			$markup .= <<<HTML
+			$store_origin_name_meta_text = esc_html__( 'Selected Store', 'map-location-picker-at-checkout-for-woocommerce' );
+			$markup                     .= <<<HTML
 		<p><strong>$store_origin_name_meta_text:</strong> <span style="color: green; text-decoration: underline">$store_origin_name</span></p>
 HTML;
 		}
 
-		echo $markup;
+		echo "<div id='lpac-admin-order-meta'>" . $markup . '</div>';
 	}
 
 	/**
@@ -100,24 +105,32 @@ HTML;
 			return;
 		}
 
-		add_meta_box( 'lpac_delivery_map_metabox', __( 'Location', 'map-location-picker-at-checkout-for-woocommerce' ), array( $this, 'lpac_output_custom_order_details_metabox' ), 'shop_order', 'normal', 'high' );
+		add_meta_box( 'lpac_delivery_map_metabox', __( 'Location', 'map-location-picker-at-checkout-for-woocommerce' ), array( $this, 'output_custom_order_details_metabox' ), 'shop_order', 'normal', 'high' );
 	}
 
 	/**
 	 * Outputs the HTML for the metabox
 	 *
-	 * @since    1.1.2
+	 * @since 1.1.2
+	 * @since 1.6.8 Fixed an issue where the address would not show if no shipping zones were created for website.
 	 */
-	public function lpac_output_custom_order_details_metabox() {
+	public function output_custom_order_details_metabox() {
 
 		$id = get_the_ID();
 
-		// Backwards compatibility, previously we stored location coords as private meta.
-		$latitude  = (float) get_post_meta( $id, 'lpac_latitude', true ) ?: (float) get_post_meta( $id, '_lpac_latitude', true );
-		$longitude = (float) get_post_meta( $id, 'lpac_longitude', true ) ?: (float) get_post_meta( $id, '_lpac_longitude', true );
+		$order = wc_get_order( $id );
 
-		$shipping_address_1 = get_post_meta( $id, '_shipping_address_1', true );
-		$shipping_address_2 = get_post_meta( $id, '_shipping_address_2', true );
+		// Backwards compatibility, prior to v1.5.4 we stored location coords as private meta.
+		$latitude  = (float) $order->get_meta( 'lpac_latitude' ) ?: (float) $order->get_meta( '_lpac_latitude' );
+		$longitude = (float) $order->get_meta( 'lpac_longitude' ) ?: (float) $order->get_meta( '_lpac_longitude' );
+
+		if ( $order->has_shipping_address() ) {
+			$shipping_address_1 = $order->get_shipping_address_1();
+			$shipping_address_2 = $order->get_shipping_address_2();
+		} else { // Highly likely that the user didnt check the "Shipping to a different address?" option, so shipping fields wouldnt be present.
+			$shipping_address_1 = $order->get_billing_address_1();
+			$shipping_address_2 = $order->get_billing_address_2();
+		}
 
 		/**
 		 * If we have no values for these options bail.
@@ -299,7 +312,7 @@ HTML;
 		$select_field_dropdown_options = $value['select_field_dropdown_options'] ?? ''; // The options to populate the select field dropdown with
 		$option_element_id             = $value['option_element_id'] ?? '';  // The array element we want to set for the HTML option 'id'
 		$option_element_value          = $value['option_element_value'] ?? ''; // The array element we want to set for the HTML option 'value'
-		$select_element_id             = $value['select_element_id'] ?? ''; // The name to set for our <select> element. The value passed here is saved as the key for the item that is selected from the dropdown options.
+		$select_element_id             = $value['select_element_id'] ?? ''; // The name to set for our <select> element. The value passed here is saved as the key for the item that is selected from the dropdown options. This is later used to know which item to set as selected when rendering the list.
 		$fields_disabled               = $value['fields_disabled'] ?? ''; // Whether we should disable all fields in this table
 
 		$fields_disabled = disabled( $fields_disabled, true, false );
@@ -323,7 +336,7 @@ HTML;
 
 				foreach ( $fields as $field_name ) {
 
-					if ( $id_field === $field_name ) {
+					if ( $id_field === $field_name ) { // TODO This is doesn't seem to actually run...
 						continue;
 					}
 
@@ -383,7 +396,7 @@ HTML;
 
 				$type = $this->get_field_type( $key );
 
-				$readonly    = ( $value['readonly'] ) ? 'readonly' : '';
+				$readonly    = ( $value['readonly'] ?? '' ) ? 'readonly' : '';
 				$placeholder = $value['placeholder'] ?? '';
 
 				$required = $value['required'] ?? '';
@@ -398,8 +411,8 @@ HTML;
 						$options = '';
 
 						foreach ( $select_field_dropdown_options as $index => $option_details ) {
-							$item_id    = $option_details[ $option_element_id ];
-							$item_value = $option_details[ $option_element_value ];
+							$item_id    = $option_details[ $option_element_id ] ?? '';
+							$item_value = $option_details[ $option_element_value ] ?? '';
 							$options   .= "<option value='$item_id'>$item_value</option>";
 						}
 
@@ -447,6 +460,32 @@ HTML;
 
 		echo $markup;
 	}
+
+	/**
+	 * Create a custom repeater element that can be used on the plugin's settings page.
+	 *
+	 * @since 1.6.8
+	 * @param array $value
+	 * @return void
+	 */
+	public function create_custom_wc_settings_upsell_banner( $value ) {
+
+		/* translators: 1: HTML break element */
+		$signup_text = sprintf( __( 'Custom Maps, Custom Marker Icons, Saved Addresses, More Visibility Rules, Cost by Region, Cost by Distance, Cost by Store Location, Multi-Store Distance Pricing, , Export Order Locations & More. %s Get the most out of LPAC with the PRO version.', 'map-location-picker-at-checkout-for-woocommerce' ), '<br/><br/>' );
+		/* translators: 1: Dashicons outbound link icon */
+		$learn_more = sprintf( __( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
+
+		$markup = <<<HTML
+		<div class="lpac-banner-pro">
+			<p style="font-size: 18px"><strong>$signup_text</strong></p>
+			<br/>
+			<p><a class="lpac-button" href="https://lpacwp.com/pricing?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=proupsell" target="_blank">$learn_more</a></p>
+		</div>
+HTML;
+		echo $markup;
+
+	}
+
 
 	/**
 	 * Get a field type based on it's name.
@@ -498,7 +537,7 @@ HTML;
 			return;
 		}
 
-		$map_link = apply_filters( 'lpac_map_provider', "https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}", $latitude, $longitude );
+		$map_link = Functions::create_customer_directions_link( $latitude, $longitude );
 
 		$text = esc_html__( 'View', 'map-location-picker-at-checkout-for-woocommerce' );
 		echo "

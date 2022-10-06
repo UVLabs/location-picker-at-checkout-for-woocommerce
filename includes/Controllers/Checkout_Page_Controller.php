@@ -135,7 +135,7 @@ class Checkout_Page_Controller {
 			return;
 		}
 
-		// Backwards compatibility, previously we stored location coords as private meta.
+		// Backwards compatibility, prior to v1.5.4 we stored location coords as private meta.
 		// TODO: Remove backwards compatibility once we're satisfied users have updated the plugin. This was added in v1.5.4
 		$latitude  = $last_order->get_meta( 'lpac_latitude', true ) ?: $last_order->get_meta( '_lpac_latitude', true );
 		$longitude = $last_order->get_meta( 'lpac_longitude', true ) ?: $last_order->get_meta( '_lpac_longitude', true );
@@ -149,8 +149,16 @@ class Checkout_Page_Controller {
 			$store_origin_id = $user_preferred_store;
 		}
 
+		$address = '';
+
+		if ( $last_order->has_shipping_address() ) {
+			$address = apply_filters( 'lpac_last_order_address', $last_order->get_shipping_address_1(), $last_order );
+		} else { // Highly likely that the user didnt check the "Shipping to a different address?" option, so shipping fields wouldnt be present.
+			$address = apply_filters( 'lpac_last_order_address', $last_order->get_billing_address_1(), $last_order );
+		}
+
 		return array(
-			'address'         => $last_order->get_formatted_shipping_address(),
+			'address'         => $address,
 			'latitude'        => $latitude,
 			'longitude'       => $longitude,
 			'store_origin_id' => $store_origin_id,

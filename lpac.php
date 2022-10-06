@@ -11,7 +11,7 @@
  * Plugin Name:       Location Picker At Checkout For WooCommerce
  * Plugin URI:        https://lpacwp.com
  * Description:       Allow customers to choose their shipping or pickup location using a map at checkout.
- * Version:           1.6.6-lite
+ * Version:           1.6.8-lite
  * Requires at least: 5.7
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
@@ -20,15 +20,15 @@
  * Text Domain:       map-location-picker-at-checkout-for-woocommerce
  * Domain Path:       /languages
  * WC requires at least: 3.0
- * WC tested up to: 6.9
- * Requires PHP: 7.3
+ * WC tested up to: 7.0
+ * Requires PHP: 7.4
  */
 // If this file is called directly, abort.
 if ( !defined( 'WPINC' ) ) {
     die;
 }
 if ( !defined( 'LPAC_VERSION' ) ) {
-    define( 'LPAC_VERSION', '1.6.6' );
+    define( 'LPAC_VERSION', '1.6.8' );
 }
 /**
  * The code that runs during plugin activation.
@@ -153,7 +153,7 @@ if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', 
  */
 if ( function_exists( 'phpversion' ) ) {
     
-    if ( version_compare( phpversion(), '7.3', '<' ) ) {
+    if ( version_compare( phpversion(), '7.4', '<' ) ) {
         add_action( 'admin_notices', array( new Lpac\Notices\Admin(), 'output_php_version_notice' ) );
         return;
     }
@@ -164,7 +164,7 @@ if ( function_exists( 'phpversion' ) ) {
  */
 if ( defined( 'PHP_VERSION' ) ) {
     
-    if ( version_compare( PHP_VERSION, '7.3', '<' ) ) {
+    if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
         add_action( 'admin_notices', array( new Lpac\Notices\Admin(), 'output_php_version_notice' ) );
         return;
     }
@@ -177,8 +177,10 @@ define( 'LPAC_PLUGIN_ASSETS_DIR', __DIR__ . '/assets/' );
 define( 'LPAC_PLUGIN_ASSETS_PATH_URL', plugin_dir_url( __FILE__ ) . 'assets/' );
 define( 'LPAC_PLUGIN_PATH_URL', plugin_dir_url( __FILE__ ) );
 define( 'LPAC_INSTALLED_AT_VERSION', get_option( 'lpac_installed_at_version', constant( 'LPAC_VERSION' ) ) );
-define( 'LPAC_GOOGLE_MAPS_LINK', 'https://maps.googleapis.com/maps/api/js?key=' );
+define( 'LPAC_GOOGLE_MAPS_API_LINK', 'https://maps.googleapis.com/maps/api/js?key=' );
 define( 'LPAC_GOOGLE_MAPS_API_KEY', get_option( 'lpac_google_maps_api_key', '' ) );
+define( 'LPAC_GOOGLE_MAPS_DIRECTIONS_LINK', 'https://maps.google.com/maps?daddr=' );
+define( 'LPAC_WAZE_DIRECTIONS_LINK', 'https://waze.com/ul?ll=' );
 $debug = false;
 if ( function_exists( 'wp_get_environment_type' ) ) {
     /* File will only exist in local installation */
@@ -195,7 +197,7 @@ if ( !defined( 'LPAC_SAAS_URL' ) ) {
     define( 'LPAC_SAAS_URL', 'https://app.lpacwp.com' );
 }
 define( 'LPAC_DEBUG', $debug );
-$site_locale = get_locale();
+$site_locale = apply_filters( 'lpac_map_locale', get_locale() );
 $version = ( LPAC_DEBUG ? 'weekly' : 'quarterly' );
 $google_params = array( "language={$site_locale}", "v={$version}" );
 $libraries = array();

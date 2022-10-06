@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af069d857068b2b7aaa4b7f560b12c69",
+    "content-hash": "b5c60ffdf1ea69c2def70f0e294bd291",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -293,16 +293,16 @@
         },
         {
             "name": "wpbp/pointerplus",
-            "version": "1.0.2",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WPBP/PointerPlus.git",
-                "reference": "42b513edad93019beade289ff62165d80e2c980b"
+                "reference": "67365d620268a13118182345e258a0ce20046952"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WPBP/PointerPlus/zipball/42b513edad93019beade289ff62165d80e2c980b",
-                "reference": "42b513edad93019beade289ff62165d80e2c980b",
+                "url": "https://api.github.com/repos/WPBP/PointerPlus/zipball/67365d620268a13118182345e258a0ce20046952",
+                "reference": "67365d620268a13118182345e258a0ce20046952",
                 "shasum": ""
             },
             "type": "library",
@@ -329,9 +329,10 @@
                 "wordpress"
             ],
             "support": {
-                "source": "https://github.com/WPBP/PointerPlus/tree/1.0.2"
+                "issues": "https://github.com/WPBP/PointerPlus/issues",
+                "source": "https://github.com/WPBP/PointerPlus/tree/1.0.4"
             },
-            "time": "2022-03-28T12:49:57+00:00"
+            "time": "2022-09-13T11:01:19+00:00"
         }
     ],
     "packages-dev": [

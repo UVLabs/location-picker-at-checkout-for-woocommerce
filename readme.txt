@@ -1,17 +1,19 @@
-=== Location Picker at Checkout & Google Address AutoFill for WooCommerce ===
+=== Location Picker at Checkout - Google Address AutoFill & WooCommerce Checkout Map Plugin ===
 Contributors: uriahs-victor
 Donate link: https://soaringleads.com
 Tags: woocommerce, location picker, checkout map, geolocation, google map, map, delivery map
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 6.1
-Stable tag: 1.6.6
+Stable tag: 1.6.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Let WooCommerce customers set their exact location for delivery or pickup on Google Maps at checkout.
 
 == Description ==
+
+https://www.youtube.com/watch?v=vDlIxPeBs1M
 
 Do you run a WooCommerce store where you need more detailed location information from a customer? If so, then why not let them choose their exact location on Google Maps? 
 
@@ -98,6 +100,7 @@ LPAC comes with multiple features to fine tune where you deliver to and how much
 - Detect current location of customer at checkout (Automatically or on click of a button)
 - Allow customers to pick their exact location using Google Maps
 - Autofill checkout fields with information pulled from Google Maps
+- Open directions to customers in Google Maps or Waze
 - Store Location Selector - Create multiple store locations and allow customers to choose the one they'd like to order from.
 - Show/Hide Map based on Shipping Method
 - Show/Hide Map based on Shipping Class
@@ -127,7 +130,7 @@ LPAC comes with multiple features to fine tune where you deliver to and how much
 - Hide Map when a maximum cart total is reached
 - More Map Visibility Rules
 - Restrict Places Autocomplete feature to selected countries
-- And More
+- [And More](https://lpacwp.com/pricing)
 
 Have a feature in mind? Feel free to submit it on the support forum.
 
@@ -224,6 +227,25 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 
 == Changelog ==
 
+= 1.6.8 =
+* [New PRO] Option to set min and max order total for Shipping Cost by Region feature.
+* [New PRO] Duration for travel is now displayed on admin order page when making use of any of the Shipping Cost by Distance workflows.
+* [Fix PRO] Coordinates were not getting saved when creating Saved Addresses in some rare configurations.
+* [Fix PRO] Shipping Cost by Range feature would not return the shipping price when no "Cost per Unit Distance" value was set in the main settings.
+* [Improvement PRO] Add column for customer's Region in the order page view.
+* [Improvement PRO] Prevent duplicate event listeners from being appended to map actions when making use of Saved Addresses feature.
+* [New] Choose whether to open directions to customers in Waze or Google maps. Option is located in LPAC's General Settings.
+* [Fix] Upsell banner moving position after settings saved. 
+* [Fix] Address would not show in marker info window if no shipping zones exist on the website.
+* [Dev] You can now change the map locale using the `lpac_map_locale` filter.
+* [Dev] Customer's last order will no longer be their full formatted addresses, it will instead be the address line 1. This behavior can be changed using the `lpac_last_order_address` filter.
+* [Dev] Tested on WC v7.0-rc.2
+
+= 1.6.7 =
+
+* [Fix] Map was not centering on previous order's pin location for customized checkout pages that removed the default address fields.
+* [Dev] Changed minimum required PHP version to 7.4.
+
 = 1.6.6 = 
 * [New PRO] Cost by Distance Range feature. [Learn more](https://lpacwp.com/docs/getting-started/plugin-settings/shipping/#cost-by-distance-range)
 * [Fix PRO] Store location selector was not showing in checkout page when option is enabled in Store locations area and cost by distance was enabled.
@@ -296,7 +318,7 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 = 1.5.5 = 
 * [Fix PRO] On some websites the checkout update event was not always firing after the location is changed. LPAC will now automatically fire a checkout update event everytime locations are changed.
 * [Info] Tested on WC 6.5
-* [Info] Tested on WP 6.0 RC3
+* [Info] Tested on WP 6.0-rc.3
 
 = 1.5.4 = 
 * [Fix PRO] Saved Addresses checkbox was always showing on checkout page even though option was turned off.

@@ -49,14 +49,14 @@ function get_navigator_coordinates() {
       navigator.geolocation.getCurrentPosition(resolve, reject);
     } else {
       // TODO add input fields so users can change this text
-      alert(lpacTranslatedAlerts.geolocation_not_supported);
+      alert(lpacTranslatedJsStrings.geolocation_not_supported);
     }
   }).catch(function (error) {
     console.log("Location Picker At Checkout Plugin: " + error.message);
 
     if (error.code === 1) {
       // TODO add input fields so users can change this text
-      alert(lpacTranslatedAlerts.manually_select_location);
+      alert(lpacTranslatedJsStrings.manually_select_location);
       return;
     }
 
@@ -125,7 +125,7 @@ async function lpac_geocode_coordinates(latlng) {
         if (results[0]) {
           address_array = results;
         } else {
-          window.alert(lpacTranslatedAlerts.no_results_found);
+          window.alert(lpacTranslatedJsStrings.no_results_found);
           return;
         }
       } else {
@@ -141,12 +141,12 @@ async function lpac_geocode_coordinates(latlng) {
       // TODO Add error messages below map
 
       if (error.code === "OVER_QUERY_LIMIT") {
-        alert(lpacTranslatedAlerts.moving_too_quickly);
+        alert(lpacTranslatedJsStrings.moving_too_quickly);
         location.reload();
       }
 
       if (error.code === "UNKNOWN_ERROR") {
-        alert(lpacTranslatedAlerts.generic_error);
+        alert(lpacTranslatedJsStrings.generic_error);
         location.reload();
       }
     });
@@ -185,6 +185,14 @@ async function lpac_setup_initial_map_marker_position(latlng) {
  *  Handle clicking of map so marker, fields and coordinates inputs get filled in.
  */
 function lpac_map_listen_to_clicks() {
+  /**
+   * Clear previous event listeners of this type before adding this new one.
+   *
+   * This is the only function where we're defining this event listener for the map, so it's fine to remove it this way.
+   * https://developers.google.com/maps/documentation/javascript/events#removing
+   */
+  google.maps.event.clearListeners(map, "click");
+
   map.addListener("click", async function (event) {
     const results = await lpac_geocode_coordinates(event.latLng);
 
@@ -224,6 +232,14 @@ window.lpac_map_listen_to_clicks = lpac_map_listen_to_clicks;
  *  Handle dragging of marker so fields and coordinates inputs get filled in.
  */
 function lpac_marker_listen_to_drag() {
+  /**
+   * Clear previous event listeners of this type before adding this new one.
+   *
+   * This is the only function where we're defining this event listener for the marker, so it's fine to remove it this way.
+   * https://developers.google.com/maps/documentation/javascript/events#removing
+   */
+  google.maps.event.clearListeners(marker, "dragend");
+
   google.maps.event.addListener(marker, "dragend", async function (event) {
     const moved_to_lat = event.latLng.lat();
     const moved_to_lng = event.latLng.lng();
@@ -806,8 +822,6 @@ function lpacSetLastOrderMarker() {
   google.maps.event.addListenerOnce(map, "tilesloaded", function () {
     lpacSetLastOrderLocationCords();
 
-    map.setZoom(16);
-
     const latlng = {
       lat: parseFloat(lpacLastOrder.latitude),
       lng: parseFloat(lpacLastOrder.longitude),
@@ -841,7 +855,14 @@ function lpacSetLastOrderMarker() {
         infowindow.open(map, marker);
         map.setCenter(latlng);
       }
+    } else {
+      infowindow.setContent(lpacTranslatedJsStrings.generic_last_order_address);
+      infowindow.open(map, marker);
+      map.setCenter(latlng);
     }
+
+    map.setZoom(16);
+
     lpac_marker_listen_to_drag();
     lpac_map_listen_to_clicks();
   });
@@ -1043,6 +1064,7 @@ addPlacesAutoComplete();
      * Move the store locator selector based on whether shipping to billing or shipping address.
      *
      * This only runs when the map is not being displayed.
+     *
      * @returns
      */
     function moveStoreSelector() {
@@ -1079,6 +1101,10 @@ addPlacesAutoComplete();
         default:
           shippingToDifferentAddress = $("#ship-to-different-address-checkbox");
           break;
+      }
+
+      if (!shippingToDifferentAddress.length) {
+        return;
       }
 
       const shippingToDifferentAddressChecked =
