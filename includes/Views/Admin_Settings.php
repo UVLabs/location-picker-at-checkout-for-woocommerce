@@ -590,7 +590,7 @@ HTML;
         $lpac_settings[] = array(
             'name'     => __( 'Display Store Selector on Checkout Page', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc_tip' => __( 'Turning on this option adds a store selector dropdown field in your checkout page. The selected store would show on the order details for both customers and on the admin order page.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => __( 'Turning on this option adds a store selector dropdown field in your checkout page. The selected store would show on the order details for customers and on the admin order page.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'       => 'lpac_enable_store_location_selector',
             'type'     => 'checkbox',
         );
@@ -952,6 +952,19 @@ HTML;
             'is_option'         => false,
         );
         $lpac_dummy_pro_settings[] = array(
+            'name'              => __( 'Default Region Color (HEX)', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'              => __( 'Default background color for drawn regions on the frontend of the website.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'                => 'lpac_shipping_regions_default_background_color',
+            'type'              => 'color',
+            'placeholder'       => '#ff0000',
+            'default'           => '#FF0000',
+            'css'               => 'max-width:80px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $lpac_dummy_pro_settings[] = array(
             'name'      => __( 'Draw Shipping Regions', 'map-location-picker-at-checkout-for-woocommerce' ),
             'type'      => 'div',
             'class'     => 'lpac-map',
@@ -1035,19 +1048,6 @@ HTML;
             'desc'              => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'                => 'lpac_show_shipping_regions_cost_on_checkout_map',
             'type'              => 'checkbox',
-            'css'               => 'max-width:80px;',
-            'custom_attributes' => array(
-            'disabled' => 'disabled',
-        ),
-            'is_option'         => false,
-        );
-        $lpac_dummy_pro_settings[] = array(
-            'name'              => __( 'Default Region Color (HEX)', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'              => __( 'Default background color for drawn regions on the frontend of the website.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'                => 'lpac_shipping_regions_default_background_color',
-            'type'              => 'color',
-            'placeholder'       => '#ff0000',
-            'default'           => '#FF0000',
             'css'               => 'max-width:80px;',
             'custom_attributes' => array(
             'disabled' => 'disabled',
@@ -1302,6 +1302,7 @@ HTML;
         ),
             'is_option'         => false,
         );
+        $distance_unit = get_option( 'lpac_distance_matrix_distance_unit', 'km' );
         $lpac_dummy_pro_settings[] = array(
             'name'                   => __( 'Create Ranges', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'                     => 'lpac_cost_by_distance_range_rangelist',
@@ -1310,16 +1311,20 @@ HTML;
             'current_saved_settings' => get_option( 'lpac_cost_by_distance_range_rangelist', array() ),
             'entity_name'            => __( 'range', 'map-location-picker-at-checkout-for-woocommerce' ),
             'table_columns'          => array(
-            'start_range_text' => array(
-            'name'     => __( 'Start range', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_option( 'lpac_distance_matrix_distance_unit', 'km' ) . ')',
+            'start_range_text'                            => array(
+            'name'     => __( 'Start range', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . $distance_unit . ')',
             'readonly' => false,
         ),
-            'end_range_text'   => array(
-            'name'     => __( 'End range', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_option( 'lpac_distance_matrix_distance_unit', 'km' ) . ')',
+            'end_range_text'                              => array(
+            'name'     => __( 'End range', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . $distance_unit . ')',
             'readonly' => false,
         ),
-            'range_price_text' => array(
+            'range_price_text'                            => array(
             'name'     => __( 'Price', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (' . get_woocommerce_currency_symbol() . ')',
+            'readonly' => false,
+        ),
+            'should_calculate_per_distance_unit_checkbox' => array(
+            'name'     => __( 'Calculate per', 'map-location-picker-at-checkout-for-woocommerce' ) . ' ' . $distance_unit,
             'readonly' => false,
         ),
         ),

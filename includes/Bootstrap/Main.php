@@ -164,6 +164,7 @@ class Main
          * Plugin settings migrations
          */
         $this->loader->add_action( 'admin_init', $migrations, 'add_address_field_to_store_locations' );
+        $this->loader->add_action( 'admin_init', $migrations, 'add_should_calculate_per_distance_unit_field' );
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         // Notices
@@ -195,6 +196,13 @@ class Main
             'woocommerce_admin_settings_sanitize_option_lpac_store_locations',
             $admin_settings_controller,
             'generate_store_id',
+            10,
+            3
+        );
+        $this->loader->add_filter(
+            'woocommerce_admin_settings_sanitize_option_lpac_cost_by_distance_range_rangelist',
+            $admin_settings_controller,
+            'normalize_cost_by_distance_range_checkbox',
             10,
             3
         );

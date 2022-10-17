@@ -326,7 +326,7 @@ HTML;
 			$table_column_headings .= '<th>' . $heading['name'] . '</th>';
 		}
 
-		if ( ! empty( $current_saved_settings_array ) && is_array( $current_saved_settings_array ) ) {
+		if ( is_array( $current_saved_settings_array ) && ! empty( $current_saved_settings_array ) ) {
 
 			$repeater_items = '';
 			foreach ( $current_saved_settings_array as $index => $current_saved_settings ) {
@@ -378,7 +378,10 @@ HTML;
 									</td>
 									";
 							break;
-
+						case 'checkbox':
+							$checked      = (bool) $current_saved_settings['should_calculate_per_distance_unit_checkbox'] ?? '';
+							$hold_inputs .= "<td><input type='checkbox' class='$field_name' name='$field_name' placeholder='$placeholder' $readonly $fields_disabled $required" . checked( $checked, true, false ) . '/></td>';
+							break;
 						default:
 							$hold_inputs .= "<td><input type='text' class='$field_name' name='$field_name' value='$current_saved_settings[$field_name]' placeholder='$placeholder' $readonly $fields_disabled $required/></td>";
 							break;
@@ -424,7 +427,9 @@ HTML;
 							</select>
 						</td>";
 						break;
-
+					case 'checkbox':
+						$hold_inputs .= "<td><input type='checkbox' name='$key' placeholder='$placeholder' $readonly $fields_disabled $required/></td>";
+						break;
 					default:
 						$hold_inputs .= "<td><input type='text' name='$key' placeholder='$placeholder' $readonly $fields_disabled $required/></td>";
 						break;
@@ -497,7 +502,6 @@ HTML;
 	private function get_field_type( string $field_name ) : string {
 		$type = explode( '_', $field_name );
 		$type = end( $type );
-
 		return $type;
 	}
 

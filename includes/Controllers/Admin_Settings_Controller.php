@@ -58,15 +58,47 @@ class Admin_Settings_Controller {
 			$store_location_id                 = 'store_location_' . $key;
 			$store_details['store_name_text']  = sanitize_text_field( $store_details['store_name_text'] );
 			$store_details['store_cords_text'] = $this->sanitize_coordinates( $store_details['store_cords_text'] );
-			$store_details['store_icon_text']  = esc_url_raw( $store_details['store_icon_text'] ?? '' ); // users can still edit this via page elements though its a pro feature...
+			$store_details['store_icon_text']  = esc_url_raw( $store_details['store_icon_text'] ?? '' );
 			$store_details                     = array( 'store_location_id' => $store_location_id ) + $store_details;
 		}
 
-			unset( $store_details );
+		unset( $store_details );
 
 		$values = array_unique( $values, SORT_REGULAR );
 
 		return $values;
+	}
+
+	/**
+	 * Normalize our checkbox value.
+	 *
+	 * Our custom repeater library turns checkbox values into an array, we need to change/fix this behaviour so that our settings can have the correct saved value.
+	 *
+	 * @param array $ranges
+	 * @param array $option
+	 * @param array $raw_value
+	 * @return array
+	 * @since 1.6.9
+	 */
+	public function normalize_cost_by_distance_range_checkbox( array $ranges, array $option, array $raw_value ) : array {
+
+		foreach ( $ranges as $key => &$range_details ) {
+
+			$checkbox_state = $range_details['should_calculate_per_distance_unit_checkbox'] ?? '';
+
+			// If the checkbox is not checked, it doesn't exist in the array, so lets explicitly add it.
+			if ( empty( $checkbox_state ) ) {
+				$range_details['should_calculate_per_distance_unit_checkbox'] = '';
+				continue;
+			}
+
+			if ( is_array( $checkbox_state ) && ! empty( $checkbox_state[0] ) ) {
+				$range_details['should_calculate_per_distance_unit_checkbox'] = $checkbox_state[0];
+			}
+		}
+		unset( $range_details );
+
+		return $ranges;
 	}
 
 }

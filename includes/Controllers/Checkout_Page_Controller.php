@@ -47,6 +47,7 @@ class Checkout_Page_Controller {
 			return;
 		}
 
+		// Don't validate the location fields when local pickup option is used.
 		$local_pickup_override = apply_filters( 'lpac_local_pickup_override_map_validation', true, $fields, $errors );
 
 		if ( $local_pickup_override !== false ) {
@@ -193,6 +194,18 @@ class Checkout_Page_Controller {
 		$enable_store_location_selector = filter_var( $enable_store_location_selector, FILTER_VALIDATE_BOOL );
 
 		if ( empty( $enable_store_location_selector ) ) {
+			return;
+		}
+
+		/**
+		 * The store dropdown visibility might be changed via JS or other conditions
+		 * So we need to check if its actually shown before trying to validate
+		 *
+		 * see changeMapVisibility() in checkout-page-map.js
+		 */
+		$map_shown = (bool) $_POST['lpac_is_map_shown'] ?? '';
+
+		if ( $map_shown === false ) {
 			return;
 		}
 
