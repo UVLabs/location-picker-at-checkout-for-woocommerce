@@ -49,7 +49,7 @@ class Lpac_Activator {
 
 		// Create entry for plugin first install version.
 		if ( empty( $installed_at ) ) {
-			add_option( 'lpac_installed_at_version', LPAC_VERSION, '', false );
+			add_option( 'lpac_installed_at_version', LPAC_VERSION, '' );
 		}
 
 	}

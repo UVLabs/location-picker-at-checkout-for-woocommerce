@@ -1,11 +1,11 @@
-=== Location Picker at Checkout - Google Address AutoFill & WooCommerce Checkout Map Plugin ===
+=== Location Picker at Checkout - WooCommerce Checkout Map & Google Address AutoFill Plugin ===
 Contributors: uriahs-victor
 Donate link: https://soaringleads.com
 Tags: woocommerce, location picker, checkout map, geolocation, google map, map, delivery map
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 6.1
-Stable tag: 1.6.8
+Stable tag: 1.6.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,7 +81,7 @@ The PRO version of LPAC allows you to create custom shipping zones by drawing th
 
 ### WooCommerce Delivery Area Plugin
 
-LPAC comes with multiple features to fine tune where you deliver to and how much you wish to charge. These include features such as "Cost by Distance", "Cost by Region", "Cost by Store Distance", Maximum shipping distance, as well as Cost by Store.
+LPAC comes with multiple features to fine tune where you deliver to and how much you wish to charge. These include features such as "Cost by Distance", "Cost by Distance Range", "Cost by Region", "Cost by Store Distance", Maximum shipping distance, as well as Cost by Store.
 
 ### Below are a few types of stores that would benefit tremendously from this plugin:
 
@@ -111,7 +111,7 @@ LPAC comes with multiple features to fine tune where you deliver to and how much
 - Customers can see the delivery location they selected on past orders.
 - Option to turn on Places Autocomplete(Google Autofill) feature. [Learn More](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/)
 - Customizable Map container
-- Automatically translated map buttons based on the website's language (set in WordPress' general settings)
+- Automatically translated map buttons based on the website's language (set in WordPress' general settings) or using a filter.
 
 ### Premium Features:
 
@@ -122,6 +122,7 @@ LPAC comes with multiple features to fine tune where you deliver to and how much
 - Multiple Customer Saved Addresses
 - Shipping Cost by Region
 - Shipping Cost by Distance
+- Shipping Cost by Distance Range
 - Shipping Cost by Store Location
 - Shipping Cost by Store Location Distance
 - Multi-store distance pricing - Set the cost by distanced based on the origin store the customer selected.
@@ -132,11 +133,14 @@ LPAC comes with multiple features to fine tune where you deliver to and how much
 - Restrict Places Autocomplete feature to selected countries
 - [And More](https://lpacwp.com/pricing)
 
+--> [Checkout the PRO Demo](https://app.instawp.io/launch?t=lpac-demo) <--
+
 Have a feature in mind? Feel free to submit it on the support forum.
 
 ### LPAC has support for the following custom checkout page plugins:
 
 - WooFunnels Funnel Builder Plugin for WordPress
+- FunnelKit (AeroCheckout)
 - Fluid Checkout for WooCommerce
 - Online Ordering System For Restaurants & Local Retail by Orderable
 - CheckoutWC custom checkout plugin
@@ -183,7 +187,7 @@ Alternatively, install this plugin by searching for it from the plugins area of 
 
 = The map doesn't show =
 
-Ensure that you have setup the plugin with your API key by going to WordPress Dashboard->WooCommerce->Location Picker At Checkout. See [this doc](https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/) for getting your API key. If you've entered your API key and the map still doesn't show, then please have a look at your  [browser console](https://balsamiq.com/support/faqs/browserconsole/#apple-safari) for any errors relating to the map, you can submit an issue thread on the plugin's [support forum](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/)
+Ensure that you have setup the plugin with your API key by going to WordPress Dashboard->WooCommerce->Location Picker At Checkout. See [this doc](https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/) for getting your API key. If you've entered your API key and the map still doesn't show, then please have a look at your [browser console](https://balsamiq.com/support/faqs/browserconsole/#apple-safari) for any errors relating to the map, you can submit an issue thread on the plugin's [support forum](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/)
 
 = Nothing happens when I click on the map =
 
@@ -226,6 +230,14 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 1.6.9 =
+* [New PRO] Added a new option to the Cost by Distance Range feature for calculating distance per unit if using flat rates aren't ideal.
+* [Fix PRO] The maximum shipping distance setting was being applied to the Cost by Distance Range feature. This feature has its own maximum.
+* [Improvement PRO] LPAC will now always return Local Pickup shipping methods, if any are available, when customers do not meet the delivery criteria.
+* [Improvement PRO] If the map is not being shown, don't try to validate the origin store selector dropdown.
+* [Improvement] Map will not be hidden if only Local Pickup shipping methods are available to customers.
+* [Dev] Added a few custom JavaScript events when the map's visibility values are changed. [Learn more](https://lpacwp.com/docs/custom-code-samples/misc/lpac-checkout-page-events/).
 
 = 1.6.8 =
 * [New PRO] Option to set min and max order total for Shipping Cost by Region feature.

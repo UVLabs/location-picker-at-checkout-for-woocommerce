@@ -19,9 +19,33 @@ namespace Lpac\Controllers;
 class Map_Visibility_Controller
 {
     /**
+     * Get the current customer's possible shipping methods.
+     *
+     * The shipping methods presented to them at the checkout page.
+     * @return array
+     * @since 1.6.9
+     */
+    private function get_customer_available_shipping_methods() : array
+    {
+        $available_shipping_methods = array();
+        $shipping_packages = WC()->cart->get_shipping_packages();
+        foreach ( array_keys( $shipping_packages ) as $key ) {
+            if ( $shipping_for_package = WC()->session->get( 'shipping_for_package_' . $key ) ) {
+                if ( isset( $shipping_for_package['rates'] ) ) {
+                    // Loop through customer available shipping methods
+                    foreach ( $shipping_for_package['rates'] as $rate_key => $rate ) {
+                        $available_shipping_methods[] = $rate->id;
+                    }
+                }
+            }
+        }
+        return $available_shipping_methods;
+    }
+    
+    /**
      * Shows a feature if the setting is enabled
      *
-     * @param string $option the option to act on.
+     * @param string $option the page to act on.
      * @since    1.0.0
      * @since    1.2.0 Added more checks to determine when to show/hide map
      */
@@ -61,21 +85,17 @@ class Map_Visibility_Controller
      */
     public function checkout_map_rules_order_ajax_handler()
     {
-        try {
-            $items = $_REQUEST['rulesOrder'] ?? '';
-            if ( empty($items) ) {
-                wp_send_json_error( false );
-            }
-            $items_assoc = array();
-            $visibility_rules = self::get_map_visibility_rules();
-            foreach ( $items as $key ) {
-                $items_assoc[$key] = sanitize_text_field( $visibility_rules[$key] );
-            }
-            update_option( 'lpac_map_visibility_rules_order', $items_assoc );
-            wp_send_json_success( true );
-        } catch ( \Throwable $th ) {
-            wp_send_json_error( false );
+        $items = $_REQUEST['rulesOrder'] ?? '';
+        if ( empty($items) ) {
+            wp_send_json_error( 'LPAC: Handler found no items in rulesOrder request.', 500 );
         }
+        $items_assoc = array();
+        $visibility_rules = self::get_map_visibility_rules();
+        foreach ( $items as $key ) {
+            $items_assoc[$key] = sanitize_text_field( $visibility_rules[$key] );
+        }
+        update_option( 'lpac_map_visibility_rules_order', $items_assoc );
+        wp_send_json_success( true );
     }
     
     /**
@@ -87,12 +107,29 @@ class Map_Visibility_Controller
      */
     public function checkout_map_visibility_ajax_handler()
     {
-        try {
-            $show = self::lpac_show_map( 'checkout' );
-            wp_send_json_success( (bool) $show );
-        } catch ( \Throwable $th ) {
-            wp_send_json_error( false );
+        $override = '';
+        $available_shipping_methods = $this->get_customer_available_shipping_methods();
+        /**
+         * Check all available shipping methods presented to the user.
+         *
+         * If they're all local pickup methods, then don't hide the map or else
+         * it would lock them into their selection and LPAC would not be able to show the map again without customer making use of autocomplete or some other feature that would show the map.
+         */
+        foreach ( $available_shipping_methods as $shipping_method ) {
+            
+            if ( strpos( $shipping_method, 'local_pickup' ) === false ) {
+                $override = false;
+                break;
+            }
+            
+            $override = true;
         }
+        $override = apply_filters( 'lpac_override_map_visibility', $override );
+        if ( $override ) {
+            wp_send_json_success( true );
+        }
+        $show = self::lpac_show_map( 'checkout' );
+        wp_send_json_success( (bool) $show );
     }
     
     /**
@@ -121,6 +158,7 @@ class Map_Visibility_Controller
         $shipping_methods = get_option( 'lpac_wc_shipping_methods', array() );
         $checkout_shipping_method = WC()->session->get( 'chosen_shipping_methods' )[0] ?? '';
         if ( empty($checkout_shipping_method) ) {
+            // In these instances, map will also show if no shipping methods are available for customer
             return true;
         }
         $installed_at = get_option( 'lpac_installed_at_version' );

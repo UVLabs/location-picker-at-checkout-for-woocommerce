@@ -87,7 +87,7 @@ class Frontend_Enqueues
         $path = ( LPAC_DEBUG ? '' : 'build/' );
         wp_enqueue_script(
             $this->plugin_name,
-            LPAC_PLUGIN_ASSETS_PATH_URL . 'public/js/lpac-public.js',
+            LPAC_PLUGIN_ASSETS_PATH_URL . 'public/js/' . $path . 'lpac-public.js',
             array( 'jquery', 'wp-util' ),
             $this->version,
             false
@@ -110,9 +110,17 @@ class Frontend_Enqueues
              */
             
             if ( get_option( 'lpac_dequeue_google_maps' ) !== 'frontend' && get_option( 'lpac_dequeue_google_maps' ) !== 'both' ) {
+                $map_resource = $this->lpac_google_maps_resource;
+                // Make map language filterable and allow adding of extra params to the api link
+                $language = apply_filters( 'lpac_map_locale', get_locale() );
+                $additional_params = apply_filters( 'lpac_additional_map_params', array(), $map_resource );
+                $language_param = array( "language={$language}" );
+                $additional_params = array_merge( $language_param, $additional_params );
+                $additional_params_string = '&' . implode( '&', $additional_params );
+                $map_resource = $map_resource . $additional_params_string;
                 wp_register_script(
                     $this->plugin_name . '-google-maps-js',
-                    $this->lpac_google_maps_resource,
+                    $map_resource,
                     array(),
                     $this->version,
                     false
@@ -158,8 +166,7 @@ class Frontend_Enqueues
                 );
             }
             /**
-             * is_checkout() also runs on is_wc_endpoint_url( 'order-received' ) so we need to make this if block doesn't
-             * by added the ! conditional
+             * is_checkout() also runs on is_wc_endpoint_url( 'order-received' ) so we need to also check that we're not on the order received page.
              */
             if ( is_checkout() && !is_wc_endpoint_url( 'order-received' ) ) {
                 /**

@@ -1,7 +1,7 @@
 /**
  * Globals:
  *
- * mapOptions, checkoutProvider, lpacLastOrder, storeLocations
+ * mapOptions, checkoutProvider, lpacLastOrder, storeLocations, lpac_pro_js (available when PRO version active)
  */
 /* Get our global map variables from base-map.js */
 const map = window.lpac_map;
@@ -720,16 +720,55 @@ function lpac_fill_in_billing_zipcode(results) {
 
 /**
  * Show or hide the map.
+ *
+ * Fire custom events based on the state of the map visibility.
  */
 function changeMapVisibility(show) {
   // console.log('show', show);
+
+  const changedEventBefore = new Event("custom:lpacMapVisibilityCheckedBefore");
+  document.dispatchEvent(changedEventBefore);
+
+  const storeSelector = document.querySelector(
+    "#lpac_order__origin_store_field"
+  );
+
+  const saveAddressCheckbox = document.querySelector(
+    "#lpac_save_address_checkbox_field"
+  );
+
   if (show) {
     document.querySelector("#lpac-map-container").style.display = "block";
     document.querySelector("#lpac_is_map_shown").value = 1;
+
+    if (storeSelector) {
+      storeSelector.style.display = "block";
+    }
+
+    if (saveAddressCheckbox) {
+      saveAddressCheckbox.style.display = "block";
+    }
+
+    const showEvent = new Event("custom:lpacMapVisibilityShow");
+    document.dispatchEvent(showEvent);
   } else {
     document.querySelector("#lpac-map-container").style.display = "none";
     document.querySelector("#lpac_is_map_shown").value = 0;
+
+    if (storeSelector) {
+      storeSelector.style.display = "none";
+    }
+
+    if (saveAddressCheckbox) {
+      saveAddressCheckbox.style.display = "none";
+    }
+
+    const hideEvent = new Event("custom:lpacMapVisibilityHide");
+    document.dispatchEvent(hideEvent);
   }
+
+  const changedEventAfter = new Event("custom:lpacMapVisibilityCheckedAfter");
+  document.dispatchEvent(changedEventAfter);
 }
 
 /**
@@ -1283,7 +1322,10 @@ addPlacesAutoComplete();
 
           const marker = new google.maps.Marker({
             clickable: false,
-            icon: location.store_icon_text,
+            icon:
+              typeof lpac_pro_js !== "undefined" && lpac_pro_js.is_pro
+                ? location.store_icon_text
+                : "", // show icon only in pro
             position: latlng,
             map: map,
           });

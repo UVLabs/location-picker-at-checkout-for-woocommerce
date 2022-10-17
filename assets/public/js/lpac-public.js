@@ -86,7 +86,7 @@
         .post("lpac_save_selected_store_location", { store_location_id })
         .done()
         .fail(function (response) {
-          console.log(response);
+          console.error(response.responseJSON.data);
         });
     } else {
       localStorage.setItem(

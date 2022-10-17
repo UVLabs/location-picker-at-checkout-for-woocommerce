@@ -33,7 +33,7 @@ class Shortcodes {
 		$store_id = sanitize_text_field( $store_id );
 
 		if ( empty( $store_id ) ) {
-			wp_send_json_error( 'LPAC: Received empty store_id' );
+			wp_send_json_error( 'LPAC: Received empty store_id', 500 );
 		}
 
 		update_user_meta( get_current_user_id(), 'lpac_user_preferred_store_location_id', $store_id );

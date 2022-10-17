@@ -50,8 +50,7 @@
             $("#lpac-rules-saving").hide();
             $("#lpac-rules-saving-success").hide();
             $("#lpac-rules-saving-failed").show();
-
-            // console.log(response);
+            console.error(response.responseJSON.data);
           });
       },
     });

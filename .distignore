@@ -23,6 +23,7 @@ lpac.zip
 logs
 assets/public/js/maps/*.js
 assets/public/js/compat/*.js
+assets/public/js/*.js
 assets/pro/public/js/maps/*.js
 assets/pro/admin/js/*.js
 assets/public/js/maps/build/*.map

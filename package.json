@@ -15,6 +15,13 @@
     "prepare": "husky install"
   },
   "targets": {
+    "lite-public": {
+      "source": [
+        "./assets/public/js/lpac-public.js"
+      ],
+      "sourceMap": false,
+      "distDir": "./assets/public/js/build/"
+    },
     "lite-maps": {
       "source": [
         "./assets/public/js/maps/base-map.js",
