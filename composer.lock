@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b5c60ffdf1ea69c2def70f0e294bd291",
+    "content-hash": "c574a6cf0cc656b133fda34c7f1aed01",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -181,16 +181,16 @@
         },
         {
             "name": "freemius/wordpress-sdk",
-            "version": "2.4.5",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Freemius/wordpress-sdk.git",
-                "reference": "d4aa83b1e74f3269affcbfe0d2b75ceae35ba864"
+                "reference": "35782eb9f19eefc63723afb3196c768bca6dfbd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Freemius/wordpress-sdk/zipball/d4aa83b1e74f3269affcbfe0d2b75ceae35ba864",
-                "reference": "d4aa83b1e74f3269affcbfe0d2b75ceae35ba864",
+                "url": "https://api.github.com/repos/Freemius/wordpress-sdk/zipball/35782eb9f19eefc63723afb3196c768bca6dfbd9",
+                "reference": "35782eb9f19eefc63723afb3196c768bca6dfbd9",
                 "shasum": ""
             },
             "require": {
@@ -214,9 +214,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Freemius/wordpress-sdk/issues",
-                "source": "https://github.com/Freemius/wordpress-sdk/tree/2.4.5"
+                "source": "https://github.com/Freemius/wordpress-sdk/tree/2.5.2"
             },
-            "time": "2022-07-31T06:50:47+00:00"
+            "time": "2022-11-14T06:49:45+00:00"
         },
         {
             "name": "mjaschen/phpgeo",

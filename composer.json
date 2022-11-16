@@ -11,7 +11,7 @@
         "suin/phpcs-psr4-sniff": "^3.0"
     },
     "require": {
-        "freemius/wordpress-sdk": "2.4.5",
+        "freemius/wordpress-sdk": "2.5.2",
         "endroid/qr-code": "4.3.5",
         "mjaschen/phpgeo": "4.0",
         "wpbp/pointerplus": "1.0.4"

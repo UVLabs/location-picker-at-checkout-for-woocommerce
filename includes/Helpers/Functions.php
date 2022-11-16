@@ -250,20 +250,29 @@ class Functions {
 
 		$auto_detect_location = get_option( 'lpac_auto_detect_location', 'no' );
 
+		$checkout_page_default_map_type      = get_option( 'lpac_checkout_page_map_default_type', 'roadmap' );
+		$thank_you_page_default_map_type     = apply_filters( 'lpac_thank_you_page_default_map_type', 'roadmap' );
+		$past_order_page_default_map_type    = apply_filters( 'lpac_past_order_page_default_map_type', 'roadmap' );
+		$admin_order_screen_default_map_type = apply_filters( 'lpac_admin_order_screen_default_map_type', 'roadmap' );
+
 		$options = array(
-			'latitude'                        => $latitude,
-			'longitude'                       => $longitude,
-			'zoom_level'                      => $zoom_level,
-			'clickable_icons'                 => $clickable_icons,
-			'background_color'                => $background_color,
-			'remove_address_plus_code'        => $remove_address_plus_code,
-			'enable_places_search'            => $enable_places_search,
-			'places_search_fields'            => $places_search_fields,
-			'places_autocomplete_hide_map'    => $places_autocomplete_hide_map,
-			'places_fill_shipping_fields'     => $places_fill_shipping_fields,
-			'places_fill_billing_fields'      => $places_fill_billing_fields,
-			'auto_detect_location'            => $auto_detect_location,
-			'wc_shipping_destination_setting' => $wc_shipping_destination_setting,
+			'latitude'                                 => $latitude,
+			'longitude'                                => $longitude,
+			'zoom_level'                               => $zoom_level,
+			'clickable_icons'                          => $clickable_icons,
+			'background_color'                         => $background_color,
+			'remove_address_plus_code'                 => $remove_address_plus_code,
+			'enable_places_search'                     => $enable_places_search,
+			'places_search_fields'                     => $places_search_fields,
+			'places_autocomplete_hide_map'             => $places_autocomplete_hide_map,
+			'places_fill_shipping_fields'              => $places_fill_shipping_fields,
+			'places_fill_billing_fields'               => $places_fill_billing_fields,
+			'auto_detect_location'                     => $auto_detect_location,
+			'wc_shipping_destination_setting'          => $wc_shipping_destination_setting,
+			'lpac_checkout_page_map_default_type'      => $checkout_page_default_map_type,
+			'lpac_thank_you_page_default_map_type'     => $thank_you_page_default_map_type,
+			'lpac_past_order_page_default_map_type'    => $past_order_page_default_map_type,
+			'lpac_admin_order_screen_default_map_type' => $admin_order_screen_default_map_type,
 		);
 
 		return apply_filters( 'lpac_map_options', $options );

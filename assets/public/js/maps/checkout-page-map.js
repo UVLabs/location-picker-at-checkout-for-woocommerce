@@ -5,9 +5,10 @@
  */
 /* Get our global map variables from base-map.js */
 const map = window.lpac_map;
+map.setMapTypeId(mapOptions.lpac_checkout_page_map_default_type);
+
 const marker = window.lpac_marker;
 const infowindow = window.lpac_infowindow;
-
 const geocoder = new google.maps.Geocoder();
 
 const find_location_btn = document.querySelector("#lpac-find-location-btn");
@@ -789,9 +790,9 @@ function lpacHideShowMap() {
 }
 
 /**
- * Fill in coordinatee fields for last order.
+ * Fill in coordinate fields for last order.
  */
-function lpacSetLastOrderLocationCords() {
+function lpacSetLastOrderLocationDetails() {
   if (typeof lpacLastOrder === "undefined" || lpacLastOrder === null) {
     return;
   }
@@ -806,8 +807,11 @@ function lpacSetLastOrderLocationCords() {
     lng: parseFloat(lpacLastOrder.longitude),
   };
 
-  let latitude = document.querySelector("#lpac_latitude");
-  let longitude = document.querySelector("#lpac_longitude");
+  const latitude = document.querySelector("#lpac_latitude");
+  const longitude = document.querySelector("#lpac_longitude");
+  const places_autocomplete_field = document.querySelector(
+    "#lpac_places_autocomplete"
+  );
 
   if (typeof latitude === "undefined" || latitude === null) {
     console.log(
@@ -825,6 +829,9 @@ function lpacSetLastOrderLocationCords() {
 
   // Set the checkout fields lat and long value
   lpac_fill_in_latlng(latlng);
+
+  // Set the last order value for the places autocomplete field
+  places_autocomplete_field.value = lpacLastOrder.used_places_autocomplete;
 }
 
 /**
@@ -846,7 +853,7 @@ function lpacSetLastOrderForAutocompleteWithoutMap() {
     field.classList.remove("hidden");
   }
 
-  lpacSetLastOrderLocationCords();
+  lpacSetLastOrderLocationDetails();
 }
 
 /**
@@ -859,7 +866,7 @@ function lpacSetLastOrderMarker() {
 
   // Wait for map to load then add our marker
   google.maps.event.addListenerOnce(map, "tilesloaded", function () {
-    lpacSetLastOrderLocationCords();
+    lpacSetLastOrderLocationDetails();
 
     const latlng = {
       lat: parseFloat(lpacLastOrder.latitude),
@@ -1246,7 +1253,7 @@ addPlacesAutoComplete();
 
       /**
        * For guest checkout we're storing the preferred store location in localStorage
-       * For logged in users we're replacing the store_origin_id with the one selected from the shortcode if it's been used, see Lpac\Controllers\Checkout_Page_Controller::get_last_order_location()
+       * For logged in users we're replacing the store_origin_id with the one selected from the shortcode if it's been used, see Lpac\Controllers\Checkout_Page\Controller::get_last_order_details()
        */
       if (isLoggedIn === true) {
         // This might be null if the user has never ordered from this site before.

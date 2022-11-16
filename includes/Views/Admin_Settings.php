@@ -89,6 +89,7 @@ class Admin_Settings extends \WC_Settings_Page
             'shipping'         => __( 'Shipping', 'map-location-picker-at-checkout-for-woocommerce' ),
             'export'           => __( 'Export', 'map-location-picker-at-checkout-for-woocommerce' ),
             'tools'            => __( 'Tools', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'add-ons'          => __( 'Add-ons', 'map-location-picker-at-checkout-for-woocommerce' ),
         );
         if ( defined( 'LPAC_SAAS_EARLY_ACCESS' ) ) {
             $sections['api'] = __( 'API', 'map-location-picker-at-checkout-for-woocommerce' );
@@ -524,6 +525,17 @@ HTML;
             'default'     => 100,
             'type'        => 'number',
             'css'         => 'max-width:80px;',
+        );
+        $lpac_settings[] = array(
+            'name'    => __( 'Checkout Page Default Map Type', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'      => 'lpac_checkout_page_map_default_type',
+            'type'    => 'select',
+            'options' => array(
+            'roadmap'   => __( 'Road Map', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'satellite' => __( 'Satellite', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'hybrid'    => __( 'Hybrid', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'terrain'   => __( 'Terrain', 'map-location-picker-at-checkout-for-woocommerce' ),
+        ),
         );
         return $lpac_settings;
     }
@@ -1526,7 +1538,7 @@ HTML;
         $lpac_settings = array();
         $lpac_settings[] = array(
             'name' => __( 'LPAC Tools', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'   => 'lpac_debug_settings',
+            'id'   => 'lpac_tools_settings',
             'type' => 'title',
             'desc' => self::create_plugin_settings_banner(),
         );
@@ -1559,6 +1571,33 @@ HTML;
         $lpac_settings[] = array(
             'type' => 'sectionend',
             'id'   => 'lpac_debug_settings_section_end',
+        );
+        return $lpac_settings;
+    }
+    
+    /**
+     * Create LPAC's add-ons page entries.
+     *
+     * @return array
+     */
+    private function create_addons_page() : array
+    {
+        $lpac_settings = array();
+        $lpac_settings[] = array(
+            'name' => __( 'LPAC Add-ons', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'   => 'lpac_addons',
+            'type' => 'title',
+        );
+        $lpac_settings[] = array(
+            'type'      => 'lpac_image',
+            'src'       => LPAC_PLUGIN_ASSETS_PATH_URL . '/img/delivery-and-pickup-scheduling.png',
+            'desc'      => __( 'Allow customers to set their delivery/pickup date and time during order checkout.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'height'    => '280px',
+            'is_option' => false,
+        );
+        $lpac_settings[] = array(
+            'type' => 'sectionend',
+            'id'   => 'lpac_addons_section_end',
         );
         return $lpac_settings;
     }
@@ -1699,6 +1738,9 @@ HTML;
         }
         if ( $current_section === 'tools' ) {
             $lpac_settings = $this->create_tools_setting_fields();
+        }
+        if ( $current_section === 'add-ons' ) {
+            $lpac_settings = $this->create_addons_page();
         }
         // Custom attributes example
         // https://woocommerce.github.io/code-reference/files/woocommerce-includes-admin-wc-meta-box-functions.html#source-view.146

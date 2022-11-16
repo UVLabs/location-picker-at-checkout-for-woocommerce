@@ -5,7 +5,7 @@ Tags: woocommerce, location picker, checkout map, geolocation, google map, map, 
 Requires at least: 5.5
 Requires PHP: 7.3
 Tested up to: 6.1
-Stable tag: 1.6.9
+Stable tag: 1.6.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -231,6 +231,15 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 
 == Changelog ==
 
+= 1.6.11 =
+* [Dev] Update Freemius SDK.
+
+= 1.6.10 =
+* [New] Added an option to the plugin's Display Settings to choose the default map type that loads on the checkout page (Road Map, Satellite etc.).
+* [New] Add-ons tab in plugin settings.
+* [Dev] Code improvements.
+* [Dev] Tested on WC 7.1.
+
 = 1.6.9 =
 * [New PRO] Added a new option to the Cost by Distance Range feature for calculating distance per unit if using flat rates aren't ideal.
 * [Fix PRO] The maximum shipping distance setting was being applied to the Cost by Distance Range feature. This feature has its own maximum.
@@ -251,7 +260,7 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 * [Fix] Address would not show in marker info window if no shipping zones exist on the website.
 * [Dev] You can now change the map locale using the `lpac_map_locale` filter.
 * [Dev] Customer's last order will no longer be their full formatted addresses, it will instead be the address line 1. This behavior can be changed using the `lpac_last_order_address` filter.
-* [Dev] Tested on WC v7.0-rc.2
+* [Dev] Tested on WC v7.0-rc.2.
 
 = 1.6.7 =
 

@@ -1,5 +1,12 @@
+/**
+ * Globals:
+ *
+ * mapOptions
+ */
 function lpac_setup_order_received_map() {
   const map = window.lpac_map;
+  map.setMapTypeId(mapOptions.lpac_thank_you_page_default_map_type);
+
   const marker = window.lpac_marker;
   const infowindow = window.lpac_infowindow;
 
