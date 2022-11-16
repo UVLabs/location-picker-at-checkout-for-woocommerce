@@ -54,12 +54,14 @@ class Lpac_Uninstall {
 		}
 
 		$option_keys = array(
+			// General Settings
 			'lpac_enabled',
 			'lpac_google_maps_api_key',
 			'lpac_force_map_use',
+			'lpac_allow_clicking_on_map_icons',
+			// Display Settings
 			'lpac_map_starting_coordinates',
 			'lpac_general_map_zoom_level',
-			'lpac_allow_clicking_on_map_icons',
 			'lpac_map_background_color',
 			'lpac_checkout_map_orientation',
 			'lpac_checkout_page_map_height',
@@ -68,14 +70,17 @@ class Lpac_Uninstall {
 			'lpac_order_received_page_map_height',
 			'lpac_order_received_page_map_width',
 			'lpac_display_map_on_view_order_page',
-			'lpac_store_locations_cords',
-			'lpac_store_locations_labels',
-			'lpac_store_locations_icons',
 			'lpac_view_order_page_map_height',
 			'lpac_view_order_page_map_width',
 			'lpac_order_received_page_map_id',
 			'lpac_view_order_page_map_id',
 			'lpac_checkout_page_map_id',
+			'lpac_checkout_page_map_default_view',
+			// Store Locations
+			'lpac_store_locations_cords',
+			'lpac_store_locations_labels',
+			'lpac_store_locations_icons',
+			//
 			'lpac_autofill_billing_fields',
 			'lpac_email_delivery_map_emails',
 			'lpac_email_delivery_map_link_location',

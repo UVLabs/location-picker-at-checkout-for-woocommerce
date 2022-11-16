@@ -37,7 +37,7 @@ use  Lpac\Bootstrap\Frontend_Enqueues ;
 use  Lpac\Controllers\Emails_Controller ;
 use  Lpac\Controllers\Map_Visibility_Controller ;
 use  Lpac\Controllers\Admin_Settings_Controller ;
-use  Lpac\Controllers\Checkout_Page_Controller ;
+use  Lpac\Controllers\Checkout_Page\Validation as Checkout_Page_Validation ;
 use  Lpac\Controllers\Shortcodes as Shortcodes_Controller ;
 use  Lpac\Views\Admin as Admin_Display ;
 use  Lpac\Notices\Admin as Admin_Notices ;
@@ -213,6 +213,7 @@ class Main
         $this->loader->add_action( 'woocommerce_admin_field_repeater', $plugin_admin_view, 'create_custom_wc_settings_repeater' );
         $this->loader->add_action( 'woocommerce_admin_field_info_text', $plugin_admin_view, 'create_custom_wc_settings_info_text' );
         $this->loader->add_action( 'woocommerce_admin_field_upsell_banner', $plugin_admin_view, 'create_custom_wc_settings_upsell_banner' );
+        $this->loader->add_action( 'woocommerce_admin_field_lpac_image', $plugin_admin_view, 'create_custom_wc_settings_image' );
         $this->loader->add_filter(
             'plugin_action_links',
             $this,
@@ -260,7 +261,7 @@ class Main
         $plugin_public_display = new Frontend_Display();
         $controller_emails = new Emails_Controller();
         $controller_map_visibility = new Map_Visibility_Controller();
-        $controller_checkout_page = new Checkout_Page_Controller();
+        $controller_checkout_page_validation = new Checkout_Page_Validation();
         $model_location_details = new Location_Details();
         $controller_shortcodes = new Shortcodes_Controller();
         /*
@@ -341,7 +342,7 @@ class Main
         if ( $validate_lat_long_fields === 'yes' ) {
             $this->loader->add_action(
                 'woocommerce_after_checkout_validation',
-                $controller_checkout_page,
+                $controller_checkout_page_validation,
                 'validate_location_fields',
                 10,
                 2
@@ -352,7 +353,7 @@ class Main
          */
         $this->loader->add_action(
             'woocommerce_after_checkout_validation',
-            $controller_checkout_page,
+            $controller_checkout_page_validation,
             'validate_store_location_selector_dropdown',
             10,
             2

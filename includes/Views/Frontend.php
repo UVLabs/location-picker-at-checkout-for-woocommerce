@@ -20,7 +20,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 use  Freemius_Exception ;
 use  Lpac\Controllers\Map_Visibility_Controller ;
-use  Lpac\Controllers\Checkout_Page_Controller ;
+use  Lpac\Controllers\Checkout_Page\Controller as Checkout_Page_Controller ;
 use  Lpac\Compatibility\Checkout_Provider ;
 use  Lpac\Helpers\Functions ;
 class Frontend
@@ -49,7 +49,7 @@ class Frontend
     {
         $controller_checkout_page = new Checkout_Page_Controller();
         $map_options = $controller_checkout_page->get_map_options();
-        $last_order_location = $controller_checkout_page->get_last_order_location();
+        $last_order_location = $controller_checkout_page->get_last_order_details();
         $show_store_locations_on_map = get_option( 'lpac_show_store_locations_on_map' );
         $store_locations = array();
         if ( $show_store_locations_on_map === 'yes' ) {

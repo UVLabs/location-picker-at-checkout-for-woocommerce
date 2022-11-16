@@ -149,11 +149,12 @@ HTML;
 		$options = Functions::set_map_options();
 
 		$data = array(
-			'lpac_map_default_latitude'  => $options['latitude'],
-			'lpac_map_default_longitude' => $options['longitude'],
-			'lpac_map_zoom_level'        => $options['zoom_level'],
-			'lpac_map_clickable_icons'   => $options['clickable_icons'] === 'yes' ? true : false,
-			'lpac_map_background_color'  => $options['background_color'],
+			'lpac_map_default_latitude'                => $options['latitude'],
+			'lpac_map_default_longitude'               => $options['longitude'],
+			'lpac_map_zoom_level'                      => $options['zoom_level'],
+			'lpac_map_clickable_icons'                 => $options['clickable_icons'] === 'yes' ? true : false,
+			'lpac_map_background_color'                => $options['background_color'],
+			'lpac_admin_order_screen_default_map_type' => $options['lpac_admin_order_screen_default_map_type'],
 		);
 
 		$order_location_details = json_encode( $order_location_details );
@@ -467,6 +468,19 @@ HTML;
 	}
 
 	/**
+	 * Get a field type based on it's name.
+	 *
+	 * @since 1.6.0
+	 * @param string $field_name
+	 * @return string
+	 */
+	private function get_field_type( string $field_name ) : string {
+		$type = explode( '_', $field_name );
+		$type = end( $type );
+		return $type;
+	}
+
+	/**
 	 * Create a custom repeater element that can be used on the plugin's settings page.
 	 *
 	 * @since 1.6.8
@@ -491,18 +505,26 @@ HTML;
 
 	}
 
+	public function create_custom_wc_settings_image( $value ) {
 
-	/**
-	 * Get a field type based on it's name.
-	 *
-	 * @since 1.6.0
-	 * @param string $field_name
-	 * @return string
-	 */
-	private function get_field_type( string $field_name ) : string {
-		$type = explode( '_', $field_name );
-		$type = end( $type );
-		return $type;
+		// $name      = $value['name'];
+		$id        = $value['id'];
+		$row_class = $value['row_class'] ?? '';
+		$class     = $value['class'];
+		$desc      = $value['desc'];
+		$src       = $value['src'];
+		$height    = $value['height'] ?? 'auto';
+
+		$markup = <<<HTML
+				<tr valign='top' class="$row_class">
+				<!-- <th scope='row' class="titledesc"></th> -->
+				<td>
+					<img src="$src" class="$class" id="$id" height= "$height" />
+					<p style="width: 280px; text-align: center; margin-top: 10px">$desc</p>
+				</td>
+				</tr>
+HTML;
+		echo $markup;
 	}
 
 	/**
