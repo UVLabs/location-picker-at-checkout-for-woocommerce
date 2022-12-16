@@ -18,27 +18,12 @@ if ( !defined( 'ABSPATH' ) ) {
     // Exit if accessed directly
 }
 
-use  Freemius_Exception ;
 use  Lpac\Controllers\Map_Visibility_Controller ;
 use  Lpac\Controllers\Checkout_Page\Controller as Checkout_Page_Controller ;
 use  Lpac\Compatibility\Checkout_Provider ;
 use  Lpac\Helpers\Functions ;
 class Frontend
 {
-    /**
-     * Checkout page handler.
-     * @var string
-     */
-    private  $checkout_provider = 'wc' ;
-    /**
-     * Class constructor
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->checkout_provider = ( new Checkout_Provider() )->get_checkout_provider();
-    }
-    
     /**
      * Exposes map settings to be used in client-side javascript.
      *
@@ -60,7 +45,7 @@ class Frontend
         $map_options = json_encode( $map_options );
         $last_order_location = json_encode( $last_order_location );
         $store_locations = json_encode( $store_locations );
-        $checkout_provider = $this->checkout_provider;
+        $checkout_provider = ( new Checkout_Provider() )->get_checkout_provider();
         $checkout_provider = json_encode( $checkout_provider );
         $global_variables = <<<JAVASCRIPT
 \t\t// LPAC JS
@@ -175,10 +160,7 @@ JAVASCRIPT;
     /**
      * Create our custom checkout fields.
      *
-     * Changes done here should always be reflected in the WooFunnels compatibility class since they do things differently.
-     *
      * @return void
-     * @throws Freemius_Exception
      */
     private function create_lpac_checkout_fields() : void
     {
@@ -286,13 +268,8 @@ JAVASCRIPT;
 		</div>
 		<?php 
         do_action( 'lpac_after_checkout_map_container', '', $user_id );
-        /**
-         * In WooFunnels we need to create our checkout fields differently.
-         * see Lpac\Compatibility\WooFunnels\WooFunnels
-         */
-        if ( $this->checkout_provider !== 'woofunnels' ) {
-            $this->create_lpac_checkout_fields();
-        }
+        // Create our fields that hold data such as gps cordinates etc.
+        $this->create_lpac_checkout_fields();
         // Add inline global JS so that we can use data fetched using PHP inside JS
         $global_js_vars = $this->setup_global_js_vars();
         $added = wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_js_vars, 'before' );
@@ -330,10 +307,11 @@ JAVASCRIPT;
         if ( empty($store_origin_name) ) {
             return;
         }
-        $store_origin_name_label = apply_filters( 'lpac_order_details_deliver_from_text', __( 'Order origin:', 'map-location-picker-at-checkout-for-woocommerce' ) );
+        $store_origin_name_label = apply_filters( 'lpac_order_details_deliver_from_text', __( 'Order origin', 'map-location-picker-at-checkout-for-woocommerce' ) );
         $markup = <<<HTML
 \t\t<br/>
-\t\t<p class='lpac_order_details_deliver_from_text' style='font-size: 20px; font-weight: bold'>{$store_origin_name_label} <span style='color: green; font-style: italic;'>{$store_origin_name}</span></p>
+\t\t<h2 class='woocommerce-order-details__title'>{$store_origin_name_label}</h2>
+\t\t<p class='lpac_order_details_deliver_from_text' style='font-size: 20px; font-weight: bold'>{$store_origin_name}</p>
 HTML;
         echo  $markup ;
     }
@@ -391,12 +369,16 @@ HTML;
             'lpac_map_order_shipping_address_2' => $shipping_address_2,
         );
         $user_id = (int) get_current_user_id();
+        $label = __( 'Location', 'map-location-picker-at-checkout-for-woocommerce' );
         do_action( 'lpac_before_order_details_map_container', '', $user_id );
         ?>
 		<div id="lpac-map-container" class='woocommerce-shipping-fields__field-wrapper'>
 			<?php 
         do_action( 'lpac_before_order_details_map', '', $user_id );
         ?>
+			<h2 class='woocommerce-order-details__title'><?php 
+        echo  $label ;
+        ?></h2>
 			<div class='lpac-map'></div>
 			<?php 
         do_action( 'lpac_after_order_details_map', '', $user_id );

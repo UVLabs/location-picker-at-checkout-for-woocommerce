@@ -1141,7 +1141,7 @@ addPlacesAutoComplete();
       let shippingToDifferentAddress = "";
 
       switch (checkoutProvider) {
-        case "woofunnels":
+        case "funnelkit":
           shippingToDifferentAddress = $("#shipping_same_as_billing");
           break;
         default:
@@ -1169,7 +1169,7 @@ addPlacesAutoComplete();
         let shippingToDifferentAddress = "";
 
         switch (checkoutProvider) {
-          case "woofunnels":
+          case "funnelkit":
             shippingToDifferentAddress = $("#shipping_same_as_billing");
             break;
           default:

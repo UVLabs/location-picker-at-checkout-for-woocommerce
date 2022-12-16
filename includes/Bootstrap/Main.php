@@ -44,7 +44,6 @@ use  Lpac\Notices\Admin as Admin_Notices ;
 use  Lpac\Notices\Notice ;
 use  Lpac\Notices\Loader as Notices_Loader ;
 use  Lpac\Views\Frontend as Frontend_Display ;
-use  Lpac\Compatibility\WooFunnels\WooFunnels ;
 use  Lpac\Models\Location_Details ;
 use  Lpac\Models\Migrations ;
 use  Lpac\Controllers\API\Order as API_Order ;
@@ -160,6 +159,18 @@ class Main
         $controller_map_visibility = new Map_Visibility_Controller();
         $api_orders = new API_Order();
         $migrations = new Migrations();
+        $this->loader->add_action(
+            'admin_menu',
+            $this,
+            'create_admin_menu',
+            10
+        );
+        $this->loader->add_action(
+            'admin_menu',
+            $this,
+            'create_submenu',
+            9
+        );
         /**
          * Plugin settings migrations
          */
@@ -280,34 +291,6 @@ class Main
         $checkout_page_map_location = get_option( 'lpac_checkout_map_orientation', 'woocommerce_before_checkout_billing_form' );
         $checkout_page_map_location = apply_filters( 'lpac_checkout_map_orientation', $checkout_page_map_location );
         $this->loader->add_action( $checkout_page_map_location, $plugin_public_display, 'output_map_on_checkout_page' );
-        /*
-         * WooFunnels compatibility
-         */
-        
-        if ( class_exists( 'WFFN_Core' ) ) {
-            $woofunnels_compatibility = new WooFunnels();
-            $this->loader->add_action( 'after_setup_theme', $woofunnels_compatibility, 'create_lpac_fields' );
-            $this->loader->add_filter(
-                'wfacp_get_checkout_fields',
-                $woofunnels_compatibility,
-                'add_lpac_checkout_fields',
-                8
-            );
-            $this->loader->add_filter(
-                'wfacp_get_fieldsets',
-                $woofunnels_compatibility,
-                'add_lpac_checkout_fields_to_fieldsets',
-                7
-            );
-            // Remove map from default position and set it to above the customer information fields.
-            
-            if ( $checkout_page_map_location !== 'woocommerce_checkout_before_customer_details' ) {
-                remove_action( $checkout_page_map_location, 'output_map_on_checkout_page' );
-                $this->loader->add_action( 'woocommerce_checkout_before_customer_details', $plugin_public_display, 'output_map_on_checkout_page' );
-            }
-        
-        }
-        
         /*
          * Translated alert strings for checkout page.
          */
@@ -479,6 +462,65 @@ class Main
     public function create_shortcodes() : void
     {
         new Shortcodes();
+    }
+    
+    /**
+     * Create our menu item.
+     *
+     * @return void
+     * @since 1.6.12
+     */
+    public function create_admin_menu() : void
+    {
+        $icon = file_get_contents( LPAC_PLUGIN_ASSETS_DIR . 'img/menu-icon.svg' );
+        $icon = 'data:image/svg+xml;base64,' . base64_encode( $icon );
+        add_menu_page(
+            __( 'Location Picker at Checkout', 'map-location-picker-at-checkout-for-woocommerce' ),
+            __( 'Location Picker at Checkout', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'manage_options',
+            'lpac-menu',
+            array( $this, 'menu_item_html' ),
+            $icon,
+            '57.10'
+        );
+        // If this is added here then we will have a blank menu item where we can maybe add some announcements or something.
+        // add_submenu_page(
+        // 	'lpac-menu',
+        // 	__( 'Settings' ),
+        // 	__( 'Settings' ),
+        // 	'manage_options',
+        // 	'admin.php?page=wc-settings&tab=lpac_settings',
+        // );
+    }
+    
+    /**
+     * Create custom submenu items for toplevel menu.
+     *
+     * @return void
+     * @since 1.6.12
+     */
+    public function create_submenu() : void
+    {
+        add_submenu_page(
+            'lpac-menu',
+            __( 'Settings' ),
+            __( 'Settings' ),
+            'manage_options',
+            'admin.php?page=wc-settings&tab=lpac_settings'
+        );
+    }
+    
+    /**
+     * Html for menu item landing page.
+     *
+     * Not actually outputting anything because we're redirecting the parent page.
+     *
+     * @return string
+     * @since 1.6.12
+     */
+    public function menu_item_html() : string
+    {
+        return '';
     }
 
 }

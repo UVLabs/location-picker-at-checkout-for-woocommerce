@@ -555,6 +555,13 @@ HTML;
         );
         $dashicon = ( lpac_fs()->is_not_paying() ? "<span class='dashicons-before dashicons-lock'></span>" : '' );
         $lpac_settings[] = array(
+            'name'      => __( 'Note', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'        => 'lpac_cost_by_store_location_delivery_prices_row_id',
+            'text'      => __( 'Creating store locations is optional if you only have one store location.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'type'      => 'info_text',
+            'is_option' => false,
+        );
+        $lpac_settings[] = array(
             'name'                   => __( 'Store Locations', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc'                   => sprintf(
             __( 'Create your different store locations. A "store" in this context simply means the locations where you do business. Separate latitude and longitude coordinates with a comma. You can use a website like %1$slatlong.net%2$s to get the GPS coordinates for an address. %3$s', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -1809,8 +1816,8 @@ HTML;
         if ( class_exists( 'FluidCheckout' ) ) {
             $locations = array(
                 ''                                             => __( 'Select', 'map-location-picker-at-checkout-for-woocommerce' ),
-                'woocommerce_checkout_before_customer_details' => __( 'Checkout Form - Top (Fluid Checkout)', 'map-location-picker-at-checkout-for-woocommerce' ),
-                'fc_checkout_before_step_shipping_fields'      => __( 'Shipping Address Area - Top (Fluid Checkout)', 'map-location-picker-at-checkout-for-woocommerce' ),
+                'woocommerce_checkout_before_customer_details' => __( 'Checkout Form - Top', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (Fluid Checkout)',
+                'fc_checkout_before_step_shipping_fields'      => __( 'Shipping Address Area - Top', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (Fluid Checkout)',
             );
             $current_set_location = get_option( 'lpac_checkout_map_orientation', '' );
             if ( !array_key_exists( $current_set_location, $locations ) ) {
@@ -1819,13 +1826,17 @@ HTML;
         }
         
         /*
-         * WooFunnels compatibility
+         * FunnelKit compatibility
          */
         
-        if ( class_exists( 'WFFN_Core' ) ) {
+        if ( class_exists( 'WFFN_Core', false ) || class_exists( 'WFACP_core', false ) ) {
             $locations = array(
                 ''                                             => __( 'Select', 'map-location-picker-at-checkout-for-woocommerce' ),
-                'woocommerce_checkout_before_customer_details' => __( 'Checkout Form - Top (WooFunnels)', 'map-location-picker-at-checkout-for-woocommerce' ),
+                'woocommerce_checkout_before_customer_details' => __( 'Checkout Form - Top', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (FunnelKit)',
+                'wfacp_divider_shipping'                       => __( 'Shipping Address Area - Top', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (FunnelKit)',
+                'wfacp_divider_shipping_end'                   => __( 'Shipping Address Area - Bottom', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (FunnelKit)',
+                'wfacp_divider_billing'                        => __( 'Billing Address Area - Top', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (FunnelKit)',
+                'wfacp_divider_billing_end'                    => __( 'Billing Address Area - Bottom', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (FunnelKit)',
             );
             $current_set_location = get_option( 'lpac_checkout_map_orientation', '' );
             if ( !array_key_exists( $current_set_location, $locations ) ) {
@@ -1837,8 +1848,8 @@ HTML;
         if ( defined( 'CFW_NAME' ) ) {
             $locations = array(
                 ''                                     => __( 'Select', 'map-location-picker-at-checkout-for-woocommerce' ),
-                'cfw_start_shipping_address_container' => __( 'Shipping Address Area - Top (CheckoutWC)', 'map-location-picker-at-checkout-for-woocommerce' ),
-                'cfw_end_shipping_address_container'   => __( 'Shipping Address Area - Bottom (CheckoutWC)', 'map-location-picker-at-checkout-for-woocommerce' ),
+                'cfw_start_shipping_address_container' => __( 'Shipping Address Area - Top', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (CheckoutWC)',
+                'cfw_end_shipping_address_container'   => __( 'Shipping Address Area - Bottom', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (CheckoutWC)',
             );
             $current_set_location = get_option( 'lpac_checkout_map_orientation', '' );
             if ( !array_key_exists( $current_set_location, $locations ) ) {

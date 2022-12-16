@@ -8,6 +8,11 @@
   /* width: 100%; */
 }
 
+/* Fixes issue with map pin sometimes being white boxes */
+.lpac-map img {
+  background: none !important;
+}
+
 #lpac-map-container {
   margin-top: 10px;
 }

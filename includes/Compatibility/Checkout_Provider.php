@@ -29,13 +29,15 @@ class Checkout_Provider {
 
 		$provider = 'wc';
 
-		if ( class_exists( 'WFFN_Core', false ) ) {
-			$settings               = get_option( '_wfacp_global_settings', array() );
-			$enable_custom_checkout = $settings['override_checkout_page_id'] ?? '';
-			 // When the option is turned on it sets the custom checkout ID, when it's not it sets it to 0
-			if ( ! empty( $enable_custom_checkout ) ) {
-				$provider = 'woofunnels';
-			}
+		if ( class_exists( 'WFFN_Core', false ) || class_exists( 'WFACP_core', false ) ) {
+			// We need a better way to know when the checkout is actually overridden.
+			// $settings               = get_option( '_wfacp_global_settings', array() );
+			// $enable_custom_checkout = $settings['override_checkout_page_id'] ?? '';
+			//  // When the option is turned on it sets the custom checkout ID, when it's not it sets it to 0
+			// if ( ! empty( $enable_custom_checkout ) ) {
+			// 	$provider = 'funnelkit';
+			// }
+			$provider = 'funnelkit';
 		}
 
 		if ( class_exists( 'FluidCheckout', false ) ) {
