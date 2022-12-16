@@ -35,9 +35,13 @@ class Emails_Controller {
 	 * @since    1.1.0
 	 * @return void
 	 */
-	public function add_delivery_location_link_to_email( object $order, bool $sent_to_admin, bool $plain_text, object $email ) {
+	public function add_delivery_location_link_to_email( object $order, $sent_to_admin, $plain_text, $email ) : void {
 
 		$allowed_emails = get_option( 'lpac_email_delivery_map_emails', array() );
+
+		if ( ! is_object( $email ) ) {
+			return;
+		}
 
 		// If the current email ID is not in our list of allowed emails then bail.
 		if ( ! in_array( $email->id, $allowed_emails ) ) {
@@ -202,7 +206,7 @@ HTML;
 	 * @since 1.6.2
 	 * @return void
 	 */
-	public function add_store_location_to_email( object $order, bool $sent_to_admin, bool $plain_text, object $email ): void {
+	public function add_store_location_to_email( object $order, $sent_to_admin, $plain_text, $email ): void {
 
 		$show_in_emails = get_option( 'lpac_show_selected_store_in_emails', 'yes' );
 

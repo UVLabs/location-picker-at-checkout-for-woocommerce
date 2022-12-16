@@ -11,7 +11,7 @@
  * Plugin Name:       Location Picker at Checkout For WooCommerce
  * Plugin URI:        https://lpacwp.com
  * Description:       Allow customers to choose their shipping or pickup location using a map at checkout.
- * Version:           1.6.11-lite
+ * Version:           1.6.12-lite
  * Requires at least: 5.7
  * Author:            Uriahs Victor
  * Author URI:        https://uriahsvictor.com
@@ -20,7 +20,7 @@
  * Text Domain:       map-location-picker-at-checkout-for-woocommerce
  * Domain Path:       /languages
  * WC requires at least: 3.0
- * WC tested up to: 7.1
+ * WC tested up to: 7.2
  * Requires PHP: 7.4
  */
 // If this file is called directly, abort.
@@ -28,7 +28,7 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 if ( !defined( 'LPAC_VERSION' ) ) {
-    define( 'LPAC_VERSION', '1.6.11' );
+    define( 'LPAC_VERSION', '1.6.12' );
 }
 /**
  * The code that runs during plugin activation.
@@ -107,18 +107,20 @@ if ( !function_exists( 'lpac_fs' ) ) {
             // Include Freemius SDK.
             require_once dirname( __FILE__ ) . '/vendor/freemius/wordpress-sdk/start.php';
             $lpac_fs = fs_dynamic_init( array(
-                'id'             => '8507',
-                'slug'           => 'map-location-picker-at-checkout-for-woocommerce',
-                'type'           => 'plugin',
-                'public_key'     => 'pk_da07de47a2bdd9391af9020cc646d',
-                'is_premium'     => false,
-                'premium_suffix' => 'PRO',
-                'has_addons'     => false,
-                'has_paid_plans' => true,
-                'menu'           => array(
+                'id'              => '8507',
+                'slug'            => 'map-location-picker-at-checkout-for-woocommerce',
+                'type'            => 'plugin',
+                'public_key'      => 'pk_da07de47a2bdd9391af9020cc646d',
+                'is_premium'      => false,
+                'premium_suffix'  => 'PRO',
+                'has_addons'      => false,
+                'has_paid_plans'  => true,
+                'has_affiliation' => 'selected',
+                'menu'            => array(
+                'slug'       => 'lpac-menu',
                 'first-path' => ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ? 'admin.php?page=wc-settings&tab=lpac_settings' : '' ),
             ),
-                'is_live'        => true,
+                'is_live'         => true,
             ) );
         }
         

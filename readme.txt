@@ -3,7 +3,7 @@ Contributors: uriahs-victor
 Donate link: https://soaringleads.com
 Tags: woocommerce, location picker, checkout map, geolocation, google map, map, delivery map
 Requires at least: 5.5
-Requires PHP: 7.3
+Requires PHP: 7.4
 Tested up to: 6.1
 Stable tag: 1.6.11
 License: GPLv2 or later
@@ -139,7 +139,7 @@ Have a feature in mind? Feel free to submit it on the support forum.
 
 ### LPAC has support for the following custom checkout page plugins:
 
-- WooFunnels Funnel Builder Plugin for WordPress
+- Funnel Builder for WordPress by FunnelKit
 - FunnelKit (AeroCheckout)
 - Fluid Checkout for WooCommerce
 - Online Ordering System For Restaurants & Local Retail by Orderable
@@ -191,7 +191,7 @@ Ensure that you have setup the plugin with your API key by going to WordPress Da
 
 = Nothing happens when I click on the map =
 
-These sorts of issues are usually due to a JavaScript issue on the website. Check your [browser console](https://balsamiq.com/support/faqs/browserconsole/#apple-safari) for any errors that might point to the cause. Feel free to post those errors in the support forum and include a full screenshot of your browser console.
+These sorts of issues are usually due to a JavaScript issue on the website. Check your [browser console](https://balsamiq.com/support/faqs/browserconsole/) for any errors that might point to the cause. Feel free to post those errors in the support forum and include a full screenshot of your browser console.
 
 = Map says "For development purposes only" =
 
@@ -230,6 +230,14 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 1.6.12 =
+* [Fix] Map marker would sometimes appear as a white box on some websites.
+* [Improvement] Add "Location" label on WooCommerce Thank You and Past Order view pages.
+* [Improvement] Add Location Picker at Checkout Menu item.
+* [Compatibility] Improved compatibility with FunnelKit (previously WooFunnels).
+* [Dev] Tested on WC 7.2.
+* [Dev] Update Freemius SDK.
 
 = 1.6.11 =
 * [Dev] Update Freemius SDK.
