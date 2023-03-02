@@ -1,15 +1,15 @@
 <?php
 
 /**
-* Handles Lpac email related logic.
-*
-* Author:          Uriahs Victor
-* Created on:      03/10/2021 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.3.4
-* @package Lpac
-*/
+ * Handles Lpac email related logic.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      03/10/2021 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.3.4
+ * @package Lpac
+ */
 
 namespace Lpac\Controllers;
 
@@ -18,19 +18,19 @@ use Lpac\Helpers\Functions;
 use Lpac\Traits\Upload_Folders;
 
 /**
-* Class emails.
-*
-* Adds map location details to customer and admin emails.
-*
-*/
+ * Class emails.
+ *
+ * Adds map location details to customer and admin emails.
+ */
 class Emails_Controller {
 	use Upload_Folders;
 
 	/**
 	 * Outputs a Button or QR Code inside order emails.
+	 *
 	 * @param object $order
-	 * @param bool $sent_to_admin
-	 * @param bool $plain_text
+	 * @param bool   $sent_to_admin
+	 * @param bool   $plain_text
 	 * @param object $email
 	 * @since    1.1.0
 	 * @return void
@@ -53,7 +53,7 @@ class Emails_Controller {
 		$longitude = get_post_meta( $order->get_id(), 'lpac_longitude', true ) ?: get_post_meta( $order->get_id(), '_lpac_longitude', true );
 
 		// If we have no results return.
-		if ( empty( $latitude ) or empty( $longitude ) ) {
+		if ( empty( $latitude ) || empty( $longitude ) ) {
 			return;
 		}
 
@@ -105,7 +105,7 @@ HTML;
 	 * Create map location QR Code link in email.
 	 *
 	 * @param string $link The link to google maps.
-	 * @param int $order_id The current order id.
+	 * @param int    $order_id The current order id.
 	 * @since    1.1.0
 	 */
 	private function create_delivery_location_link_qrcode( $link, $order_id ) {
@@ -122,7 +122,7 @@ HTML;
 		/*
 		* Generate and save QR Code
 		*/
-		( new QR_Code_Generator )->lpac_generate_qr_code( $options, $order_id );
+		( new QR_Code_Generator() )->lpac_generate_qr_code( $options, $order_id );
 
 		/*
 		* https://example.com/wp-content/uploads/lpac/qr-codes/order_id.jpg
@@ -200,8 +200,8 @@ HTML;
 	 * Adds store location to order email
 	 *
 	 * @param object $order
-	 * @param bool $sent_to_admin
-	 * @param bool $plain_text
+	 * @param bool   $sent_to_admin
+	 * @param bool   $plain_text
 	 * @param object $email
 	 * @since 1.6.2
 	 * @return void

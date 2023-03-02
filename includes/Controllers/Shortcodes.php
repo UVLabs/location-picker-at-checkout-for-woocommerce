@@ -1,16 +1,16 @@
 <?php
 /**
-* Handles shortcodes related logic .
-*
-* description.
-*
-* Author:          Uriahs Victor
-* Created on:      09/09/2022 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.6.4
-* @package Controllers
-*/
+ * Handles shortcodes related logic .
+ *
+ * description.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      09/09/2022 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.6.4
+ * @package Controllers
+ */
 namespace Lpac\Controllers;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,13 +18,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
-* Class Shortcodes.
-*
-*/
+ * Class Shortcodes.
+ */
 class Shortcodes {
 
 	/**
 	 * Save the store location ID that the customer selected from the drop down.
+	 *
 	 * @return void
 	 */
 	public function save_selected_store_location() : void {

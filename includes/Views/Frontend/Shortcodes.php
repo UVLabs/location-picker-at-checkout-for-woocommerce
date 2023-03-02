@@ -1,16 +1,16 @@
 <?php
 /**
-* Create plugin shortcodes.
-*
-* Author:          Uriahs Victor
-* Created on:      09/09/2022 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.6.4
-* @package Views
-*/
+ * Create plugin shortcodes.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      09/09/2022 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.6.4
+ * @package Views
+ */
 
-namespace Lpac\Views;
+namespace Lpac\Views\Frontend;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -19,21 +19,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 use Lpac\Helpers\Functions;
 
 /**
-* Class Shortcodes.
-*
-*/
+ * Shortcodes Class.
+ *
+ * Responsible for creating frontend-facing shortcodes for Free plugin.
+ *
+ * @package Lpac\Views
+ */
 class Shortcodes {
 
 	/**
 	 * Class constructor.
+	 *
 	 * @return void
 	 */
 	public function __construct() {
-		 add_shortcode( 'lpac-store-selector', array( $this, 'store_location_shortcode' ) );
+		 add_shortcode( 'kikote_store_selector', array( $this, 'store_location_shortcode' ) );
 	}
 
 	/**
 	 * Store Location shortcode markup.
+	 *
 	 * @since 1.6.4
 	 * @return string
 	 */

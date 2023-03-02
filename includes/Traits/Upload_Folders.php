@@ -16,7 +16,6 @@ namespace Lpac\Traits;
 * Class Upload_Folders.
 *
 * Creates upload folders.
-*
 */
 trait Upload_Folders {
 
@@ -59,7 +58,7 @@ trait Upload_Folders {
 	 * Get the resource link to a file.
 	 *
 	 * @param string $folder_name
-	 * @param int $order_id
+	 * @param int    $order_id
 	 * @param string $ext
 	 * @return string The upload URL
 	 */

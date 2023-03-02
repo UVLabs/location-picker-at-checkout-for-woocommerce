@@ -12,6 +12,8 @@ node_modules
 .distignore-github-lite
 .gitignore
 .husky
+.github
+.wordpress-org
 .prettierignore
 .prettierrc.json
 todo.txt
@@ -28,3 +30,4 @@ assets/pro/public/js/maps/*.js
 assets/pro/admin/js/*.js
 assets/public/js/maps/build/*.map
 assets/pro/public/js/maps/build/*.map
+**/js-modules/

@@ -4,12 +4,25 @@
  * mapOptions, checkoutProvider, lpacLastOrder, storeLocations, lpac_pro_js (available when PRO version active)
  */
 /* Get our global map variables from base-map.js */
+
+import { fillAllAddressFields } from "../../../js-modules/checkout-page/fill-fields.js";
+import { setupPlacesAutoComplete } from "../../../js-modules/checkout-page/places-autocomplete.js";
+import {
+  bootstrapMapFunctionality,
+  bootstrapMapFunctionalityJQuery,
+  fillLatLong,
+  geocodeCoordinates,
+  listenToMapClicks,
+  listenToMapDrag,
+  setupMap,
+} from "../../../js-modules/set-map.js";
+import { plotStoreLocations } from "../../../js-modules/utils/store-locations.js";
+
 const map = window.lpac_map;
 map.setMapTypeId(mapOptions.lpac_checkout_page_map_default_type);
 
 const marker = window.lpac_marker;
 const infowindow = window.lpac_infowindow;
-const geocoder = new google.maps.Geocoder();
 
 const find_location_btn = document.querySelector("#lpac-find-location-btn");
 const places_autocomplete_used = document.querySelector(
@@ -17,706 +30,28 @@ const places_autocomplete_used = document.querySelector(
 );
 
 if (typeof find_location_btn !== "undefined" && find_location_btn !== null) {
-  find_location_btn.addEventListener("click", () => {
-    lpac_bootstrap_map_functionality(geocoder, map, infowindow);
+  find_location_btn.addEventListener("click", async () => {
+    const latLng = await bootstrapMapFunctionality(mapOptions);
+
+    if (latLng.lat !== "" && latLng.lng !== "") {
+      const geocodeResults = await geocodeCoordinates(latLng, map);
+      const mapData = {
+        map,
+        mapOptions,
+        marker,
+        latLng,
+        infowindow,
+        geocodeResults,
+      };
+      setupMap(mapData);
+      fillAllAddressFields(geocodeResults);
+    }
+
+    fillLatLong(latLng, mapOptions);
+    places_autocomplete_used.value = 0;
   });
 } else {
   console.log("LPAC: Detect location button not present, skipping...");
-}
-
-/**
- * Removes the plus code from an address if the option is turned on in the plugin's settings.
- */
-function lpacRemovePlusCode(address) {
-  if (!mapOptions.lpac_remove_address_plus_code) {
-    return address;
-  }
-
-  const firstBlock = address.split(" ", 1);
-
-  if (firstBlock[0].includes("+")) {
-    address = address.replace(firstBlock[0], "").trim();
-  }
-
-  return address;
-}
-
-/**
- * Get Lat and Long cords from browser navigator.
- */
-function get_navigator_coordinates() {
-  return new Promise(function (resolve, reject) {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(resolve, reject);
-    } else {
-      // TODO add input fields so users can change this text
-      alert(lpacTranslatedJsStrings.geolocation_not_supported);
-    }
-  }).catch(function (error) {
-    console.log("Location Picker At Checkout Plugin: " + error.message);
-
-    if (error.code === 1) {
-      // TODO add input fields so users can change this text
-      alert(lpacTranslatedJsStrings.manually_select_location);
-      return;
-    }
-
-    alert(error.message);
-  });
-}
-
-/**
- *  Bootstrap the functionality of the map and marker.
- */
-async function lpac_bootstrap_map_functionality(geocoder, map, infowindow) {
-  const position = await get_navigator_coordinates();
-
-  if (position) {
-    var latitude = position.coords.latitude;
-    var longitude = position.coords.longitude;
-  } else {
-    console.log(
-      "Location Picker At Checkout Plugin: Position object is empty. Navigator might be disabled or this site might be detected as insecure."
-    );
-    var latitude = mapOptions.lpac_map_default_latitude;
-    var longitude = mapOptions.lpac_map_default_longitude;
-  }
-
-  const latlng = {
-    lat: parseFloat(latitude),
-    lng: parseFloat(longitude),
-  };
-
-  /**
-   * We're setting this to '' so that we can force the user to make use of the map if the option is enabled.
-   * So that if we do not receive a location, the user can enter one manually.
-   */
-  const latlngEmpty = {
-    lat: "",
-    lng: "",
-  };
-
-  /**
-   * Setup our initial map marker and listening events.
-   */
-  lpac_setup_initial_map_marker_position(latlng);
-
-  /**
-   * Fill in latitude and longitude fields.
-   */
-  if (position) {
-    lpac_fill_in_latlng(latlng);
-  } else {
-    lpac_fill_in_latlng(latlngEmpty);
-  }
-
-  places_autocomplete_used.value = 0;
-}
-
-/**
- * Function getting address details from latitude and longitudes.
- */
-async function lpac_geocode_coordinates(latlng) {
-  var address_array = "";
-
-  await geocoder
-    .geocode({ location: latlng }, (results, status) => {
-      console.log(results);
-      if (status === "OK") {
-        if (results[0]) {
-          address_array = results;
-        } else {
-          window.alert(lpacTranslatedJsStrings.no_results_found);
-          return;
-        }
-      } else {
-        console.log("Geocoder failed due to: " + status);
-        return;
-      }
-    })
-    .then(function (resolved) {
-      map.panTo(latlng);
-    })
-    .catch(function (error) {
-      console.log(error);
-      // TODO Add error messages below map
-
-      if (error.code === "OVER_QUERY_LIMIT") {
-        alert(lpacTranslatedJsStrings.moving_too_quickly);
-        location.reload();
-      }
-
-      if (error.code === "UNKNOWN_ERROR") {
-        alert(lpacTranslatedJsStrings.generic_error);
-        location.reload();
-      }
-    });
-
-  return address_array;
-}
-
-/**
- * Setup the intial marker location and listening events.
- */
-async function lpac_setup_initial_map_marker_position(latlng) {
-  const results = await lpac_geocode_coordinates(latlng);
-
-  if (!results[0]) {
-    return;
-  }
-
-  map.setZoom(16);
-  map.setCenter(latlng);
-
-  marker.setPosition(latlng);
-
-  let detected_address = results[0].formatted_address;
-
-  detected_address = lpacRemovePlusCode(detected_address);
-
-  infowindow.setContent(detected_address);
-  infowindow.open(map, marker);
-
-  lpac_fill_in_address_fields(results);
-  lpac_marker_listen_to_drag();
-  lpac_map_listen_to_clicks();
-}
-
-/**
- *  Handle clicking of map so marker, fields and coordinates inputs get filled in.
- */
-function lpac_map_listen_to_clicks() {
-  /**
-   * Clear previous event listeners of this type before adding this new one.
-   *
-   * This is the only function where we're defining this event listener for the map, so it's fine to remove it this way.
-   * https://developers.google.com/maps/documentation/javascript/events#removing
-   */
-  google.maps.event.clearListeners(map, "click");
-
-  map.addListener("click", async function (event) {
-    const results = await lpac_geocode_coordinates(event.latLng);
-
-    if (!results[0]) {
-      console.log(
-        "LPAC: Results not as expected. See lpac_map_listen_to_clicks()"
-      );
-      return;
-    }
-
-    const lat = event.latLng.lat();
-    const lng = event.latLng.lng();
-
-    const latLng = {
-      lat: parseFloat(lat),
-      lng: parseFloat(lng),
-    };
-
-    lpac_fill_in_address_fields(results);
-    lpac_fill_in_latlng(latLng);
-
-    marker.setPosition(event.latLng);
-
-    let detected_address = results[0].formatted_address;
-
-    detected_address = lpacRemovePlusCode(detected_address);
-
-    infowindow.setContent(detected_address);
-    infowindow.open(map, marker);
-
-    places_autocomplete_used.value = 0;
-  });
-}
-window.lpac_map_listen_to_clicks = lpac_map_listen_to_clicks;
-
-/**
- *  Handle dragging of marker so fields and coordinates inputs get filled in.
- */
-function lpac_marker_listen_to_drag() {
-  /**
-   * Clear previous event listeners of this type before adding this new one.
-   *
-   * This is the only function where we're defining this event listener for the marker, so it's fine to remove it this way.
-   * https://developers.google.com/maps/documentation/javascript/events#removing
-   */
-  google.maps.event.clearListeners(marker, "dragend");
-
-  google.maps.event.addListener(marker, "dragend", async function (event) {
-    const moved_to_lat = event.latLng.lat();
-    const moved_to_lng = event.latLng.lng();
-
-    const latlng = {
-      lat: parseFloat(moved_to_lat),
-      lng: parseFloat(moved_to_lng),
-    };
-
-    let results = await lpac_geocode_coordinates(latlng);
-
-    if (!results[0]) {
-      console.log("Results not as expected. See lpac_marker_listen_to_drag()");
-      return;
-    }
-
-    let moved_to_address = results[0].formatted_address;
-
-    moved_to_address = lpacRemovePlusCode(moved_to_address);
-
-    infowindow.setContent(moved_to_address);
-
-    lpac_fill_in_address_fields(results);
-    lpac_fill_in_latlng(latlng);
-
-    places_autocomplete_used.value = 0;
-  });
-}
-window.lpac_marker_listen_to_drag = lpac_marker_listen_to_drag;
-
-/**
- * Function responsible filling in the latitude and longitude fields.
- */
-function lpac_fill_in_latlng(latlng) {
-  if (!latlng.lat || !latlng.lng) {
-    console.log(
-      "Location Picker At Checkout Plugin: Empty latlng. See lpac_fill_in_latlng()"
-    );
-  }
-
-  let latitude = document.querySelector("#lpac_latitude");
-  let longitude = document.querySelector("#lpac_longitude");
-
-  if (typeof latitude === "undefined" || latitude === null) {
-    console.log(
-      "LPAC: Can't find latitude and longitude input areas. Can't insert location coordinates."
-    );
-    return;
-  }
-
-  if (typeof longitude === "undefined" || longitude === null) {
-    console.log(
-      "LPAC: Can't find latitude and longitude input areas. Can't insert location coordinates."
-    );
-    return;
-  }
-
-  latitude.value = latlng.lat;
-  longitude.value = latlng.lng;
-
-  latitude.dispatchEvent(new Event("input", { bubbles: false }));
-  longitude.dispatchEvent(new Event("input", { bubbles: false }));
-
-  if (mapOptions.fill_in_fields === false) {
-    /**
-     * Ensure that this event is fired and the checkout is updated.
-     *
-     * If the filter(lpac_fill_checkout_fields) to not fill in address fields is set to true, we need to call this event here so that the cart can update and
-     * operations such as the cost by distance feature that require the new Lat and Long can be updated accordingly to show the new price.
-     */
-    if (jQuery) {
-      jQuery(document.body).trigger("update_checkout");
-    }
-  }
-}
-
-/**
- * Function responsible for ochestrating the address filling methods.
- */
-function lpac_fill_in_address_fields(results) {
-  // Filter to allow users to prevent filling of fields by the map.
-  if (mapOptions.fill_in_fields === false) {
-    return;
-  }
-
-  /** Fluid checkout does things differently **/
-  if (checkoutProvider && checkoutProvider === "fluidcheckout") {
-    lpac_fill_in_shipping_fields(results);
-
-    const billingSameAsShippingCheckbox = document.querySelector(
-      "#billing_same_as_shipping"
-    );
-
-    if (
-      billingSameAsShippingCheckbox &&
-      billingSameAsShippingCheckbox.checked === true
-    ) {
-      lpac_fill_in_billing_fields(results);
-    }
-
-    return;
-  }
-  /** / */
-
-  const shipToDifferentAddressCheckbox = document.querySelector(
-    "#ship-to-different-address-checkbox"
-  );
-
-  if (
-    shipToDifferentAddressCheckbox &&
-    shipToDifferentAddressCheckbox.checked === true
-  ) {
-    lpac_fill_in_shipping_fields(results);
-  } else {
-    lpac_fill_in_billing_fields(results);
-  }
-  /**
-   * Ensure that this event is fired and the checkout is updated.
-   *
-   * In some themes the event does not automatically fire after LPAC updates the address. So here we're ensuring that it does.
-   */
-  if (jQuery) {
-    jQuery(document.body).trigger("update_checkout");
-  }
-}
-
-/**
- * Fill in all shipping fields.
- *
- * @param {array} results
- */
-function lpac_fill_in_shipping_fields(results) {
-  lpac_fill_in_shipping_country_region(results);
-  lpac_fill_in_shipping_full_address(results);
-  lpac_fill_in_shipping_town_city(results);
-  lpac_fill_in_shipping_state_county(results);
-  lpac_fill_in_shipping_zipcode(results);
-}
-
-/**
- * Fill in all Shipping fields for Places autocomplete feature.
- * We are not filling in the full address field because it is pulled from the Places Autocomplete dropdown
- *
- * @param {array} results
- */
-function lpacFillPlacesAutocompleteShippingFields(results) {
-  lpac_fill_in_shipping_country_region(results);
-  lpac_fill_in_shipping_town_city(results);
-  lpac_fill_in_shipping_state_county(results);
-  lpac_fill_in_shipping_zipcode(results);
-  /**
-   * Ensure that this event is fired and the checkout is updated.
-   *
-   * In some themes the event does not automatically fire after LPAC updates the address. So here we're ensuring that it does.
-   */
-  if (jQuery) {
-    jQuery(document.body).trigger("update_checkout");
-  }
-}
-
-/**
- * Fill in all billing fields.
- *
- * @param {array} results
- */
-function lpac_fill_in_billing_fields(results) {
-  lpac_fill_in_billing_country_region(results);
-  lpac_fill_in_billing_full_address(results);
-  lpac_fill_in_billing_town_city(results);
-  lpac_fill_in_billing_state_county(results);
-  lpac_fill_in_billing_zipcode(results);
-}
-
-/**
- * Fill in all billing fields for Places autocomplete feature.
- * We are not filling in the full address field because it is pulled from the Places Autocomplete dropdown
- *
- * @param {array} results
- */
-function lpacFillPlacesAutocompleteBillingFields(results) {
-  lpac_fill_in_billing_country_region(results);
-  lpac_fill_in_billing_town_city(results);
-  lpac_fill_in_billing_state_county(results);
-  lpac_fill_in_billing_zipcode(results);
-  /**
-   * Ensure that this event is fired and the checkout is updated.
-   *
-   * In some themes the event does not automatically fire after LPAC updates the address. So here we're ensuring that it does.
-   */
-  if (jQuery) {
-    jQuery(document.body).trigger("update_checkout");
-  }
-}
-
-/*
- *  Get country from map.
- */
-function lpac_get_country(results) {
-  if (!results[0]) {
-    return;
-  }
-
-  var country = "";
-  const country_array = results[0].address_components.find(
-    (addr) => addr.types[0] === "country"
-  );
-
-  if (country_array) {
-    country = country_array.short_name;
-  }
-
-  return country;
-}
-
-/*
- *  Get full formatted address
- */
-function lpac_get_full_address(results) {
-  if (!results[0]) {
-    return;
-  }
-
-  let full_address = results[0].formatted_address;
-
-  full_address = lpacRemovePlusCode(full_address);
-
-  return full_address;
-}
-
-/*
- *  Get Town/City
- */
-function lpac_get_town_city(results) {
-  if (!results[0]) {
-    return;
-  }
-
-  var town_city = "";
-  const town_city_array = results[0].address_components.find(
-    (addr) => addr.types[0] === "locality"
-  );
-  const town_city_array2 = results[0].address_components.find(
-    (addr) => addr.types[0] === "postal_town"
-  );
-
-  /*
-   * Locality "locality" is used because its most commonly available.
-   */
-  if (town_city_array) {
-    town_city = town_city_array.long_name;
-  }
-
-  /*
-   * But we override Locality with the more standard "postal_town" field if it exists.
-   */
-  if (town_city_array2) {
-    town_city = town_city_array2.long_name;
-  }
-
-  return town_city;
-}
-
-/*
- *  Get State/County
- */
-function lpac_get_state_county(results) {
-  if (!results[0]) {
-    return;
-  }
-
-  let address_component = "";
-
-  for (let address_component of results[0].address_components) {
-    for (type of address_component.types) {
-      if (type === "administrative_area_level_1") {
-        return address_component;
-      }
-    }
-  }
-
-  return address_component;
-}
-
-/*
- *  Get State/County
- */
-function lpac_get_zip_code(results) {
-  if (!results[0]) {
-    return;
-  }
-
-  var zipcode = "";
-  const zipcode_array = results[0].address_components.find(
-    (addr) => addr.types[0] === "postal_code"
-  );
-
-  if (zipcode_array) {
-    zipcode = zipcode_array.short_name;
-  }
-
-  return zipcode;
-}
-
-/*
- *  Fill in shipping country field
- */
-function lpac_fill_in_shipping_country_region(results) {
-  const shipping_country = document.querySelector("#shipping_country");
-
-  if (typeof shipping_country === "undefined" || shipping_country === null) {
-    return;
-  }
-
-  shipping_country.value = lpac_get_country(results);
-
-  shipping_country.dispatchEvent(new Event("change", { bubbles: true })); // ensure Select2 sees the change
-}
-
-/*
- *  Fill in billing country field
- */
-function lpac_fill_in_billing_country_region(results) {
-  const billing_country = document.querySelector("#billing_country");
-
-  if (typeof billing_country === "undefined" || billing_country === null) {
-    return;
-  }
-
-  billing_country.value = lpac_get_country(results);
-  billing_country.dispatchEvent(new Event("change", { bubbles: true })); // ensure Select2 sees the change
-}
-
-/*
- *  Fill in shipping street address field
- */
-function lpac_fill_in_shipping_full_address(results) {
-  const full_shipping_address = document.querySelector("#shipping_address_1");
-
-  if (
-    typeof full_shipping_address === "undefined" ||
-    full_shipping_address === null
-  ) {
-    return;
-  }
-
-  full_shipping_address.value = lpac_get_full_address(results);
-}
-
-/*
- *  Fill in billing street address field
- */
-function lpac_fill_in_billing_full_address(results) {
-  const full_billing_address = document.querySelector("#billing_address_1");
-
-  if (
-    typeof full_billing_address === "undefined" ||
-    full_billing_address === null
-  ) {
-    return;
-  }
-
-  full_billing_address.value = lpac_get_full_address(results);
-}
-
-/*
- *  Fill in shipping Town/City field
- */
-function lpac_fill_in_shipping_town_city(results) {
-  const shipping_city = document.querySelector("#shipping_city");
-
-  if (typeof shipping_city === "undefined" || shipping_city === null) {
-    return;
-  }
-
-  shipping_city.value = lpac_get_town_city(results);
-}
-
-/*
- *  Fill in billing Town/City field
- */
-function lpac_fill_in_billing_town_city(results) {
-  const billing_city = document.querySelector("#billing_city");
-
-  if (typeof billing_city === "undefined" || billing_city === null) {
-    return;
-  }
-
-  billing_city.value = lpac_get_town_city(results);
-}
-
-/*
- *  Fill in shipping State/County field
- */
-function lpac_fill_in_shipping_state_county(results) {
-  /*
-   * If we have values in our lpac_get_state_county() function
-   */
-  if (lpac_get_state_county(results)) {
-    /*
-     * This field changes based on the country.
-     * For some countries WC shows a text input and others it shows a dropdown
-     * We need to get the field everytime or risk JS not being able to set it.
-     */
-    const shipping_state_field = document.querySelector("#shipping_state");
-
-    if (
-      typeof shipping_state_field === "undefined" ||
-      shipping_state_field === null
-    ) {
-      return;
-    }
-
-    if (shipping_state_field.classList.contains("select2-hidden-accessible")) {
-      shipping_state_field.value = lpac_get_state_county(results).short_name;
-
-      shipping_state_field.dispatchEvent(
-        new Event("change", { bubbles: true })
-      ); // ensure Select2 sees the change
-    } else {
-      shipping_state_field.value = lpac_get_state_county(results).long_name;
-    }
-  }
-}
-
-/*
- *  Fill in billing State/County field
- */
-function lpac_fill_in_billing_state_county(results) {
-  if (lpac_get_state_county(results)) {
-    /*
-     * This field changes based on the country.
-     * For some countries WC shows a text input and others it shows a dropdown
-     * We need to get the field everytime or risk JS not being able to set it.
-     */
-    const billing_state_field = document.querySelector("#billing_state");
-
-    if (
-      typeof billing_state_field === "undefined" ||
-      billing_state_field === null
-    ) {
-      return;
-    }
-
-    if (billing_state_field.classList.contains("select2-hidden-accessible")) {
-      billing_state_field.value = lpac_get_state_county(results).short_name;
-      billing_state_field.dispatchEvent(new Event("change", { bubbles: true })); // ensure Select2 sees the change
-    } else {
-      billing_state_field.value = lpac_get_state_county(results).long_name;
-    }
-  }
-}
-
-/*
- *  Fill in shipping Zipcode field
- */
-function lpac_fill_in_shipping_zipcode(results) {
-  const shipping_zipcode = document.querySelector("#shipping_postcode");
-
-  if (typeof shipping_zipcode === "undefined" || shipping_zipcode === null) {
-    return;
-  }
-
-  shipping_zipcode.value = lpac_get_zip_code(results);
-}
-
-/*
- *  Fill in billing Zipcode field
- */
-function lpac_fill_in_billing_zipcode(results) {
-  const billing_zipcode = document.querySelector("#billing_postcode");
-
-  if (typeof billing_zipcode === "undefined" || billing_zipcode === null) {
-    return;
-  }
-
-  billing_zipcode.value = lpac_get_zip_code(results);
 }
 
 /**
@@ -809,7 +144,7 @@ function lpacSetLastOrderLocationDetails() {
 
   const latitude = document.querySelector("#lpac_latitude");
   const longitude = document.querySelector("#lpac_longitude");
-  const places_autocomplete_field = document.querySelector(
+  const places_autocomplete_used = document.querySelector(
     "#lpac_places_autocomplete"
   );
 
@@ -828,10 +163,11 @@ function lpacSetLastOrderLocationDetails() {
   }
 
   // Set the checkout fields lat and long value
-  lpac_fill_in_latlng(latlng);
+
+  fillLatLong(latlng, mapOptions);
 
   // Set the last order value for the places autocomplete field
-  places_autocomplete_field.value = lpacLastOrder.used_places_autocomplete;
+  places_autocomplete_used.value = lpacLastOrder.used_places_autocomplete;
 }
 
 /**
@@ -884,6 +220,7 @@ function lpacSetLastOrderMarker() {
        * This can cause the map to pan to the info window of the last plotted region instead of the last order location.
        * So here we're making sure that plotting all regions is complete(if option is turned on) and then opening the last order details infowindow.
        */
+      // TODO, theres no need for this anymore since theres a setting that can just prevent the panning of infowindow.
       if (
         typeof lpac_pro_js !== "undefined" &&
         lpac_pro_js !== null &&
@@ -909,22 +246,21 @@ function lpacSetLastOrderMarker() {
 
     map.setZoom(16);
 
-    lpac_marker_listen_to_drag();
-    lpac_map_listen_to_clicks();
+    const mapData = {
+      map,
+      mapOptions,
+      marker,
+      infowindow,
+    };
+    listenToMapDrag(mapData);
+    listenToMapClicks(mapData);
   });
 }
 
 /**
- * Places Autocomplete feature.
- *
- * https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete
- *
- * @returns
+ * Add Places AutoComplete
  */
 function addPlacesAutoComplete() {
-  //TODO Update this method to remove the heavy logic for checking whether shipping to billing address or shipping address is checked.
-  // We can simply check if the option exists versus running all the logic to determine the shipping destination.
-  // See moveStoreSelector()
   if (typeof mapOptions === "undefined" || mapOptions === null) {
     console.log(
       "LPAC: mapOptions object not present. This shouldn't be happening here. Contact Support."
@@ -942,134 +278,16 @@ function addPlacesAutoComplete() {
     changeMapVisibility(false);
   }
 
-  const fields = mapOptions.lpac_places_autocomplete_fields;
+  // Create our map data that will be passed to setupPlacesAutoComplete() and further passed to setMap()
+  const mapData = {
+    map,
+    marker,
+    infowindow,
+    mapOptions,
+  };
 
-  fields.forEach((fieldID) => {
-    const field = document.querySelector("#" + fieldID);
-
-    /*
-     * If field doesn't exist bail.
-     * This might happen if user sets shipping destination to "Force shipping to the customer billing address" so the shipping fields wouldn't exist.
-     */
-    if (!field) {
-      return;
-    }
-
-    const options = {
-      fields: ["address_components", "formatted_address", "geometry"],
-      types: ["address"],
-    };
-
-    /*
-     * Add Places Autocomplete restrictions set in PRO plugin settings
-     * lpac_pro_js is in global scope
-     */
-    if (typeof lpac_pro_js !== "undefined" && lpac_pro_js !== null) {
-      if (lpac_pro_js.places_autocomplete_restrictions.length > 0) {
-        options.componentRestrictions = {
-          country: lpac_pro_js.places_autocomplete_restrictions,
-        };
-      }
-
-      options.types = lpac_pro_js.places_autocomplete_type;
-    }
-
-    const autoComplete = new google.maps.places.Autocomplete(field, options);
-
-    /* Bind the map's bounds (viewport) property to the autocomplete object,
-		so that the autocomplete requests use the current map bounds for the
-		bounds option in the request. */
-    autoComplete.bindTo("bounds", map);
-
-    autoComplete.addListener("place_changed", () => {
-      const results = [autoComplete.getPlace()];
-
-      const latlng = {
-        lat: parseFloat(results[0].geometry.location.lat()),
-        lng: parseFloat(results[0].geometry.location.lng()),
-      };
-
-      if (fieldID.includes("shipping")) {
-        if (mapOptions.lpac_places_fill_shipping_fields) {
-          lpacFillPlacesAutocompleteShippingFields(results);
-        }
-
-        lpac_fill_in_latlng(latlng);
-
-        map.setCenter(latlng);
-        marker.setPosition(latlng);
-        map.setZoom(16);
-        infowindow.setContent(results[0].formatted_address);
-        infowindow.open(map, marker);
-        places_autocomplete_used.value = 1;
-        // Add event listeners to map
-        lpac_marker_listen_to_drag();
-        lpac_map_listen_to_clicks();
-      } else {
-        if (mapOptions.lpac_places_fill_billing_fields) {
-          lpacFillPlacesAutocompleteBillingFields(results);
-        }
-
-        let shipToDifferentAddress = false;
-
-        const shipToDifferentAddressCheckbox = document.querySelector(
-          "#ship-to-different-address-checkbox"
-        );
-
-        if (
-          shipToDifferentAddressCheckbox &&
-          shipToDifferentAddressCheckbox.checked === true
-        ) {
-          shipToDifferentAddress = true;
-        }
-
-        /** Fluid checkout does things differently **/
-        if (checkoutProvider && checkoutProvider === "fluidcheckout") {
-          const billingSameAsShippingCheckbox = document.querySelector(
-            "#billing_same_as_shipping"
-          );
-
-          if (
-            billingSameAsShippingCheckbox &&
-            billingSameAsShippingCheckbox.checked === true
-          ) {
-            /**
-             * In Fluid Checkout (FC) this checkbox actually means that the customer billing address is the same as their shipping.
-             * By default in FC, shipping address is always present, so in essence, when "Billing TO: Same as shipping address" is unchecked, we should not be updating the map view when those billing fields are updated.
-             */
-            shipToDifferentAddress = true;
-          }
-        }
-        /** / */
-
-        /*
-         * When Shipping destination is set as "Force shipping to the customer billing address" or " Default to customer billing address" in WooCommerce->Shipping->Shipping Options
-         * We would want to adjust the map as needed.
-         *
-         * Also check the status of shipping to a different address checkbox. Based on it's value we'd want to decide whether to update the map view or not.
-         */
-        if (
-          (mapOptions.lpac_wc_shipping_destination_setting === "billing_only" ||
-            mapOptions.lpac_wc_shipping_destination_setting === "billing" ||
-            (fields.length === 1 && fields.includes("billing_address_1"))) &&
-          shipToDifferentAddress === false
-        ) {
-          lpac_fill_in_latlng(latlng);
-          map.setCenter(latlng);
-          marker.setPosition(latlng);
-          map.setZoom(16);
-          infowindow.setContent(results[0].formatted_address);
-          infowindow.open(map, marker);
-          places_autocomplete_used.value = 1;
-          // Add event listeners to map
-          lpac_marker_listen_to_drag();
-          lpac_map_listen_to_clicks();
-        }
-      }
-    });
-  });
+  setupPlacesAutoComplete(mapData);
 }
-addPlacesAutoComplete();
 
 /**
  * Detect when shipping methods are changed based on WC custom updated_checkout event.
@@ -1079,6 +297,14 @@ addPlacesAutoComplete();
   "use strict";
 
   $(document).ready(function () {
+    // Lets always call the update process on load to clear any stray pieces of pricing data as a caution.
+    if (jQuery) {
+      jQuery(document.body).trigger("update_checkout");
+    }
+
+    // Initialize Places autocomplete
+    addPlacesAutoComplete();
+
     // Prevents ajax call in lpacHideShowMap from overriding our lpac_places_autocomplete_hide_map option.
     if (!mapOptions.lpac_places_autocomplete_hide_map) {
       $(document.body).on("updated_checkout", lpacHideShowMap);
@@ -1100,7 +326,14 @@ addPlacesAutoComplete();
       mapOptions.lpac_auto_detect_location &&
       (typeof lpacLastOrder === "undefined" || lpacLastOrder === null)
     ) {
-      lpac_bootstrap_map_functionality(geocoder, map, infowindow);
+      const mapData = {
+        map,
+        mapOptions,
+        marker,
+        infowindow,
+      };
+      bootstrapMapFunctionalityJQuery(mapData);
+      places_autocomplete_used.value = 0;
     } else {
       lpacSetLastOrderMarker();
       lpacSetLastOrderForAutocompleteWithoutMap();
@@ -1306,44 +539,16 @@ addPlacesAutoComplete();
      * Set store locations markers on checkout map.
      */
     function lpacSetStoreLocationsMarkers() {
+      if (
+        typeof storeLocations === "undefined" ||
+        storeLocations === null ||
+        !storeLocations.length > 0
+      ) {
+        return;
+      }
+
       google.maps.event.addListenerOnce(map, "tilesloaded", function () {
-        if (
-          typeof storeLocations === "undefined" ||
-          storeLocations === null ||
-          !storeLocations.length > 0
-        ) {
-          return;
-        }
-
-        // Manipulate our store locations object to display the different locations and their labels
-        Object.keys(storeLocations).forEach((key) => {
-          const location = storeLocations[key];
-          const locationCordsArray = location.store_cords_text.split(",");
-          const latitude = locationCordsArray[0];
-          const longitude = locationCordsArray[1];
-
-          const latlng = {
-            lat: parseFloat(latitude),
-            lng: parseFloat(longitude),
-          };
-
-          const marker = new google.maps.Marker({
-            clickable: false,
-            icon:
-              typeof lpac_pro_js !== "undefined" && lpac_pro_js.is_pro
-                ? location.store_icon_text
-                : "", // show icon only in pro
-            position: latlng,
-            map: map,
-          });
-
-          const infoWindow = new google.maps.InfoWindow({
-            content: location.store_name_text,
-            disableAutoPan: true,
-          });
-
-          infoWindow.open(map, marker);
-        });
+        plotStoreLocations(map, storeLocations);
       });
     }
     lpacSetStoreLocationsMarkers();

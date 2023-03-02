@@ -12,6 +12,8 @@
  */
 namespace Lpac\Helpers;
 
+use Lpac\Models\Plugin_Settings\Store_Locations;
+
 class Functions {
 
 	/**
@@ -82,14 +84,14 @@ class Functions {
 	}
 
 	/**
-	* Normalize available shipping classes for use.
-	*
-	* Get the list of available shipping classes on the site and get them ready for use in the multiselect settings field of the plugin.
-	*
-	* @since    1.2.0
-	*
-	* @return array Array of available shipping classes.
-	*/
+	 * Normalize available shipping classes for use.
+	 *
+	 * Get the list of available shipping classes on the site and get them ready for use in the multiselect settings field of the plugin.
+	 *
+	 * @since    1.2.0
+	 *
+	 * @return array Array of available shipping classes.
+	 */
 	public static function lpac_get_available_shipping_classes() {
 
 		if ( ! class_exists( 'WC_Shipping' ) ) {
@@ -122,14 +124,14 @@ class Functions {
 	}
 
 	/**
-	* Get current shipping class at checkout.
-	*
-	* Gets the current shipping class the customer order falls in (based on the shipping class settings in WC settings).
-	*
-	* @since    1.2.0
-	*
-	* @return array Array of shipping classes present for this order.
-	*/
+	 * Get current shipping class at checkout.
+	 *
+	 * Gets the current shipping class the customer order falls in (based on the shipping class settings in WC settings).
+	 *
+	 * @since    1.2.0
+	 *
+	 * @return array Array of shipping classes present for this order.
+	 */
 	public static function lpac_get_order_shipping_classes() {
 
 		$cart = WC()->cart->get_cart();
@@ -255,6 +257,8 @@ class Functions {
 		$past_order_page_default_map_type    = apply_filters( 'lpac_past_order_page_default_map_type', 'roadmap' );
 		$admin_order_screen_default_map_type = apply_filters( 'lpac_admin_order_screen_default_map_type', 'roadmap' );
 
+		$dissect_customer_address = get_option( 'kikote_dissect_customer_address', 'yes' );
+
 		$options = array(
 			'latitude'                                 => $latitude,
 			'longitude'                                => $longitude,
@@ -273,20 +277,21 @@ class Functions {
 			'lpac_thank_you_page_default_map_type'     => $thank_you_page_default_map_type,
 			'lpac_past_order_page_default_map_type'    => $past_order_page_default_map_type,
 			'lpac_admin_order_screen_default_map_type' => $admin_order_screen_default_map_type,
+			'dissect_customer_address'                 => $dissect_customer_address,
 		);
 
 		return apply_filters( 'lpac_map_options', $options );
 	}
 
 	/**
-	* Detect needed Woocommerce pages.
-	*
-	* Detect if the page is one of which the map is supposed to show.
-	*
-	* @since    1.1.0
-	*
-	* @return bool Whether or not the page is one of our needed pages.
-	*/
+	 * Detect needed Woocommerce pages.
+	 *
+	 * Detect if the page is one of which the map is supposed to show.
+	 *
+	 * @since    1.1.0
+	 *
+	 * @return bool Whether or not the page is one of our needed pages.
+	 */
 	public static function is_allowed_woocommerce_pages() {
 
 		if ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-received' ) || is_checkout() ) {
@@ -309,7 +314,7 @@ class Functions {
 	 */
 	public static function normalize_store_locations() {
 
-		$store_locations            = get_option( 'lpac_store_locations', array() );
+		$store_locations            = Store_Locations::get_store_locations();
 		$location_ids               = array_column( $store_locations, 'store_location_id' );
 		$location_names             = array_column( $store_locations, 'store_name_text' );
 		$store_locations_normalized = array_combine( $location_ids, $location_names );

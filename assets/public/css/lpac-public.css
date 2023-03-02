@@ -62,7 +62,7 @@
 }
 
 .woocommerce-page .lpac-map .gm-style-iw-d p {
-  font-size: 1.2em;
+  font-size: 14px;
   margin-bottom: 0 !important;
 }
 
@@ -70,7 +70,7 @@
 .woocommerce-order-received .lpac-map .gm-style-iw-d p {
   font-weight: 800;
   margin: 5px !important;
-  font-size: 1.2em;
+  font-size: 14px;
   text-align: center;
 }
 

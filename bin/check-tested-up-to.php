@@ -1,35 +1,46 @@
 <?php
 /**
-* Check tested up to versions against current minor versions of plugins in the wp.org repo.
-*
-* Author:          Uriahs Victor
-* Created on:      08/05/2022 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.0.0
-*/
+ * Check tested up to versions against current minor versions of plugins in the wp.org repo.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      08/05/2022 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.0.0
+ * @package Bin
+ */
+
+ /**
+  * Class Check_Tested_Up_To.
+  *
+  * @package Bin
+  */
 class Check_Tested_Up_To {
 
 	/**
 	 * Wp.org API Endpoint.
+	 *
 	 * @var string
 	 */
 	private $endpoint;
 
 	/**
 	 * Wp.org object
+	 *
 	 * @var object
 	 */
 	private $resource;
 
 	/**
 	 * File object
+	 *
 	 * @var mixed
 	 */
 	private $file_obj;
 
 	/**
 	 * Construct class.
+	 *
 	 * @return void
 	 */
 	public function __construct() {
@@ -57,6 +68,7 @@ class Check_Tested_Up_To {
 
 	/**
 	 * Setup the Wp.org details
+	 *
 	 * @return object
 	 */
 	private function setup_resource() {
@@ -66,6 +78,7 @@ class Check_Tested_Up_To {
 
 	/**
 	 * Get the last tested up to version in Neve.
+	 *
 	 * @return string
 	 */
 	private function get_tested_up_to() {
@@ -101,6 +114,7 @@ class Check_Tested_Up_To {
 
 	/**
 	 * Compate the last tested up to version with the latest version released in the Repo.
+	 *
 	 * @return string|null
 	 */
 	private function compare_versions() {
@@ -114,6 +128,7 @@ class Check_Tested_Up_To {
 
 	/**
 	 * Get Changelog
+	 *
 	 * @return string
 	 */
 	private function get_changelog() {

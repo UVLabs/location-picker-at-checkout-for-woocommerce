@@ -1,16 +1,15 @@
 <?php
 
 /**
-* Handles checkout page related logic.
-*
-*
-* Author:          Uriahs Victor
-* Created on:      06/11/2021 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.3.4
-* @package Lpac
-*/
+ * Handles checkout page related logic.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      06/11/2021 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.3.4
+ * @package Lpac
+ */
 
 namespace Lpac\Controllers\Checkout_Page;
 
@@ -21,9 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 use Lpac\Helpers\Functions;
 
 /**
-* Class Checkout Page Controller.
-*
-*/
+ * Class Checkout Page Controller.
+ */
 class Controller {
 
 	/**
@@ -53,6 +51,7 @@ class Controller {
 			'lpac_thank_you_page_default_map_type'     => $options['lpac_thank_you_page_default_map_type'],
 			'lpac_past_order_page_default_map_type'    => $options['lpac_past_order_page_default_map_type'],
 			'lpac_admin_order_screen_default_map_type' => $options['lpac_admin_order_screen_default_map_type'],
+			'dissect_customer_address'                 => $options['dissect_customer_address'] === 'yes' ? true : false,
 		);
 
 		return apply_filters( 'lpac_map_stored_public_settings', $data );
@@ -68,7 +67,7 @@ class Controller {
 	public function get_last_order_details() {
 
 		if ( ! is_user_logged_in() ) {
-			return;
+			return null;
 		}
 
 		$user_id = get_current_user_id();
@@ -79,7 +78,7 @@ class Controller {
 		$last_order = $customer->get_last_order();
 
 		if ( empty( $last_order ) ) {
-			return;
+			return null;
 		}
 
 		// Backwards compatibility, prior to v1.5.4 we stored location coords as private meta.
@@ -114,18 +113,6 @@ class Controller {
 			'used_places_autocomplete' => $autocomplete_used,
 		);
 
-	}
-
-	/**
-	 * Combine store locations with their labels.
-	 *
-	 * @since 1.5.7
-	 * @since 1.6.0 use new store locations array
-	 * @see Lpac\Views\Frontend::setup_global_js_vars()
-	 * @return array
-	 */
-	public function get_store_locations() {
-		return get_option( 'lpac_store_locations', array() );
 	}
 
 }

@@ -8,7 +8,8 @@
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "0.7.2",
         "wp-coding-standards/wpcs": "2.3",
-        "suin/phpcs-psr4-sniff": "^3.0"
+        "suin/phpcs-psr4-sniff": "^3.0",
+        "woocommerce/woocommerce-sniffs": "^0.1.3"
     },
     "require": {
         "freemius/wordpress-sdk": "2.5.3",

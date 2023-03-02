@@ -1,28 +1,27 @@
 <?php
 /**
-* Orchestrates the Lite admin settings operations.
-*
-* Author:          Uriahs Victor
-* Created on:      19/10/2021 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.3.4
-* @package Lpac
-*/
+ * Orchestrates the Lite admin settings operations.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      19/10/2021 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.3.4
+ * @package Lpac
+ */
 
 namespace Lpac\Controllers;
 
 /**
-* The Admin_Settings_Controller class.
-*
-*/
+ * The Admin_Settings_Controller class.
+ */
 class Admin_Settings_Controller {
 
 	/**
 	 * Sanitizes coordinates before saving.
 	 *
 	 * @param string $values
-	 * @param array $option
+	 * @param array  $option
 	 * @param string $raw_value
 	 * @return string
 	 */
@@ -51,7 +50,7 @@ class Admin_Settings_Controller {
 		foreach ( $values as $key => &$store_details ) {
 
 			if ( empty( $store_details['store_name_text'] ) ) {
-				unset( $values[ $key ] ); //prevent adding of blank store locations
+				unset( $values[ $key ] ); // prevent adding of blank store locations
 				continue;
 			}
 

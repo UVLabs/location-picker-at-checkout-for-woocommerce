@@ -1,8 +1,5 @@
-assets/public/js/maps/build/
-assets/public/js/build/
-assets/public/js/compat/build/
 assets/img/
 assets/files/
 assets/lib/
-assets/pro/public/js/maps/build/
 *.php
+**/build/**

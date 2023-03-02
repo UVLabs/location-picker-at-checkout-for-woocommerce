@@ -92,7 +92,6 @@ class QR_Code_Generator {
 		// $image_base64 = $result->getDataUri();
 
 		// return $image_base64;
-
 	}
 
 }

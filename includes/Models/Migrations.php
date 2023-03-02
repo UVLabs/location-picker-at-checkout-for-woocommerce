@@ -1,16 +1,16 @@
 <?php
 /**
-* Handles migrations.
-*
-* When old settings should be moved to new formats to renamed.
-*
-* Author:          Uriahs Victor
-* Created on:      06/08/2022 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.6.2
-* @package Lpac/Models
-*/
+ * Handles migrations.
+ *
+ * When old settings should be moved to new formats to renamed.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      06/08/2022 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.6.2
+ * @package Lpac/Models
+ */
 namespace Lpac\Models;
 
 if ( ! defined( 'WPINC' ) ) {
@@ -18,24 +18,27 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /**
-* Migrations Class.
-*/
+ * Migrations Class.
+ */
 class Migrations {
 
 	/**
 	 * Plugin current version.
+	 *
 	 * @var string
 	 */
 	private $plugin_version = LPAC_VERSION;
 
 	/**
 	 * Version at which the plugin was installed.
+	 *
 	 * @var string
 	 */
 	private $installed_at = '';
 
 	/**
 	 * Constructor method
+	 *
 	 * @return void
 	 */
 	public function __construct() {

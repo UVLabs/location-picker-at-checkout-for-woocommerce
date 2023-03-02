@@ -1,11 +1,10 @@
-=== Location Picker at Checkout - WooCommerce Checkout Map & Google Address AutoFill Plugin ===
+=== Location Picker at Checkout - WooCommerce Checkout Map - Google Address AutoFill Plugin - Kikote ===
 Contributors: uriahs-victor
-Donate link: https://soaringleads.com
 Tags: woocommerce, location picker, checkout map, geolocation, google map, map, delivery map
 Requires at least: 5.5
 Requires PHP: 7.4
 Tested up to: 6.1
-Stable tag: 1.6.11
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,17 +16,21 @@ https://www.youtube.com/watch?v=vDlIxPeBs1M
 
 Do you run a WooCommerce store where you need more detailed location information from a customer? If so, then why not let them choose their exact location on Google Maps? 
 
-Location Picker At Checkout for WooCommerce(LPAC) allows store owners to add more flexibility to their WooCommerce store by letting their customers choose exactly where they'd like their product(s) delivered. 
+Kikote is a Location Picker At Checkout plugin for WooCommerce which allows store owners to add more flexibility to their WooCommerce store by letting their customers choose exactly where they'd like their product(s) delivered. 
 
 This plugin is excellent for stores with delivery personnel that ship products to customers within a moderate geographical area. It can also work for websites which offer Pickup services such as Private Taxi websites.
 
-Location Picker At Checkout for WooCommerce(LPAC) enables store owners to get more precise location details without having to contact customers via other means for location information or directions. With this plugin, lots of time can be saved by allowing customers to select their exact location on Google Maps at checkout with WooCommerce.
+Kikote- Location Picker At Checkout for WooCommerce enables store owners to get more precise location details without having to contact customers via other means for location information or directions. With this plugin, lots of time can be saved by allowing customers to select their exact location on Google Maps at checkout with WooCommerce.
+
+> Works Great with DPS!
+>
+> The plugin works great with [Delivery & Pickup Scheduling for WooCommerce](https://wordpress.org/plugins/delivery-and-pickup-scheduling-for-woocommerce/). Feel free to try them both out!
 
 ## How Can Location Picker At Checkout for WooCommerce Help Me?
 
-LPAC is a Checkout Location Picker plugin for WooCommerce that is suitable for any website that offers Delivery or Pickups for their customers. A Delivery website example would be an online restaurant, a Pickup website example would be a private taxi website. The plugin adds a Google map on the WooCommerce checkout page that customers can use to select their desired location. Alternatively, the plugin can be set up to also allow it to automatically detect the customer's location on checkout page load and allow them to make any corrections. 
+Kikote is a Checkout Location Picker plugin for WooCommerce that is suitable for any website that offers Delivery or Pickups for their customers. A Delivery website example would be an online restaurant, a Pickup website example would be a private taxi website. The plugin adds a Google map on the WooCommerce checkout page that customers can use to select their desired location. Alternatively, the plugin can be set up to also allow it to automatically detect the customer's location on checkout page load and allow them to make any corrections
 
-The plugin makes use of the Google Maps API to carry out it's functions; it can work as any of the following:
+Kikote- Location Picker at Checkout makes use of the Google Maps API to carry out it's functions; it can work as any of the following:
 
 ### WooCommerce Checkout Map Plugin 
 
@@ -35,23 +38,23 @@ This plugin adds a Google Map to the checkout page of WooCommerce which customer
 
 ### WooCommerce Billing & Shipping Address AutoFill Plugin
 
-LPAC can work as a checkout address autofill for WooCommerce making it a full-featured autocomplete address and location picker for WooCommerce plugin. It can automatically fill in the WooCommerce checkout fields with the information pulled from the Google map or from the Google Places API. Save users some typing while pulling accurate address information.
+Kikote can work as a checkout address autofill for WooCommerce making it a full-featured autocomplete address and location picker for WooCommerce plugin. It can automatically fill in the WooCommerce checkout fields with the information pulled from the Google map or from the Google Places API. Save users some typing while pulling accurate address information.
 
 ### WooCommerce Shipping Zones (Regions) by Drawing Plugin
 
-LPAC comes with a PREMIUM Shipping Zones by Drawing feature for WooCommerce which lets store owners draw custom shipping regions. Drawn shipping regions can have a name, price and background color. It's also possible to display the shipping regions on the checkout page's google map so customers can see the cost for shipping to different regions.
+Kikote comes with a PREMIUM Shipping Zones by Drawing feature for WooCommerce which lets store owners draw custom shipping regions. Drawn shipping regions can have a name, price and background color. It's also possible to display the shipping regions on the checkout page's google map so customers can see the cost for shipping to different regions.
 
 During checkout, if a customer location falls within a shipping region, the cost set for that shipping region will automatically be set as the shipping fee for the customer.
 
-Create as many shipping zones and draw as many shipping regions as you like. LPAC will automatically set the cost of the shipping method once a customer falls within those drawn regions.
+Create as many shipping zones and draw as many shipping regions as you like. Kikote will automatically set the cost of the shipping method once a customer falls within those drawn regions.
 
-Optionally, set LPAC to only allow customers to place an order if their geolocation falls within shipping zones/regions that you draw.
+Optionally, set Kikote to only allow customers to place an order if their geolocation falls within shipping zones/regions that you draw.
 
 ### WooCommerce Shipping Cost by Distance Plugin
 
-LPAC is a robust WooCommerce checkout location picker plugin that also allows you to calculate the shipping cost for a customer's order based on how far away that customer is from your location. Simply set the cost per Kilometer or Mile and let LPAC do the rest.
+Kikote is a robust WooCommerce checkout location picker plugin that also allows you to calculate the shipping cost for a customer's order based on how far away that customer is from your location. Simply set the cost per Kilometer or Mile and let Kikote do the rest.
 
-Optionally, set LPAC to only allow customers to place an order if their geolocation falls within a maximum distance that you have set for shipping.
+Optionally, set Kikote to only allow customers to place an order if their geolocation falls within a maximum distance that you have set for shipping.
 
 ### WooCommerce Shipping Cost by Store Plugin
 
@@ -59,11 +62,11 @@ Does your store have multiple locations(branches, pickup spots) ? Great! Set the
 
 ### WooCommerce Restaurant & Food Delivery Plugin
 
-LPAC is excellent for online restaurants or food delivery websites that deliver customer orders after they have been placed. You can also create mulitple store locations that customers can select from at checkout if you business has multiple branches!
+Kikote is excellent for online restaurants or food delivery websites that deliver customer orders after they have been placed. You can also create mulitple store locations that customers can select from at checkout if you business has multiple branches!
 
 ### WooCommerce Pickup Plugin
 
-If you ran a website where customers select their location for pickup then Location Picker at Checkout for WooCommerce(LPAC) would be a suitable plugin for your website.
+If you ran a website where customers select their location for pickup then Location Picker at Checkout for WooCommerce(Kikote) would be a suitable plugin for your website.
 
 ### WooCommerce Autocomplete/Autofill Checkout Address Plugin
 
@@ -77,11 +80,15 @@ A customer placing an order might not always be at the previously used address, 
 
 ### WooCommerce Custom Shipping Zones Plugin
 
-The PRO version of LPAC allows you to create custom shipping zones by drawing them on a Google Map. These Zones can each have their own shipping cost and you can additionally prevent customers from checking out if they do not fall in any of the custom shipping zones.
+The PRO version of Kikote allows you to create custom shipping zones by drawing them on a Google Map. These Zones can each have their own shipping cost and you can additionally prevent customers from checking out if they do not fall in any of the custom shipping zones.
 
 ### WooCommerce Delivery Area Plugin
 
-LPAC comes with multiple features to fine tune where you deliver to and how much you wish to charge. These include features such as "Cost by Distance", "Cost by Distance Range", "Cost by Region", "Cost by Store Distance", Maximum shipping distance, as well as Cost by Store.
+Kikote comes with multiple features to fine tune where you deliver to and how much you wish to charge. These include features such as "Cost by Distance", "Cost by Distance Range", "Cost by Region", "Cost by Store Distance", Maximum shipping distance, as well as Cost by Store.
+
+### WooCommerce Map Plugin
+
+The plugin comes with a Map Builder feature that allows store owners to create custom Google Maps with their store locations and shipping regions and add those maps anywhere on their website using a shortcode.
 
 ### Below are a few types of stores that would benefit tremendously from this plugin:
 
@@ -131,13 +138,14 @@ LPAC comes with multiple features to fine tune where you deliver to and how much
 - Hide Map when a maximum cart total is reached
 - More Map Visibility Rules
 - Restrict Places Autocomplete feature to selected countries
+- Map Builder - Create custom WooCommerce Google Maps with your store locations and shipping regions and add them to anywhere on your website using a shortcode.
 - [And More](https://lpacwp.com/pricing)
 
---> [Checkout the PRO Demo](https://app.instawp.io/launch?t=lpac-demo) <--
+--> [Checkout the PRO Demo](https://app.instawp.io/launch?t=lpac) <--
 
 Have a feature in mind? Feel free to submit it on the support forum.
 
-### LPAC has support for the following custom checkout page plugins:
+### Kikote has support for the following custom checkout page plugins:
 
 - Funnel Builder for WordPress by FunnelKit
 - FunnelKit (AeroCheckout)
@@ -145,23 +153,24 @@ Have a feature in mind? Feel free to submit it on the support forum.
 - Online Ordering System For Restaurants & Local Retail by Orderable
 - CheckoutWC custom checkout plugin
 
-**_Location Picker at Checkout is the last WooCommerce checkout map plugin you'll need._**
+**_Kikote- Location Picker at Checkout is the last WooCommerce checkout map plugin you'll need._**
+
+> 
+> Join our E-commerce Support Discord community to meet E-commerce store owners like yourself from around the world and discuss on ways to help grow sales, plugin recommendations, tips and tricks and more. [Here >>>](https://discord.gg/d8TsBv8D)
+>
 
 ### Configuring Plugin:
 
-- The plugin settings are located in **WordPress Admin Dashboard->WooCommerce->Location Picker At Checkout** tab.
+- The plugin settings are located in **WordPress Admin Dashboard->SL Plugins->Location Picker At Checkout**.
 
 ### Plugin Documentation
 
 - You can find the plugin documentation [Here >>>](https://lpacwp.com/docs/)
 
-### Feature Requests
-
-- If you have any feature requests in mind then please submit them [Here >>>](https://lpacwp.com/feature-requests/)
-
 ### Shortcodes
 
-- `[lpac-store-selector]` - Adds a store selector dropdown that lets user's choose their preferred store to order from.
+- `[kikote_store_selector]` - Adds a store selector dropdown that lets user's choose their preferred store to order from.
+- `[kikote_map id='x']` - Adds a custom Google Map that you've created using the Map Builder anywhere on your website. The ID for the map can be retrieved from within the Map Builder screen.
 
 ### Translating
 
@@ -169,7 +178,9 @@ Have a feature in mind? Feel free to submit it on the support forum.
 
 ### Misc
 
-- Learn more about the plugin or Purchase the PRO version [Here >>>](https://lpacwp.com)
+- Learn more about Location Picker at Checkout for WooCommerce or Purchase the PRO version [Here >>>](https://lpacwp.com)
+- Join our E-commerce Support Discord community. Meet E-commerce store owners like yourself to discuss on ways to help grow your E-commerce store. [Here >>>](https://discord.gg/d8TsBv8D)
+- Checkout our other plugin Delivery & Pickup Scheduling for WooCommerce [Here >>>](https://dpswp.com)
 - Assets [Attribution](https://lpacwp.com/attribution/)
 
 This plugin is free software, and the most important features have been kept free and open to use so that all can benefit. If you like the plugin and believe that it's helped grow your business, then please consider [leaving a review](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/reviews/#new-post).
@@ -179,7 +190,7 @@ This plugin is free software, and the most important features have been kept fre
 
 1. Extract the downloaded zip file and upload the `location-picker-at-checkout-for-woocommerce` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Configure the plugin in WooCommerce->Settings->Location Picker At Checkout
+3. Configure the plugin in WordPress Dashboard->SL Plugins->Location Picker At Checkout
 
 Alternatively, install this plugin by searching for it from the plugins area of your WordPress website.
 
@@ -187,7 +198,14 @@ Alternatively, install this plugin by searching for it from the plugins area of 
 
 = The map doesn't show =
 
-Ensure that you have setup the plugin with your API key by going to WordPress Dashboard->WooCommerce->Location Picker At Checkout. See [this doc](https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/) for getting your API key. If you've entered your API key and the map still doesn't show, then please have a look at your [browser console](https://balsamiq.com/support/faqs/browserconsole/#apple-safari) for any errors relating to the map, you can submit an issue thread on the plugin's [support forum](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/)
+Ensure that you have setup the plugin with your API key by going to WordPress Dashboard->WooCommerce->Location Picker At Checkout. See [this doc](https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/) for getting your API key. 
+If you've entered your API key and the map still doesn't show, then please have a look at your [browser console](https://balsamiq.com/support/faqs/browserconsole/#apple-safari) for any errors relating to the map, you can submit an issue thread on the plugin's [support forum](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/)
+
+If you're using Cloudflare's Rocket Loader feature then theres chances the map will not sure due to the changes Cloudflare does.
+
+= Plugin settings not showing on WordPress Multisite =
+
+Please ensure that both WooCommerce and Kikote are NOT activated Network-wide. Both of these plugins need to be activated on the specific sites they are needed and not network-wide activated.
 
 = Nothing happens when I click on the map =
 
@@ -226,10 +244,42 @@ Post it on the [support forum](https://wordpress.org/support/plugin/map-location
 13. Shipping Cost applied to custom shipping method for a previously drawn shipping region (PRO)
 14. Shipping Cost by Store Location (PRO)
 15. Shipping Cost by Store Distance (PRO)
+16. Location Picker at Checkout and Delivery & Pickup Scheduling plugin activated at the same time.
+17. Map Builder (PRO) Create custom maps that can be placed anywhere on your WooCommerce website.
+18. Places Autocomplete searchbox inside the checkout map (PRO).
 
 == Upgrade Notice ==
 
+Always take a backup before updating your plugins!
+
 == Changelog ==
+
+= 1.7.0 =
+Location Picker at Checkout for WooCommerce is now called Kikote! Meaning "Where" in Saint Lucian French Creole.
+
+* [New PRO] Map Builder feature for building custom Google Maps using plugin settings. [Learn more](https://lpacwp.com/docs/map-builder/)
+* [New PRO] Option to add an autocomplete seachbox inside the map display on the checkout page. [Learn more](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/#show-a-searchbox-inside-the-map)
+* [New] Option to add an AutoComplete searchbox on the checkout page map.
+* [New] Option stop the plugin from dissecting the address it receives from the Google API before adding it into the Street Address 1 field.
+* [New] E-commerce Support Discord community - Meet fellow store owners from around the world to discuss ways to grow your E-Commerce business. [Join Here >>>](https://discord.gg/d8TsBv8D).
+* [Fix] Shipping Cost by Region restriction features was not showing the available shipping regions dropdown if the plugin settings was firstly saved with no created shipping regions.
+* [Fix] Rare instances where lat and long array values for Shipping Cost by Distance feature would overwrite itself.
+* [Fix] Plugin settings link was not redirecting to the correct subsite on multisite installs.
+* [Improvement] Refactored JavaScript code for quicker and more modular future development of plugin.
+* [Change] Store Selector shortcode has been changed from `[lpac-store-selector]` to `[kikote_store_selector]`.
+* [Dev] Tested on WC 7.4.
+
+= 1.6.14 =
+* [Improvement] Don't enforce use of autocomplete feature when the customer has selected a Local Pickup shipping method.
+* [Compatibility] Added support for Siteground Optimizer plugin.
+
+= 1.6.13 =
+* [New] Added an option to force the use of the Places AutoComplete feature. Please [read here for more details](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/#force-use-of-autocomplete-feature).
+* [New] It's now possible to update the map's instruction text from the plugin Display Settings area.
+* [Fix] Console error when callback method not set on Google Maps script.
+* [Improvement] The Street Address 1 field will no longer populate with the entire customer address. It will now attempt to only place the street address into the field. To return to the original functionality, please [see this doc](https://lpacwp.com/docs/custom-code-samples/checkout-map/how-to-add-full-address-to-address1-field/).
+* [Improvement] Improvements to plugin's menu item. Plugin submenus are now under the "SL Plugins" menu item.
+* [Dev] Tested on WC 7.3.
 
 = 1.6.12 =
 * [Fix] Map marker would sometimes appear as a white box on some websites.

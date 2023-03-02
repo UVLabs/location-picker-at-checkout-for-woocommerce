@@ -6,7 +6,8 @@ $pointerplus = new PointerPlus( array( 'prefix' => 'lpac-pointers' ) );
 
 /**
  * Create our onboarding pointers.
- * @param array $pointers
+ *
+ * @param array  $pointers
  * @param string $prefix
  * @return array
  */
@@ -88,6 +89,7 @@ add_filter( 'lpac-pointers-pointerplus_list', 'create_onboarding_pointers', 10, 
 
 /**
  * Hide initial pointers so that they do not show after we are done displaying the pointers.
+ *
  * @return void
  */
 function hide_initial_onboarding_pointers() {

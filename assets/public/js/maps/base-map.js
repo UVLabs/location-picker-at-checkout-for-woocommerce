@@ -1,10 +1,13 @@
-let map_id = "";
+import {
+  initializeInfoWindow,
+  initializeMap,
+} from "../../../js-modules/utils/initialize-map.js";
+
+let google_map_id = "";
 window.lpac_map_marker_image = "";
 
-if (typeof lpac_pro_js !== "undefined") {
-  map_id = lpac_pro_js.map_id;
-
-  // console.log(lpac_pro_js);
+if (typeof lpac_pro_js !== "undefined" && lpac_pro_js !== null) {
+  google_map_id = lpac_pro_js.google_map_id;
 
   if (lpac_pro_js.marker_icon) {
     const marker_icon_width = lpac_pro_js.marker_icon_width;
@@ -38,7 +41,7 @@ if (
   /**
    * <Global Settings>
    */
-  const map = new google.maps.Map(document.querySelector(".lpac-map"), {
+  const mapConfig = {
     center: {
       lat: mapOptions.lpac_map_default_latitude,
       lng: mapOptions.lpac_map_default_longitude,
@@ -47,8 +50,15 @@ if (
     streetViewControl: false,
     clickableIcons: mapOptions.lpac_map_clickable_icons,
     backgroundColor: mapOptions.lpac_map_background_color, //loading background color
-    mapId: map_id,
-  });
+    mapId: google_map_id,
+  };
+
+  /**
+   * Always use the lpac-map instance when working with the checkout page map.
+   * there might be other map instances on the page created by the Map Builder
+   * but for this logic we specifically want the one for our checkout page map, not a shortcode.
+   */
+  const map = initializeMap(mapConfig);
 
   /* Globally scoped so that only one marker for customer location can be added to map. */
   const marker = new google.maps.Marker({
@@ -58,7 +68,7 @@ if (
   });
 
   /* Globally scoped so that only one info window for customer location can be added to map. */
-  const infowindow = new google.maps.InfoWindow();
+  const infowindow = initializeInfoWindow();
 
   /* We need to set these variables to the window object or else parcel will break our script when transpiling */
   window.lpac_map = map;

@@ -11,6 +11,9 @@ rm lpac.zip
 mkdir -p dist
 mkdir -p artifact
 
+# Remove vendor folder so we can redownload without dev dependencies.
+rm -rf vendor
+
 # Remove dev dependencies
 composer install --no-dev
 composer dumpautoload

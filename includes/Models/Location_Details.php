@@ -1,26 +1,25 @@
 <?php
 
 /**
-* Handles saving of location details to the database.
-*
-* Author:          Uriahs Victor
-* Created on:      16/10/2021 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   ..
-* @package Lpac/Models
-*/
+ * Handles saving of location details to the database.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      16/10/2021 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   ..
+ * @package Lpac/Models
+ */
 namespace Lpac\Models;
 
 use Lpac\Controllers\Map_Visibility_Controller;
 use Lpac\Helpers\Functions;
 
 /**
-* Location_Details class.
-*
-* Handles saving of latitude and longitude.
-*
-*/
+ * Location_Details class.
+ *
+ * Handles saving of latitude and longitude.
+ */
 class Location_Details {
 
 	/**
@@ -77,7 +76,7 @@ class Location_Details {
 	 *
 	 * The value saved is a 1 or 0. 1 meaning yes and 0 meaning no.
 	 *
-	 * @param int $order_id
+	 * @param int   $order_id
 	 * @param array $data
 	 * @return void
 	 */
@@ -89,7 +88,7 @@ class Location_Details {
 	/**
 	 * Save the order delivery origin to the DB.
 	 *
-	 * @param int $order_id
+	 * @param int   $order_id
 	 * @param array $post_data
 	 * @return void
 	 */

@@ -30,7 +30,7 @@ class Lpac_Uninstall {
 	 *
 	 * @since    1.0.0
 	 * @since    1.1.0 Turned into class to support freemius.
-	*/
+	 */
 	public static function remove_plugin_settings() {
 
 		/**
@@ -59,8 +59,12 @@ class Lpac_Uninstall {
 			'lpac_google_maps_api_key',
 			'lpac_force_map_use',
 			'lpac_allow_clicking_on_map_icons',
+			'lpac_force_places_autocomplete',
+			'lpac_force_places_autocomplete_notice_text',
+			'kikote_dissect_customer_address',
 			// Display Settings
 			'lpac_map_starting_coordinates',
+			'lpac_map_instructions_text',
 			'lpac_general_map_zoom_level',
 			'lpac_map_background_color',
 			'lpac_checkout_map_orientation',
@@ -80,7 +84,6 @@ class Lpac_Uninstall {
 			'lpac_store_locations_cords',
 			'lpac_store_locations_labels',
 			'lpac_store_locations_icons',
-			//
 			'lpac_autofill_billing_fields',
 			'lpac_email_delivery_map_emails',
 			'lpac_email_delivery_map_link_location',
@@ -152,9 +155,6 @@ class Lpac_Uninstall {
 			'lpac_cost_by_store_location_shipping_methods',
 			'lpac_migrated__add_address_to_store_locations',
 			'lpac_show_selected_store_in_emails',
-			// API Settings
-			'lpac_saas_email',
-			'lpac_saas_token',
 			// Misc
 			'lpac_store_locations',
 			'lpac_show_store_locations_on_map',
@@ -170,6 +170,7 @@ class Lpac_Uninstall {
 
 		delete_metadata( 'user', 0, 'lpac_dismissed_notices', '', true );
 		delete_metadata( 'user', 0, 'lpac_user_preferred_store_location_id', '', true );
+		delete_metadata( 'post', 0, 'kikote_map_builder_shortcode_settings', '', true );
 
 		$lpac_directory = wp_upload_dir()['basedir'] . '/lpac';
 
