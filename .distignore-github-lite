@@ -11,3 +11,6 @@ node_modules
 assets/public/js/maps/build
 assets/public/js/build
 assets/public/js/compat/build
+.github
+.wordpress-org
+bin/freemius

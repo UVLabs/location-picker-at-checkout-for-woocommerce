@@ -9,7 +9,7 @@
  * @package    Lpac
  * @author     Uriahs Victor <info@soaringleads.com>
  */
-namespace Lpac\Views;
+namespace Lpac\Views\Admin;
 
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -89,11 +89,8 @@ class Admin_Settings extends \WC_Settings_Page
             'shipping'         => __( 'Shipping', 'map-location-picker-at-checkout-for-woocommerce' ),
             'export'           => __( 'Export', 'map-location-picker-at-checkout-for-woocommerce' ),
             'tools'            => __( 'Tools', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'add-ons'          => __( 'Add-ons', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'more'             => __( 'More', 'map-location-picker-at-checkout-for-woocommerce' ) . '!',
         );
-        if ( defined( 'LPAC_SAAS_EARLY_ACCESS' ) ) {
-            $sections['api'] = __( 'API', 'map-location-picker-at-checkout-for-woocommerce' );
-        }
         return apply_filters( 'woocommerce_get_sections_' . LPAC_PLUGIN_NAME, $sections );
     }
     
@@ -135,21 +132,24 @@ class Admin_Settings extends \WC_Settings_Page
         }
         
         $title = __( "Use the Options Below to Change the Plugin's Settings", 'map-location-picker-at-checkout-for-woocommerce' );
-        $issues = __( 'If you encounter any issues then please open a support ticket ', 'map-location-picker-at-checkout-for-woocommerce' );
-        $issues .= "<a href='https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
-        $documentation = __( 'Read the documentation ', 'map-location-picker-at-checkout-for-woocommerce' );
-        $documentation .= "<a href='https://lpacwp.com/docs/?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=docshome' target='_blank'>{$here}</a>";
-        $feature_requests = __( 'Have a feature in mind? Add it to our list of feature requests ', 'map-location-picker-at-checkout-for-woocommerce' );
-        $feature_requests .= "<a href='https://lpacwp.com/feature-requests/?utm_source=banner&utm_medium=lpacdashboard' target='_blank'>{$here}</a>";
-        $translate_plugin = __( 'Plugin settings not in your Language? Help translate it ', 'map-location-picker-at-checkout-for-woocommerce' );
-        $translate_plugin .= "<a href='hhttps://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
+        $issues = __( 'If you encounter any issues then please open a support ticket', 'map-location-picker-at-checkout-for-woocommerce' );
+        $issues .= "&nbsp;<a href='https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
+        $documentation = __( 'Read the documentation', 'map-location-picker-at-checkout-for-woocommerce' );
+        $documentation .= "&nbsp;<a href='https://lpacwp.com/docs/?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=docshome' target='_blank'>{$here}</a>";
+        $pro_demo = __( 'Try out the PRO version', 'map-location-picker-at-checkout-for-woocommerce' );
+        $pro_demo .= "&nbsp;<a href='https://app.instawp.io/launch?t=lpac' target='_blank'>{$here}</a>";
+        $dps_upsell = sprintf( __( 'Let customers choose their date and time for an order. Check out our %1$sDelivery & Pickup Scheduling Plugin%2$s.', 'map-location-picker-at-checkout-for-woocommerce' ), '<strong>', '</strong>' );
+        $dps_upsell .= "&nbsp;<a href='https://wordpress.org/plugins/delivery-and-pickup-scheduling-for-woocommerce/' target='_blank'>{$here}</a>";
+        $translate_plugin = __( 'Plugin settings not in your Language? Help translate it', 'map-location-picker-at-checkout-for-woocommerce' );
+        $translate_plugin .= "&nbsp;<a href='hhttps://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/' target='_blank'>{$here}</a>";
         $markup = <<<HTML
 \t\t<div class="lpac-banner">
 \t\t<div style="text-align: left">
 \t\t<h2>{$title}</h2>
 \t\t<p>{$no_api_key}</p>
 \t\t<p>📖 &nbsp;&nbsp;{$documentation}</p>
-\t\t<p>🌟 &nbsp;&nbsp;{$feature_requests}</p>
+\t\t<p>🌟 &nbsp;&nbsp;{$pro_demo}</p>
+\t\t<p>🌟 &nbsp;&nbsp;{$dps_upsell}</p>
 \t\t<p>🌐 &nbsp;&nbsp;{$translate_plugin}</p>
 \t\t<p>✋🏾 &nbsp;&nbsp;{$issues}</p>
 \t\t</div>
@@ -251,6 +251,15 @@ HTML;
             'default'  => 'yes',
         );
         $lpac_settings[] = array(
+            'name'     => __( 'Dissect Street Address', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => sprintf( __( 'By default, the plugin will only show the street address inside the Street Address 1 field. Turn off this option if you want the full address to be entered instead. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/general-settings/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs#remove-plus-code-from-address' target='blank'>" . self::$learn_more . '</a>' ),
+            'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'       => 'kikote_dissect_customer_address',
+            'type'     => 'checkbox',
+            'css'      => 'min-width:300px;',
+            'default'  => 'yes',
+        );
+        $lpac_settings[] = array(
             'name'     => __( 'Show Map on the Order Received Page', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc_tip' => sprintf( __( 'This option displays a map view on the order received page after an order has been placed by a customer. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/general-settings/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs#show-map-on-the-order-received-page' target='blank'> " . self::$learn_more . ' </a>' ),
             'id'       => 'lpac_display_map_on_order_received_page',
@@ -275,7 +284,7 @@ HTML;
         );
         $lpac_settings[] = array(
             'name'     => __( 'Add Map Link to Order Emails?', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc_tip' => sprintf( __( 'Add either a Button or QR Code that links to Google Maps to the order emails. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/general-settings/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs#add-map-link-to-order-emails' target='blank'>" . self::$learn_more . '</a>' ),
+            'desc_tip' => sprintf( __( 'Add either a Button, QR Code or Static Map image that links to Google Maps to the order emails. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/general-settings/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs#add-map-link-to-order-emails' target='blank'>" . self::$learn_more . '</a>' ),
             'id'       => 'lpac_enable_delivery_map_link_in_email',
             'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
             'type'     => 'checkbox',
@@ -349,6 +358,22 @@ HTML;
             'css'      => 'min-width:300px;',
         );
         $lpac_settings[] = array(
+            'name'     => __( 'Force use of Autocomplete feature', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip' => sprintf( __( 'Prevent customers from checking out unless they select a location from the google places drop. You should turn this option on if you make use of any of the distance shipping workflows. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=freedocs#force-use-of-autocomplete-feature' target='blank'>" . self::$learn_more . '</a>' ),
+            'desc'     => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'       => 'lpac_force_places_autocomplete',
+            'type'     => 'checkbox',
+            'css'      => 'min-width:300px;',
+        );
+        $lpac_settings[] = array(
+            'name'    => __( 'Notice text', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'    => __( 'Enter the notice message that shows when a customer tries to checkout without making use of the places autocomplete feature.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'      => 'lpac_force_places_autocomplete_notice_text',
+            'default' => __( 'Please select a location from the list of suggested ones that appear while typing your address.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'type'    => 'textarea',
+            'css'     => 'min-width:700px;',
+        );
+        $lpac_settings[] = array(
             'name'    => __( 'Allowed Places Autocomplete Fields', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc'    => __( 'Select the input fields where the places autocomplete should be allowed.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'      => 'lpac_places_autocomplete_fields',
@@ -380,8 +405,19 @@ HTML;
     {
         $dummy_general_pro_settings = array();
         $dummy_general_pro_settings[] = array(
-            'name'              => __( 'Restrict Places Autocomplete Countries (PRO)', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'              => sprintf( __( 'Select the countries you would like addresses to be pulled from when using the Places Autocomplete feature. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/general-settings/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=prodocs#places-autocomplete-feature' target='blank'>" . self::$learn_more . '</a>' ),
+            'name'              => __( 'Show a searchbox inside the map', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (PRO)',
+            'desc'              => __( 'Yes', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc_tip'          => sprintf( __( 'Enabling this option will add a searchbox inside the checkout page map. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=prodocs#show-a-searchbox-inside-the-map' target='_blank'>" . self::$learn_more . '</a>' ),
+            'type'              => 'checkbox',
+            'css'               => 'max-width:80px;',
+            'custom_attributes' => array(
+            'disabled' => 'disabled',
+        ),
+            'is_option'         => false,
+        );
+        $dummy_general_pro_settings[] = array(
+            'name'              => __( 'Restrict Places Autocomplete Countries', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (PRO)',
+            'desc'              => sprintf( __( 'Select the countries you would like addresses to be pulled from when using the Places Autocomplete feature. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=prodocs#restrict-places-autocomplete-countries' target='blank'>" . self::$learn_more . '</a>' ),
             'desc_tip'          => __( 'Use this feature if you only want to show address results from a specific country or countries.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'type'              => 'multiselect',
             'options'           => array(),
@@ -389,9 +425,10 @@ HTML;
             'custom_attributes' => array(
             'disabled' => 'disabled',
         ),
+            'is_option'         => false,
         );
         $dummy_general_pro_settings[] = array(
-            'name'              => __( 'Places Autocomplete Type (PRO)', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'name'              => __( 'Places Autocomplete Type', 'map-location-picker-at-checkout-for-woocommerce' ) . ' (PRO)',
             'desc'              => __( 'Select the type of address you would like the Places Autocomplete API to return.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'type'              => 'select',
             'options'           => array(
@@ -401,9 +438,10 @@ HTML;
             'custom_attributes' => array(
             'disabled' => 'disabled',
         ),
+            'is_option'         => false,
         );
         $dummy_general_pro_settings[] = array(
-            'name'  => __( 'Saved Addresses', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'name'  => __( 'Saved Addresses', 'map-location-picker-at-checkout-for-woocommerce' ) . '(PRO)',
             'class' => 'dashicons-before dashicons-lock premium-dummy-subsection',
             'desc'  => sprintf( __( 'Allow customers to save different addresses for later use. %s', 'map-location-picker-at-checkout-for-woocommerce' ), "<a href='https://lpacwp.com/docs/getting-started/plugin-settings/general-settings/?utm_source=generaltab&utm_medium=lpacdashboard&utm_campaign=prodocs#saved-addresses' target='blank'>" . self::$learn_more . '</a>' ),
             'type'  => 'hr',
@@ -417,6 +455,7 @@ HTML;
             'custom_attributes' => array(
             'disabled' => 'disabled',
         ),
+            'is_option'         => false,
         );
         return $dummy_general_pro_settings;
     }
@@ -443,6 +482,14 @@ HTML;
             'options'  => $this->get_possible_map_locations(),
             'default'  => 'woocommerce_checkout_before_customer_details',
             'css'      => 'min-width:300px;',
+        );
+        $lpac_settings[] = array(
+            'name'    => __( 'Map Instructions Text', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'desc'    => __( 'Alter the instructions that appear below the map.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'      => 'lpac_map_instructions_text',
+            'default' => __( 'Click the "Detect Current Location" button then move the red marker to your desired shipping address.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'type'    => 'textarea',
+            'css'     => 'min-width:700px;',
         );
         $lpac_settings[] = array(
             'name'        => __( 'Default Coordinates', 'map-location-picker-at-checkout-for-woocommerce' ),
@@ -635,7 +682,7 @@ HTML;
             'name'      => __( 'Shortcode', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'        => 'lpac_store_selector Shortcode',
             'text'      => sprintf(
-            esc_html__( 'You can use the shortcode: %1$s[lpac-store-selector]%2$s anywhere on your website to allow customers (including guests) to set their preferred store to order from. The selected store will automatically be chosen at checkout.  %3$s', 'map-location-picker-at-checkout-for-woocommerce' ),
+            esc_html__( 'You can use the shortcode: %1$s[kikote_store_selector]%2$s anywhere on your website to allow customers (including guests) to set their preferred store to order from. The selected store will automatically be chosen at checkout.  %3$s', 'map-location-picker-at-checkout-for-woocommerce' ),
             '<code>',
             '</code>',
             '<a href="https://lpacwp.com/docs/getting-started/plugin-settings/store-locations/?utm_source=storelocationstab&utm_medium=lpacdashboard&utm_campaign=freedocs#shortcode" target="_blank">' . self::$learn_more . '</a>'
@@ -652,6 +699,7 @@ HTML;
     
     /**
      * Create dummy Display Pro fields.
+     *
      * @return array
      */
     private function create_dummy_display_settings_fields()
@@ -803,6 +851,7 @@ HTML;
     
     /**
      * Create Dummy Visibility Rules Pro fields.
+     *
      * @param array $lpac_visibility_settings An array of Live fields to merge the dummy ones into.
      * @return array
      */
@@ -1489,53 +1538,6 @@ HTML;
     }
     
     /**
-     * House all the plugin settings to do with the API.
-     *
-     * @return array
-     */
-    public function create_api_settings_fields()
-    {
-        $lpac_api_settings = array();
-        $lpac_api_settings[] = array(
-            'name' => __( 'LPAC API Settings', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'   => 'lpac_api_settings',
-            'type' => 'title',
-            'desc' => $this->create_plugin_settings_banner(),
-        );
-        $lpac_api_settings[] = array(
-            'name' => __( 'Email', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc' => __( 'Enter the email you used to sign up with app.lpacwp.com.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'   => 'lpac_saas_email',
-            'type' => 'text',
-        );
-        $lpac_api_settings[] = array(
-            'name' => __( 'API Key', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc' => __( 'Enter your API Key.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'   => 'lpac_saas_token',
-            'type' => 'password',
-        );
-        $lpac_api_settings[] = array(
-            'name'      => __( 'API Connection', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'type'      => 'button',
-            'value'     => 'Test',
-            'id'        => 'lpac_test_connection',
-            'desc'      => sprintf(
-            __( 'Test your website\'s connection to the API.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            '<br>',
-            '<code>',
-            '/wp-content/uploads/lpac/order-exports/',
-            '</code>'
-        ),
-            'is_option' => false,
-        );
-        $lpac_api_settings[] = array(
-            'type' => 'sectionend',
-            'id'   => 'lpac_api_settings_section_end',
-        );
-        return $lpac_api_settings;
-    }
-    
-    /**
      * House all the plugin settings to do with Debugging.
      *
      * @return array
@@ -1558,18 +1560,6 @@ HTML;
             'css'      => 'max-width:80px;',
         );
         $lpac_settings[] = array(
-            'name'    => __( 'Dequeue Google Maps Script in Frontend', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'desc'    => __( 'If you\'re receiving console errors about Google Maps already being loaded by another plugin, then select where the Google Maps script should be removed. Be sure to test the map if you turn this option on.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'      => 'lpac_dequeue_google_maps',
-            'type'    => 'radio',
-            'options' => array(
-            'none'      => __( 'None', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'frontend'  => __( 'Frontend', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'dashboard' => __( 'Dashboard', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'both'      => __( 'Both', 'map-location-picker-at-checkout-for-woocommerce' ),
-        ),
-        );
-        $lpac_settings[] = array(
             'name'     => __( 'Housekeeping', 'map-location-picker-at-checkout-for-woocommerce' ),
             'desc_tip' => __( 'Delete all plugin settings on uninstall.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'id'       => 'lpac_delete_settings_on_uninstall',
@@ -1583,28 +1573,37 @@ HTML;
     }
     
     /**
-     * Create LPAC's add-ons page entries.
+     * Create LPAC's more page entries.
      *
      * @return array
      */
-    private function create_addons_page() : array
+    private function create_more_page() : array
     {
         $lpac_settings = array();
         $lpac_settings[] = array(
-            'name' => __( 'LPAC Add-ons', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'id'   => 'lpac_addons',
+            'name' => __( 'More', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'id'   => 'lpac_more',
             'type' => 'title',
         );
         $lpac_settings[] = array(
             'type'      => 'lpac_image',
-            'src'       => LPAC_PLUGIN_ASSETS_PATH_URL . '/img/delivery-and-pickup-scheduling.png',
-            'desc'      => __( 'Allow customers to set their delivery/pickup date and time during order checkout.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'src'       => LPAC_PLUGIN_ASSETS_PATH_URL . 'admin/img/delivery-and-pickup-scheduling.png',
+            'desc'      => __( 'Allow customers to set their delivery/pickup date and time during order checkout.', 'map-location-picker-at-checkout-for-woocommerce' ) . " <a href='https://wordpress.org/plugins/delivery-and-pickup-scheduling-for-woocommerce/' target='_blank'>" . self::$learn_more . '</a>',
             'height'    => '280px',
+            'url'       => 'https://wordpress.org/plugins/delivery-and-pickup-scheduling-for-woocommerce/',
+            'is_option' => false,
+        );
+        $lpac_settings[] = array(
+            'type'      => 'lpac_image',
+            'src'       => LPAC_PLUGIN_ASSETS_PATH_URL . 'admin/img/discord-banner.png',
+            'desc'      => __( 'Join E-Commerce store owners like yourself from around the world in a community tailored at helping your business grow.', 'map-location-picker-at-checkout-for-woocommerce' ) . " <a href='https://discord.gg/d8TsBv8D' target='_blank'>" . self::$learn_more . '</a>',
+            'height'    => '280px',
+            'url'       => 'https://discord.gg/d8TsBv8D',
             'is_option' => false,
         );
         $lpac_settings[] = array(
             'type' => 'sectionend',
-            'id'   => 'lpac_addons_section_end',
+            'id'   => 'lpac_more_section_end',
         );
         return $lpac_settings;
     }
@@ -1696,6 +1695,15 @@ HTML;
     public function create_plugin_settings_fields()
     {
         global  $current_section ;
+        /**
+         * Redirect to the Map Builder post type.
+         */
+        
+        if ( $current_section === 'map_builder' ) {
+            wp_safe_redirect( site_url( 'wp-admin/edit.php?post_type=kikote-maps' ) );
+            exit;
+        }
+        
         $lpac_settings = array();
         // TODO Change settings conditionals from if statement to switch statement
         
@@ -1739,26 +1747,22 @@ HTML;
                 $lpac_settings = array_merge( $lpac_settings, $this->create_dummy_shipping_setting_fields() );
             }
         }
-        // Add fields to API tab
-        if ( $current_section === 'api' ) {
-            $lpac_settings = $this->create_api_settings_fields();
-        }
         if ( $current_section === 'tools' ) {
             $lpac_settings = $this->create_tools_setting_fields();
         }
-        if ( $current_section === 'add-ons' ) {
-            $lpac_settings = $this->create_addons_page();
+        if ( $current_section === 'more' ) {
+            $lpac_settings = $this->create_more_page();
         }
         // Custom attributes example
         // https://woocommerce.github.io/code-reference/files/woocommerce-includes-admin-wc-meta-box-functions.html#source-view.146
         // $lpac_settings[] = array(
-        // 	'name'     => __( 'Test', 'map-location-picker-at-checkout-for-woocommerce' ),
-        // 	'desc_tip' => __( 'Delete all plugin settings on uninstall.', 'map-location-picker-at-checkout-for-woocommerce' ),
-        // 	'id'       => 'lpac_delete_settings_on_uninstall',
-        // 	'type'     => 'text',
-        // 	'custom_attributes' => array(
-        // 		'disabled' => 'disabled',
-        // 	)
+        // 'name'     => __( 'Test', 'map-location-picker-at-checkout-for-woocommerce' ),
+        // 'desc_tip' => __( 'Delete all plugin settings on uninstall.', 'map-location-picker-at-checkout-for-woocommerce' ),
+        // 'id'       => 'lpac_delete_settings_on_uninstall',
+        // 'type'     => 'text',
+        // 'custom_attributes' => array(
+        // 'disabled' => 'disabled',
+        // )
         // );
         // Default checkbox example
         // https://wordpress.stackexchange.com/questions/390270/woocommerce-settings-api-set-checkbox-checked-by-default?noredirect=1#comment567330_390270
@@ -1782,7 +1786,6 @@ HTML;
     
     /**
      *  Save our settings.
-     *
      */
     public function save_plugin_settings()
     {
@@ -1844,6 +1847,9 @@ HTML;
             }
         }
         
+        /*
+         * CheckoutWC compatibility
+         */
         
         if ( defined( 'CFW_NAME' ) ) {
             $locations = array(

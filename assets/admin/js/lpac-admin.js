@@ -85,6 +85,18 @@
     }
     checkAPIKeyPresence();
 
+    function toggleField(fieldName) {
+      // Update to handle array of field names as well.
+
+      const field = $(fieldName);
+
+      if (!field) {
+        return;
+      }
+
+      field.closest("tr").toggle();
+    }
+
     /**
      * Toggle "Add Map Link to Order Emails?" on Generals Settings page.
      */
@@ -161,6 +173,21 @@
     }
 
     /**
+     * Toggle force use of places autocomplete feature notice text field.
+     */
+    function toggleForceUsePlacesAutocompleteNoticeField() {
+      const forceUse = $("#lpac_force_places_autocomplete");
+
+      if (!forceUse.is(":checked")) {
+        toggleField("#lpac_force_places_autocomplete_notice_text");
+      }
+
+      forceUse.on("click", () => {
+        toggleField("#lpac_force_places_autocomplete_notice_text");
+      });
+    }
+
+    /**
      * Set a dummy image for Shipping Regions feature.
      */
     function setPlottedOrdersDummyMapImage() {
@@ -206,50 +233,7 @@
       }
     }
 
-    /**
-     * Test API Connection to SaaS
-     */
-    function testAPIConnection() {
-      const testBtn = document.querySelector("#lpac_test_connection");
-
-      if (!testBtn) {
-        return;
-      }
-
-      testBtn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        // TODO get this URL dynamically from variable on page, set it in a constant.
-        const url = lpacSaasURL + "/wp-json/bridge/v1/verify";
-        const data = {
-          email: window.btoa(document.querySelector("#lpac_saas_email").value),
-          token: window.btoa(document.querySelector("#lpac_saas_token").value),
-        };
-
-        const response = await fetch(url, {
-          method: "POST",
-          mode: "cors",
-          // mode: 'no-cors',
-          redirect: "follow",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-
-        response
-          .json()
-          .then((response) => {
-            // console.log(response);
-            alert(response.response_body);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      });
-    }
-    testAPIConnection();
-
+    toggleForceUsePlacesAutocompleteNoticeField();
     toggleMapLinkOrderEmailOptions();
     togglePlacesAutoCompleteOptions();
     setPlottedOrdersDummyMapImage();

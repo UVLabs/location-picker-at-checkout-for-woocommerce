@@ -1,17 +1,17 @@
 <?php
 
 /**
-* Review Notices.
-*
-* Notices to review the plugin.
-*
-* Author:          Uriahs Victor
-* Created on:      23/04/2022 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.5.2
-* @package Notices
-*/
+ * Review Notices.
+ *
+ * Notices to review the plugin.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      23/04/2022 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.5.2
+ * @package Notices
+ */
 
 namespace Lpac\Notices;
 
@@ -20,8 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
-* Class Upsells_Notices.
-*/
+ * Class Upsells_Notices.
+ */
 class Review_Notices extends Notice {
 
 
@@ -50,7 +50,7 @@ class Review_Notices extends Notice {
 
 		$content = array(
 			'title' => esc_html__( 'Has LPAC Helped You?', 'map-location-picker-at-checkout-for-woocommerce' ),
-			'body'  => esc_html__( 'Hey! its Uriahs, Sole Developer working on Location Picker at Checkout for WooCommerce(LPAC). Has the plugin benefitted your website? If yes, then would you mind taking a few seconds to leave a kind review? Reviews go a long way and they really help keep me motivated to continue working on the plugin and making it better', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🙏',
+			'body'  => esc_html__( 'Hey! its Uriahs, Sole Developer working on Location Picker at Checkout for WooCommerce(LPAC). Has the plugin benefited your website? If yes, then would you mind taking a few seconds to leave a kind review? Reviews go a long way and they really help keep me motivated to continue working on the plugin and making it better', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🙏',
 			'cta'   => esc_html__( 'Sure', 'map-location-picker-at-checkout-for-woocommerce' ),
 			'link'  => esc_attr( 'https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/reviews/#new-post' ),
 		);

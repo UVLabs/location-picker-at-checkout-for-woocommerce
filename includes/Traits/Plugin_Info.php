@@ -1,17 +1,18 @@
 <?php
 
 /**
-* Trait which holds information about the LPAC plugin.
-*
-* Author:          Uriahs Victor
-* Created on:      08/01/2022 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.4.3
-* @package Traits
-*/
+ * Trait which holds information about the LPAC plugin.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      08/01/2022 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.4.3
+ * @package Traits
+ */
 
 namespace Lpac\Traits;
+
 use DateTime;
 
 /**
@@ -48,6 +49,7 @@ trait Plugin_Info {
 
 	/**
 	 * Get the version LPAC was installed at.
+	 *
 	 * @return mixed
 	 */
 	protected function get_installed_at_version() {

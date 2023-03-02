@@ -10,7 +10,7 @@
  *
  * @package    Lpac
  */
-namespace Lpac\Views;
+namespace Lpac\Views\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -27,7 +27,7 @@ class Admin {
 	 * @return mixed
 	 */
 	public function lpac_add_settings_tab( $settings ) {
-		$settings[] = new \Lpac\Views\Admin_Settings;
+		$settings[] = new \Lpac\Views\Admin\Admin_Settings();
 		return $settings;
 	}
 
@@ -172,7 +172,7 @@ JAVASCRIPT;
 
 		$map_container = <<<HTML
 			<div id="wrap" style="display: block; text-align: center;">
-			<div class="lpac-map" style="display: inline-block; padding 10; border: 1px solid #eee; width: 100%; height:345px;"></div>
+			<div class="lpac-map" style="display: inline-block; border: 1px solid #eee; width: 100%; height:345px;"></div>
 			</div>
 HTML;
 
@@ -490,7 +490,7 @@ HTML;
 	public function create_custom_wc_settings_upsell_banner( $value ) {
 
 		/* translators: 1: HTML break element */
-		$signup_text = sprintf( __( 'Custom Maps, Custom Marker Icons, Saved Addresses, More Visibility Rules, Cost by Region, Cost by Distance, Cost by Store Location, Multi-Store Distance Pricing, , Export Order Locations & More. %s Get the most out of LPAC with the PRO version.', 'map-location-picker-at-checkout-for-woocommerce' ), '<br/><br/>' );
+		$signup_text = sprintf( __( 'Custom Maps, Custom Marker Icons, Saved Addresses, More Visibility Rules, Cost by Region, Cost by Distance, Cost by Store Location, Multi-Store Distance Pricing, Export Order Locations & More. %s Get the most out of LPAC with the PRO version.', 'map-location-picker-at-checkout-for-woocommerce' ), '<br/><br/>' );
 		/* translators: 1: Dashicons outbound link icon */
 		$learn_more = sprintf( __( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
 
@@ -514,13 +514,14 @@ HTML;
 		$desc      = $value['desc'];
 		$src       = $value['src'];
 		$height    = $value['height'] ?? 'auto';
+		$url       = $value['url'] ?? '#';
 
 		$markup = <<<HTML
 				<tr valign='top' class="$row_class">
 				<!-- <th scope='row' class="titledesc"></th> -->
 				<td>
-					<img src="$src" class="$class" id="$id" height= "$height" />
-					<p style="width: 280px; text-align: center; margin-top: 10px">$desc</p>
+					<a href='$url' target='_blank'><img src="$src" class="$class" id="$id" height= "$height" /></a>
+					<p style="font-size: 18px; font-weight: 700; text-align: left; margin-top: 10px">$desc</p>
 				</td>
 				</tr>
 HTML;

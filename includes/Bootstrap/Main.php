@@ -34,26 +34,25 @@ use  Lpac\Bootstrap\Loader ;
 use  Lpac\Bootstrap\I18n ;
 use  Lpac\Bootstrap\Admin_Enqueues ;
 use  Lpac\Bootstrap\Frontend_Enqueues ;
+use  Lpac\Compatibility\Caching\Siteground_Optimizer ;
 use  Lpac\Controllers\Emails_Controller ;
 use  Lpac\Controllers\Map_Visibility_Controller ;
 use  Lpac\Controllers\Admin_Settings_Controller ;
-use  Lpac\Controllers\Checkout_Page\Validation as Checkout_Page_Validation ;
+use  Lpac\Controllers\Checkout_Page\Validate as Checkout_Page_Validation ;
 use  Lpac\Controllers\Shortcodes as Shortcodes_Controller ;
-use  Lpac\Views\Admin as Admin_Display ;
 use  Lpac\Notices\Admin as Admin_Notices ;
 use  Lpac\Notices\Notice ;
 use  Lpac\Notices\Loader as Notices_Loader ;
-use  Lpac\Views\Frontend as Frontend_Display ;
+use  Lpac\Views\Admin\Admin as Admin_Display ;
+use  Lpac\Views\Frontend\Frontend as Frontend_Display ;
+use  Lpac\Views\Frontend\Shortcodes ;
 use  Lpac\Models\Location_Details ;
 use  Lpac\Models\Migrations ;
-use  Lpac\Controllers\API\Order as API_Order ;
-use  Lpac\Views\Shortcodes ;
 /**
-* Class Main.
-*
-* Class responsible for firing public and admin hooks.
-*
-*/
+ * Class Main.
+ *
+ * Class responsible for firing public and admin hooks.
+ */
 class Main
 {
     /**
@@ -157,19 +156,26 @@ class Main
         $admin_notices = new Admin_Notices();
         $admin_settings_controller = new Admin_Settings_Controller();
         $controller_map_visibility = new Map_Visibility_Controller();
-        $api_orders = new API_Order();
         $migrations = new Migrations();
-        $this->loader->add_action(
-            'admin_menu',
-            $this,
-            'create_admin_menu',
-            10
-        );
+        /**
+         * Menus
+         */
+        $this->loader->add_action( 'admin_menu', $this, 'create_admin_menu' );
         $this->loader->add_action(
             'admin_menu',
             $this,
             'create_submenu',
-            9
+            11
+        );
+        /**
+         * Make scripts modules
+         */
+        $this->loader->add_filter(
+            'script_loader_tag',
+            $plugin_admin,
+            'make_scripts_modules',
+            10,
+            3
         );
         /**
          * Plugin settings migrations
@@ -232,21 +238,6 @@ class Main
             999999,
             2
         );
-        // We need both of these hooks to be able to get our coordinates and build our payload. This should be ran last after all plugins have done their work.
-        $this->loader->add_action(
-            'woocommerce_checkout_update_order_meta',
-            $api_orders,
-            'prepare_order_checkout',
-            PHP_INT_MAX,
-            2
-        );
-        $this->loader->add_action(
-            'woocommerce_process_shop_order_meta',
-            $api_orders,
-            'prepare_order_admin',
-            PHP_INT_MAX,
-            2
-        );
         // Custom admin order columns
         $this->loader->add_filter( 'manage_edit-shop_order_columns', $plugin_admin_view, 'add_map_btn_admin_list_column' );
         $this->loader->add_action( 'manage_shop_order_posts_custom_column', $plugin_admin_view, 'add_map_btn_admin_list_column_content' );
@@ -275,6 +266,7 @@ class Main
         $controller_checkout_page_validation = new Checkout_Page_Validation();
         $model_location_details = new Location_Details();
         $controller_shortcodes = new Shortcodes_Controller();
+        $compatibility_siteground_optimzer = new Siteground_Optimizer();
         /*
          * If plugin not enabled don't continue
          */
@@ -282,9 +274,26 @@ class Main
         if ( $plugin_enabled === 'no' ) {
             return;
         }
+        /**
+         * Make scripts modules
+         */
+        $this->loader->add_filter(
+            'script_loader_tag',
+            $plugin_public,
+            'make_scripts_modules',
+            10,
+            3
+        );
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
         $this->loader->add_action( 'wp_head', $plugin_public_display, 'lpac_output_map_custom_styles' );
+        /**
+         * Compatibility
+         */
+        $this->loader->add_filter( 'sgo_js_async_exclude', $compatibility_siteground_optimzer, 'remove_defer_on_gmaps_script' );
+        $this->loader->add_filter( 'sgo_js_minify_exclude', $compatibility_siteground_optimzer, 'js_minify_exclude' );
+        $this->loader->add_filter( 'sgo_javascript_combine_excluded_inline_content', $compatibility_siteground_optimzer, 'js_combine_exclude_inline_script' );
+        $this->loader->add_filter( 'sgo_javascript_combine_exclude', $compatibility_siteground_optimzer, 'js_combine_exclude' );
         /*
          * Output map on checkout page
          */
@@ -323,6 +332,7 @@ class Main
          */
         $validate_lat_long_fields = get_option( 'lpac_force_map_use', false );
         if ( $validate_lat_long_fields === 'yes' ) {
+            // TODO move this check inside the validation method like we did for validate_places_autocomplete().
             $this->loader->add_action(
                 'woocommerce_after_checkout_validation',
                 $controller_checkout_page_validation,
@@ -331,6 +341,13 @@ class Main
                 2
             );
         }
+        $this->loader->add_action(
+            'woocommerce_after_checkout_validation',
+            $controller_checkout_page_validation,
+            'validate_places_autocomplete',
+            10,
+            2
+        );
         /**
          * Validate that a customer has selected a store location from the drop down selector.
          */
@@ -437,7 +454,8 @@ class Main
     
     /**
      * Add action Links for plugin
-     * @param array $plugin_actions
+     *
+     * @param array  $plugin_actions
      * @param string $plugin_file
      * @return array
      */
@@ -448,7 +466,7 @@ class Main
         if ( LPAC_BASE_FILE . '/lpac.php' === $plugin_file ) {
             $new_actions['lpac_wc_settings'] = sprintf( __( '<a href="%s">Settings</a>', 'map-location-picker-at-checkout-for-woocommerce' ), esc_url( admin_url( 'admin.php?page=wc-settings&tab=lpac_settings' ) ) );
             if ( !defined( 'LPAC_PLUGIN_PATH_URL_PRO' ) ) {
-                $new_actions['lpac_upgrade_link'] = sprintf( __( '%1$sUpgrade to PRO%2$s', 'map-location-picker-at-checkout-for-woocommerce' ), '<a style="color: green; font-weight: bold" href="https://lpacwp.com/pricing?utm_source=plugin_actions_links&utm_medium=wp_plugins_area" target="_blank">', '</a>' );
+                $new_actions['lpac_upgrade_link'] = sprintf( __( '%1$sCheck out PRO%2$s', 'map-location-picker-at-checkout-for-woocommerce' ), '<a style="color: green; font-weight: bold" href="https://lpacwp.com/pricing?utm_source=plugin_actions_links&utm_medium=wp_plugins_area" target="_blank">', '</a>' );
             }
         }
         
@@ -457,6 +475,7 @@ class Main
     
     /**
      * Create our shortcodes
+     *
      * @return void
      */
     public function create_shortcodes() : void
@@ -465,7 +484,7 @@ class Main
     }
     
     /**
-     * Create our menu item.
+     * Create our SoaringLeads menu item.
      *
      * @return void
      * @since 1.6.12
@@ -474,23 +493,22 @@ class Main
     {
         $icon = file_get_contents( LPAC_PLUGIN_ASSETS_DIR . 'img/menu-icon.svg' );
         $icon = 'data:image/svg+xml;base64,' . base64_encode( $icon );
+        $main_menu = menu_page_url( 'sl-plugins-menu', false );
+        
+        if ( !empty($main_menu) ) {
+            return;
+            // Menu already added by another SoarngLeads plugin
+        }
+        
         add_menu_page(
-            __( 'Location Picker at Checkout', 'map-location-picker-at-checkout-for-woocommerce' ),
-            __( 'Location Picker at Checkout', 'map-location-picker-at-checkout-for-woocommerce' ),
+            __( 'SoaringLeads Plugins', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'SL Plugins',
             'manage_options',
-            'lpac-menu',
-            array( $this, 'menu_item_html' ),
+            'sl-plugins-menu',
+            array( $this, 'output_root_submenu_upsells' ),
             $icon,
             '57.10'
         );
-        // If this is added here then we will have a blank menu item where we can maybe add some announcements or something.
-        // add_submenu_page(
-        // 	'lpac-menu',
-        // 	__( 'Settings' ),
-        // 	__( 'Settings' ),
-        // 	'manage_options',
-        // 	'admin.php?page=wc-settings&tab=lpac_settings',
-        // );
     }
     
     /**
@@ -502,11 +520,13 @@ class Main
     public function create_submenu() : void
     {
         add_submenu_page(
-            'lpac-menu',
-            __( 'Settings' ),
-            __( 'Settings' ),
+            'sl-plugins-menu',
+            'Kikote- Location Picker at Checkout',
+            'Kikote- Location Picker at Checkout',
             'manage_options',
-            'admin.php?page=wc-settings&tab=lpac_settings'
+            'lpac-menu',
+            array( $this, 'menu_item_html' ),
+            '1'
         );
     }
     
@@ -515,12 +535,53 @@ class Main
      *
      * Not actually outputting anything because we're redirecting the parent page.
      *
-     * @return string
      * @since 1.6.12
      */
-    public function menu_item_html() : string
+    public function menu_item_html()
     {
-        return '';
+        wp_redirect( site_url( '/wp-admin/admin.php?page=wc-settings&tab=lpac_settings', 'https' ) );
+        exit;
+    }
+    
+    /**
+     * HTML for root SL Plugins page.
+     *
+     * Populate with upsell content.
+     *
+     * @since 1.6.13
+     */
+    public function output_root_submenu_upsells()
+    {
+        ?>
+		<h1><?php 
+        esc_html_e( 'Check out our available plugins', 'map-location-picker-at-checkout-for-woocommerce' );
+        ?></h1>
+		<hr style='margin-bottom: 40px'/>
+		
+		<div style='margin-bottom: 40px'>
+		<a href='https://dpswp.com/?utm_source=wpadmin&utm_medium=sl-plugins-page&utm_campaign=plugins-upsell' target='_blank'><img src='<?php 
+        echo  esc_attr( LPAC_PLUGIN_ASSETS_PATH_URL . 'admin/img/delivery-and-pickup-scheduling.png' ) ;
+        ?>' /></a>
+		<p style='font-size: 18px; font-weight: 700;'><?php 
+        echo  esc_html( 'Allow customers to set their delivery/pickup date and time during order checkout.', 'map-location-picker-at-checkout-for-woocommerce' ) ;
+        ?></p>	
+		<a href='https://dpswp.com/?utm_source=wpadmin&utm_medium=sl-plugins-page&utm_campaign=plugins-upsell' target='_blank' class='button-primary'><?php 
+        esc_html_e( 'Learn More', 'map-location-picker-at-checkout-for-woocommerce' );
+        ?></a>
+		</div>
+
+		<div style='margin-bottom: 40px'>
+		<a href='https://lpacwp.com/?utm_source=wpadmin&utm_medium=sl-plugins-page&utm_campaign=plugins-upsell' target='_blank'><img src='<?php 
+        echo  esc_attr( LPAC_PLUGIN_ASSETS_PATH_URL . 'admin/img/lpac.png' ) ;
+        ?>' /></a>
+		<p style='font-size: 18px; font-weight: 700;'><?php 
+        esc_html_e( 'Let customers choose their shipping or pickup location using a map during checkout.', 'map-location-picker-at-checkout-for-woocommerce' );
+        ?></p>	
+		<a href='https://lpacwp.com/?utm_source=wpadmin&utm_medium=sl-plugins-page&utm_campaign=plugins-upsell' target='_blank' class='button-primary'><?php 
+        esc_html_e( 'Learn More', 'map-location-picker-at-checkout-for-woocommerce' );
+        ?></a>
+		</div>
+		<?php 
     }
 
 }

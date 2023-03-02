@@ -2,13 +2,18 @@
  * Globals:
  * mapOptions, locationDetails
  */
-function lpacSetupShopOrderMap() {
-  /** These values are coming from the base-map.js enqueued from our maps folder */
-  const map = window.lpac_map;
-  map.setMapTypeId(mapOptions.lpac_admin_order_screen_default_map_type);
+import {
+  initializeInfoWindow,
+  initializeMap,
+  initializeMarker,
+} from "../../js-modules/utils/initialize-map.js";
 
-  const marker = window.lpac_marker;
-  const infowindow = window.lpac_infowindow;
+function lpacSetupShopOrderMap() {
+  const mapConfig = {
+    mapId: googleMapID,
+  };
+  const map = initializeMap(mapConfig);
+  map.setMapTypeId(mapOptions.lpac_admin_order_screen_default_map_type);
 
   /**
    * This variable is defined in output_custom_order_details_metabox().
@@ -32,16 +37,21 @@ function lpacSetupShopOrderMap() {
     lng: locationDetails.longitude,
   };
 
-  marker.setPosition(latlng);
-  marker.setDraggable(false);
-  marker.setCursor("default");
+  const markerOptions = {
+    clickable: false,
+    position: latlng,
+    map: map,
+  };
+
+  const marker = initializeMarker(markerOptions);
+  const infoWindow = initializeInfoWindow();
 
   // Only open the infowindow if we have a shipping address
   if (locationDetails.shipping_address_1) {
-    infowindow.setContent(
+    infoWindow.setContent(
       `<p> ${locationDetails.shipping_address_1} <br/> ${locationDetails.shipping_address_2} </p>`
     );
-    infowindow.open(map, marker);
+    infoWindow.open(map, marker);
   }
 }
 

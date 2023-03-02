@@ -1,14 +1,14 @@
 <?php
 /**
-* Class responsible for upsell notices.
-*
-* Author:          Uriahs Victor
-* Created on:      08/01/2022 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.4.3
-* @package Notices
-*/
+ * Class responsible for upsell notices.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      08/01/2022 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.4.3
+ * @package Notices
+ */
 
 namespace Lpac\Notices;
 
@@ -17,8 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
-* Class Upsells_Notices.
-*/
+ * Class Upsells_Notices.
+ */
 class Upsells_Notices extends Notice {
 
 	/**
@@ -28,7 +28,7 @@ class Upsells_Notices extends Notice {
 	 */
 	public function __construct() {
 
-		# Don't show upsells if user has a valid license
+		// Don't show upsells if user has a valid license
 		if ( lpac_fs()->is_paying() ) {
 			return;
 		}
@@ -75,7 +75,7 @@ class Upsells_Notices extends Notice {
 
 		$content = array(
 			'title' => esc_html__( 'Welcome to v1.6 of LPAC!', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🚀',
-			'body'  => esc_html__( 'Some new features have been added to the PRO version of the plugin. These include: Orders Map, Cost by Store Location, Cost by Store Distance and more. Use coupon code INIT10 for a 10% discount at checkout.' ),
+			'body'  => esc_html__( 'Some new features have been added to the PRO version of the plugin. These include: Orders Map, Cost by Store Location, Cost by Store Distance and more. Use coupon code INIT10 for a 10% discount at checkout.', 'map-location-picker-at-checkout-for-woocommerce' ),
 			'link'  => esc_attr( 'https://lpacwp.com/pricing/?utm_source=banner&utm_medium=lpacnotice&utm_campaign=proupsell' ),
 		);
 

@@ -1,27 +1,27 @@
 <?php
 
 /**
-* Orchestrates the map visibility communication between JavaScript and PHP.
-*
-* Author:          Uriahs Victor
-* Created on:      16/10/2021 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.3.3
-* @package Lpac
-*/
+ * Orchestrates the map visibility communication between JavaScript and PHP.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      16/10/2021 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.3.3
+ * @package Lpac
+ */
 namespace Lpac\Controllers;
 
 /**
-* Class Map Visibility Controller.
-*
-*/
+ * Class Map Visibility Controller.
+ */
 class Map_Visibility_Controller
 {
     /**
      * Get the current customer's possible shipping methods.
      *
      * The shipping methods presented to them at the checkout page.
+     *
      * @return array
      * @since 1.6.9
      */
@@ -51,7 +51,7 @@ class Map_Visibility_Controller
      */
     public static function lpac_show_map( $option )
     {
-        //TODO Rather than this one method handling both the checkout on order-received and view-order page, we should possibly split it into another method just for the order-received and view-order pages.
+        // TODO Rather than this one method handling both the checkout on order-received and view-order page, we should possibly split it into another method just for the order-received and view-order pages.
         
         if ( $option === 'checkout' ) {
             $show = true;
@@ -64,7 +64,6 @@ class Map_Visibility_Controller
         
         /**
          * If this is the order-recieved or view-order page, then see if the options are set by the admin.
-         *
          */
         $show = get_option( $option, 'yes' );
         /**

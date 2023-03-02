@@ -1,26 +1,43 @@
+import {
+  initializeInfoWindow,
+  initializeMap,
+  initializeMarker,
+} from "../../../js-modules/utils/initialize-map.js";
+
 /**
  * Globals:
  *
  * mapOptions
  */
-function lpac_setup_order_received_map() {
-  const map = window.lpac_map;
-  map.setMapTypeId(mapOptions.lpac_thank_you_page_default_map_type);
+function setupOrderReceivedMap() {
+  if (typeof mapOptions === "undefined" || mapOptions === null) {
+    console.log("LPAC: mapOptions object not present, skipping...");
+    return;
+  }
 
-  const marker = window.lpac_marker;
-  const infowindow = window.lpac_infowindow;
+  let map = {};
+
+  if (typeof lpac_pro_js !== "undefined" && lpac_pro_js !== null) {
+    const google_map_id = lpac_pro_js.google_map_id ?? "";
+
+    const mapConfig = {
+      mapId: google_map_id,
+    };
+
+    map = initializeMap(mapConfig);
+  } else {
+    map = initializeMap();
+  }
 
   if (typeof map === "undefined" || map === null) {
     console.log("LPAC: map object not present, skipping...");
     return;
   }
 
-  if (typeof mapOptions === "undefined" || mapOptions === null) {
-    console.log("LPAC: mapOptions object not present, skipping...");
-    return;
-  }
+  map.setMapTypeId(mapOptions.lpac_thank_you_page_default_map_type);
 
   map.setOptions({
+    streetViewControl: false,
     center: {
       lat: mapOptions.lpac_map_order_latitude,
       lng: mapOptions.lpac_map_order_longitude,
@@ -36,9 +53,14 @@ function lpac_setup_order_received_map() {
     lng: mapOptions.lpac_map_order_longitude,
   };
 
-  marker.setPosition(latlng);
-  marker.setDraggable(false);
-  marker.setCursor("default");
+  const markerOptions = {
+    clickable: false,
+    position: latlng,
+    map: map,
+  };
+
+  const marker = initializeMarker(markerOptions);
+  const infowindow = initializeInfoWindow();
 
   // Only open the infowindow if we have a shipping address
   if (mapOptions.lpac_map_order_shipping_address_1) {
@@ -49,4 +71,4 @@ function lpac_setup_order_received_map() {
   }
 }
 
-lpac_setup_order_received_map();
+setupOrderReceivedMap();

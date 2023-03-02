@@ -1,3 +1,4 @@
+/** Globals: lpacVersion, lpac_pro_js (when paid plugin active) */
 (function ($) {
   "use strict";
 
@@ -29,12 +30,6 @@
    * practising this, we should strive to set a better example in our own work.
    */
 
-  /**
-   * Output plugin version to console.
-   */
-  function outputLpacVersion() {
-    console.log("Location Picker at Checkout version:", lpacVersion);
-  }
   /**
    * Sets the selected store location for guests.
    */
@@ -97,7 +92,6 @@
   }
 
   $(document).ready(function () {
-    outputLpacVersion();
     shortcodeStoreLocationChange();
     shortcodeGuestStoreLocationSet();
   });

@@ -1,14 +1,14 @@
 <?php
 /**
-* Class responsible for creating notices markup.
-*
-* Author:          Uriahs Victor
-* Created on:      08/01/2022 (d/m/y)
-*
-* @link    https://uriahsvictor.com
-* @since   1.4.3
-* @package Notices
-*/
+ * Class responsible for creating notices markup.
+ *
+ * Author:          Uriahs Victor
+ * Created on:      08/01/2022 (d/m/y)
+ *
+ * @link    https://uriahsvictor.com
+ * @since   1.4.3
+ * @package Notices
+ */
 namespace Lpac\Notices;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,8 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
-* Class Notice.
-*/
+ * Class Notice.
+ */
 class Notice {
 
 	use \Lpac\Traits\Plugin_Info;
@@ -33,6 +33,7 @@ class Notice {
 
 	/**
 	 * Get the notice ids that have been dismissed by user.
+	 *
 	 * @return mixed
 	 */
 	protected function get_dismissed_notices() {
@@ -41,13 +42,14 @@ class Notice {
 
 	/**
 	 * Create the dismiss URL for a notice.
+	 *
 	 * @param string $notice_id The ID of the particular notice.
 	 * @return string
 	 */
 	protected function create_dismiss_url( string $notice_id ) {
 
 		if ( ! function_exists( 'wp_create_nonce' ) ) {
-			require_once( ABSPATH . 'wp-includes/pluggable.php' );
+			require_once ABSPATH . 'wp-includes/pluggable.php';
 		}
 		$nonce = wp_create_nonce( 'lpac_notice_nonce_value' );
 
@@ -57,27 +59,28 @@ class Notice {
 
 	/**
 	 * Create the markup for a notice
+	 *
 	 * @param string $notice_id The ID of the particular notice.
-	 * @param array $content The content to add to the notice.
+	 * @param array  $content The content to add to the notice.
 	 * @return string
 	 */
 	protected function create_notice_markup( string $notice_id, array $content ) {
 
-		# Only show the Notice to Admins
+		// Only show the Notice to Admins
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
 		$dismissed_notices = $this->get_dismissed_notices();
 
-		# Bail if this notice has been dismissed
+		// Bail if this notice has been dismissed
 		if ( is_array( $dismissed_notices ) && in_array( $notice_id, $dismissed_notices, true ) ) {
 			return;
 		}
 
 		$title             = $content['title'] ?? '';
 		$body              = $content['body'] ?? '';
-		$cta_text          = $content['cta'] ?? esc_html__( 'Learn more', 'map-location-picker-at-checkout-for-woocommerce' );
+		$cta_text          = ucwords( $content['cta'] ?? esc_html__( 'Learn more', 'map-location-picker-at-checkout-for-woocommerce' ) );
 		$learn_more_link   = $content['link'] ?? '';
 		$learm_more_output = '';
 
@@ -143,7 +146,7 @@ HTML;
 				$dismissed_notices = array();
 			}
 
-			# Add our new notice ID to the currently dismissed ones.
+			// Add our new notice ID to the currently dismissed ones.
 			array_push( $dismissed_notices, $notice_id );
 
 			$dismissed_notices = array_unique( $dismissed_notices );

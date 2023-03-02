@@ -1,27 +1,26 @@
 <?php
 
 /**
-* Admin Notices.
-*
-* Houses all the notices to show in admin dashboard.
-*
-* @link    https://uriahsvictor.com
-* @since    1.1.0
-*
-* @package    Lpac
-*/
+ * Admin Notices.
+ *
+ * Houses all the notices to show in admin dashboard.
+ *
+ * @link    https://uriahsvictor.com
+ * @since    1.1.0
+ *
+ * @package    Lpac
+ */
 namespace Lpac\Notices;
 
 class Admin {
 
 	/**
-	* Detect if WooCommerce is active.
-	*
-	* Plugin runs off WooCommerce so requires WooCommerce to be active.
-	*
-	* @since    1.1.0
-	*
-	*/
+	 * Detect if WooCommerce is active.
+	 *
+	 * Plugin runs off WooCommerce so requires WooCommerce to be active.
+	 *
+	 * @since    1.1.0
+	 */
 	public function lpac_wc_not_active_notice() {
 
 		if ( ! class_exists( 'woocommerce' ) ) {
@@ -40,14 +39,13 @@ class Admin {
 	}
 
 	/**
-	* Detect if site has HTTPS support.
-	*
-	* Geolocation requires that site is running under HTTPS
-	* https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features
-	*
-	* @since    1.1.0
-	*
-	*/
+	 * Detect if site has HTTPS support.
+	 *
+	 * Geolocation requires that site is running under HTTPS
+	 * https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features
+	 *
+	 * @since    1.1.0
+	 */
 	public function lpac_site_not_https() {
 
 		if ( is_ssl() ) {
@@ -81,7 +79,7 @@ class Admin {
 		<div class="notice notice-error is-dismissible">
 		<?php
 		/* translators: 1: Opening <p> HTML element 2: Opening <strong> HTML element 3: Closing <strong> HTML element 4: Closing <p> HTML element  */
-		echo sprintf( __( '%1$s%2$sLocation Picker at Checkout for WooCommerce(LPAC) NOTICE:%3$s PHP version too low to use this plugin. Please change to at least PHP 7.0. You can contact your web host for assistance in updating your PHP version.%4$s', 'map-location-picker-at-checkout-for-woocommerce' ), '<p>', '<strong>', '</strong>', '</p>' );
+		echo sprintf( __( '%1$s%2$sLocation Picker at Checkout for WooCommerce(LPAC) NOTICE:%3$s PHP version too low to use this plugin. Please change to at least PHP 7.4. You can contact your web host for assistance in updating your PHP version.%4$s', 'map-location-picker-at-checkout-for-woocommerce' ), '<p>', '<strong>', '</strong>', '</p>' );
 		?>
 		</div>
 		<?php
