@@ -51,13 +51,14 @@ export function getNavigatorCoordinates() {
 /**
  * Bootstrap the functionality of the map.
  *
- * @param mapOptions the Map options
+ * @param mapData the data for manipulating the map.
  * @returns latLng The latitude and longitude.
  * @since 1.7.0
  */
-export async function bootstrapMapFunctionality(mapOptions) {
+export async function bootstrapMapFunctionality(mapData) {
   const position = await getNavigatorCoordinates();
   let latLng = "";
+
   if (position) {
     var latitude = position.coords.latitude;
     var longitude = position.coords.longitude;
@@ -65,12 +66,22 @@ export async function bootstrapMapFunctionality(mapOptions) {
     console.log(
       "Location Picker At Checkout Plugin: Position object is empty. Navigator might be disabled or this site might be detected as insecure."
     );
-    var latitude = mapOptions.lpac_map_default_latitude;
-    var longitude = mapOptions.lpac_map_default_longitude;
+
+    const currentZoom = mapData.map.getZoom();
+    if (currentZoom < 13) {
+      mapData.map.setZoom(13);
+    }
+
+    // Make sure a user is able to select their location on the map when they have blocked access to their location.
+    listenToMapClicks(mapData);
+    listenToMapDrag(mapData);
 
     /**
      * We're setting this to '' so that we can force the user to make use of the map if the option is enabled.
      * So that if we do not receive a location, the user can enter one manually.
+     *
+     * Note that doing this means we have to be sure to add the event listeners for drag and click to the map when
+     *
      */
     return (latLng = {
       lat: "",
@@ -94,7 +105,7 @@ export async function bootstrapMapFunctionality(mapOptions) {
  * @param {object} mapData
  */
 export async function bootstrapMapFunctionalityJQuery(mapData) {
-  const latLng = await bootstrapMapFunctionality();
+  const latLng = await bootstrapMapFunctionality(mapData);
 
   if (latLng.lat !== "" && latLng.lng !== "") {
     const map = mapData.map;

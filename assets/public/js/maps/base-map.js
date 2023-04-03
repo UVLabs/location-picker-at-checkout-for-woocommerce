@@ -51,6 +51,16 @@ if (
     clickableIcons: mapOptions.lpac_map_clickable_icons,
     backgroundColor: mapOptions.lpac_map_background_color, //loading background color
     mapId: google_map_id,
+    // If the option is in the array then that means we want to hide it. So we need to negate the outcome to get the correct behaviour.
+    mapTypeControl: mapOptions.disabled_map_controls
+      ? !mapOptions.disabled_map_controls.includes("maptype")
+      : true,
+    zoomControl: mapOptions.disabled_map_controls
+      ? !mapOptions.disabled_map_controls.includes("zoom")
+      : true,
+    fullscreenControl: mapOptions.disabled_map_controls
+      ? !mapOptions.disabled_map_controls.includes("fullscreen")
+      : true,
   };
 
   /**

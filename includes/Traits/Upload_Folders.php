@@ -50,7 +50,6 @@ trait Upload_Folders {
 		}
 
 		return $folder_dir;
-
 	}
 
 	/**
@@ -62,7 +61,7 @@ trait Upload_Folders {
 	 * @param string $ext
 	 * @return string The upload URL
 	 */
-	private function get_resource_url( string $folder_name, int $order_id, string $ext = '.jpg' ) {
+	public function get_resource_url( string $folder_name, int $order_id, string $ext = '.jpg' ) {
 
 		$upload_url = wp_upload_dir()['baseurl'];
 

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Location Picker At Checkout For WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-01 22:51+0000\n"
+"POT-Creation-Date: 2023-03-05 20:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Uriahs Victor <support@lpacwp.com>\n"
 "Language-Team: \n"
@@ -1464,7 +1464,9 @@ msgid "Please select the store location you would like to order from."
 msgstr ""
 
 #: includes/Views/Frontend/Frontend.php:707
-msgid "Please select your location manually using the map."
+msgid ""
+"Please select your location manually by clicking on the map then moving the "
+"marker to your desired location."
 msgstr ""
 
 #: includes/Controllers/Checkout_Page/Validate.php:73

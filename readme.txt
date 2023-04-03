@@ -1,10 +1,10 @@
-=== Location Picker at Checkout - WooCommerce Checkout Map - Google Address AutoFill Plugin - Kikote ===
+=== Kikote - Location Picker at Checkout & Google Address AutoFill Plugin for WooCommerce ===
 Contributors: uriahs-victor
 Tags: woocommerce, location picker, checkout map, geolocation, google map, map, delivery map
 Requires at least: 5.5
 Requires PHP: 7.4
-Tested up to: 6.1
-Stable tag: 1.7.0
+Tested up to: 6.2
+Stable tag: 1.7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,13 +16,13 @@ https://www.youtube.com/watch?v=vDlIxPeBs1M
 
 Do you run a WooCommerce store where you need more detailed location information from a customer? If so, then why not let them choose their exact location on Google Maps? 
 
-Kikote is a Location Picker At Checkout plugin for WooCommerce which allows store owners to add more flexibility to their WooCommerce store by letting their customers choose exactly where they'd like their product(s) delivered. 
+Kikote (pronounced Key-Ko-tay) is a Location Picker At Checkout plugin for WooCommerce which allows store owners to add more flexibility to their WooCommerce store by letting their customers choose exactly where they'd like their product(s) delivered. 
 
 This plugin is excellent for stores with delivery personnel that ship products to customers within a moderate geographical area. It can also work for websites which offer Pickup services such as Private Taxi websites.
 
-Kikote- Location Picker At Checkout for WooCommerce enables store owners to get more precise location details without having to contact customers via other means for location information or directions. With this plugin, lots of time can be saved by allowing customers to select their exact location on Google Maps at checkout with WooCommerce.
+Kikote - Location Picker At Checkout for WooCommerce enables store owners to get more precise location details without having to contact customers via other means for location information or directions. With this plugin, lots of time can be saved by allowing customers to select their exact location on Google Maps at checkout with WooCommerce.
 
-> Works Great with DPS!
+> Works Great with Delivery & Scheduling WooCommerce Plugin!
 >
 > The plugin works great with [Delivery & Pickup Scheduling for WooCommerce](https://wordpress.org/plugins/delivery-and-pickup-scheduling-for-woocommerce/). Feel free to try them both out!
 
@@ -30,7 +30,7 @@ Kikote- Location Picker At Checkout for WooCommerce enables store owners to get 
 
 Kikote is a Checkout Location Picker plugin for WooCommerce that is suitable for any website that offers Delivery or Pickups for their customers. A Delivery website example would be an online restaurant, a Pickup website example would be a private taxi website. The plugin adds a Google map on the WooCommerce checkout page that customers can use to select their desired location. Alternatively, the plugin can be set up to also allow it to automatically detect the customer's location on checkout page load and allow them to make any corrections
 
-Kikote- Location Picker at Checkout makes use of the Google Maps API to carry out it's functions; it can work as any of the following:
+Kikote - Location Picker at Checkout makes use of the Google Maps API to carry out it's functions; it can work as any of the following:
 
 ### WooCommerce Checkout Map Plugin 
 
@@ -90,11 +90,15 @@ Kikote comes with multiple features to fine tune where you deliver to and how mu
 
 The plugin comes with a Map Builder feature that allows store owners to create custom Google Maps with their store locations and shipping regions and add those maps anywhere on their website using a shortcode.
 
+> Works Great with Printus - Cloud Printing Plugin for WooCommerce!
+>
+> The plugin works great with [Printus - Cloud Printing Plugin for WooCommerce](https://wordpress.org/plugins/printus-cloud-printing-for-woocommerce/). A remote cloud printing plugin that allows you to print receipts, invoices and package labels for WooCommerce. Feel free to try them both out!
+
 ### Below are a few types of stores that would benefit tremendously from this plugin:
 
-- Online Food Delivery websites
-- Online Supermarkets
-- Online Furniture websites
+- Online food delivery websites
+- Online supermarkets
+- Online furniture websites
 - Restaurants offering delivery via their website
 - Hardware Rental & Delivery websites
 - Car Rental websites
@@ -153,15 +157,12 @@ Have a feature in mind? Feel free to submit it on the support forum.
 - Online Ordering System For Restaurants & Local Retail by Orderable
 - CheckoutWC custom checkout plugin
 
-**_Kikote- Location Picker at Checkout is the last WooCommerce checkout map plugin you'll need._**
+**_Kikote - Location Picker at Checkout is the last WooCommerce checkout map plugin you'll need._**
 
-> 
-> Join our E-commerce Support Discord community to meet E-commerce store owners like yourself from around the world and discuss on ways to help grow sales, plugin recommendations, tips and tricks and more. [Here >>>](https://discord.gg/d8TsBv8D)
->
 
 ### Configuring Plugin:
 
-- The plugin settings are located in **WordPress Admin Dashboard->SL Plugins->Location Picker At Checkout**.
+- The plugin settings are located in **WordPress Admin Dashboard->SoaringLeads->Location Picker At Checkout**.
 
 ### Plugin Documentation
 
@@ -179,8 +180,9 @@ Have a feature in mind? Feel free to submit it on the support forum.
 ### Misc
 
 - Learn more about Location Picker at Checkout for WooCommerce or Purchase the PRO version [Here >>>](https://lpacwp.com)
-- Join our E-commerce Support Discord community. Meet E-commerce store owners like yourself to discuss on ways to help grow your E-commerce store. [Here >>>](https://discord.gg/d8TsBv8D)
-- Checkout our other plugin Delivery & Pickup Scheduling for WooCommerce [Here >>>](https://dpswp.com)
+- Meet E-commerce store owners like yourself to discuss on ways to help grow your E-commerce store [Here >>>](https://lpacwp.com/e-commerce-support-community/)
+- Checkout our other plugin to help further manage your store: Delivery & Pickup Scheduling for WooCommerce [Here >>>](https://dpswp.com)
+- Checkout [Printus](https://printus.cloud), a remote cloud printing plugin for WooCommerce that prints your orders as soon as they come in [Here >>>](https://printus.cloud).
 - Assets [Attribution](https://lpacwp.com/attribution/)
 
 This plugin is free software, and the most important features have been kept free and open to use so that all can benefit. If you like the plugin and believe that it's helped grow your business, then please consider [leaving a review](https://wordpress.org/support/plugin/map-location-picker-at-checkout-for-woocommerce/reviews/#new-post).
@@ -190,7 +192,7 @@ This plugin is free software, and the most important features have been kept fre
 
 1. Extract the downloaded zip file and upload the `location-picker-at-checkout-for-woocommerce` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Configure the plugin in WordPress Dashboard->SL Plugins->Location Picker At Checkout
+3. Configure the plugin in WordPress Dashboard->SoaringLeads->Location Picker At Checkout
 
 Alternatively, install this plugin by searching for it from the plugins area of your WordPress website.
 
@@ -211,7 +213,17 @@ Please ensure that both WooCommerce and Kikote are NOT activated Network-wide. B
 
 These sorts of issues are usually due to a JavaScript issue on the website. Check your [browser console](https://balsamiq.com/support/faqs/browserconsole/) for any errors that might point to the cause. Feel free to post those errors in the support forum and include a full screenshot of your browser console.
 
+= What happens if customer denies access to their location =
+
+An alert will be shown informing the customer to select their location manually on the google map.
+
 = Map says "For development purposes only" =
+
+This message shows when you have not finished setting up the map correctly inside the Google Cloud Console. Please make sure you've followed all the steps from the [setup guide](https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/) including the "Setting up Billing & Google Monthly Credit" section.
+
+= Map shows "Oops! Something went wrong." =
+
+This is usually shown when the domain you restricted inside google cloud console is wrong. Make sure you've restricted the correct domain. [See here for instructions](https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/#important-restricting-your-api-key). 
 
 This message shows when you have not finished setting up the map correctly inside the Google Cloud Console. Please make sure you've followed all the steps from the [setup guide](https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/) including the "Setting up Billing & Google Monthly Credit" section.
 
@@ -254,20 +266,44 @@ Always take a backup before updating your plugins!
 
 == Changelog ==
 
+= 1.7.4 =
+* [New] Display option to show map before payment options on checkout page.
+* [New] Option to disable various map controls such as fullscreen and map type.
+* [New] Option to set map region.
+* [Fix PRO] Cost by Store Location feature was not working.
+* [Improvement] Logic for outputting map on the checkout page. It's now easier to change the location with the supplied `lpac_checkout_map_orientation` filter.
+* [Improvement PRO] Display of searchbox on map feature.
+* [Change] Plugin's menu item is now called "SoaringLeads".
+* [Dev PRO] It's now possible to filter the calculated shipping cost of all shipping cost workflows to add any additional markup of changes. `kikote_distance_range_shipping_cost`, `kikote_distance_shipping_cost`, `kikote_region_shipping_cost`, `kikote_store_shipping_cost`.
+* [Dev] Added `kikote_possible_checkout_map_locations` filter for the list of checkout locations shown in Kikote's display settings.
+* [Info] Tested on WC 7.5.
+* [Info] Tested on WP 6.2.
+
+= 1.7.3 =
+* [Fix] Console error when customers denied access to their location and then clicked the get current location button.
+* [Fix] Plugin redirecting to inexistent dashboard page after activation when WooCommerce is not active on website.
+* [Improvement] Updated some plugin logos.
+* [Info] Tested on WP 6.2-beta5.
+
+= 1.7.2 =
+* [Dev] Version bump.
+
+= 1.7.1 =
+* [Fix] Map not being usable when customers denied access to their location.
+
 = 1.7.0 =
 Location Picker at Checkout for WooCommerce is now called Kikote! Meaning "Where" in Saint Lucian French Creole.
 
 * [New PRO] Map Builder feature for building custom Google Maps using plugin settings. [Learn more](https://lpacwp.com/docs/map-builder/)
 * [New PRO] Option to add an autocomplete seachbox inside the map display on the checkout page. [Learn more](https://lpacwp.com/docs/getting-started/google-cloud-console/places-autocomplete-feature/#show-a-searchbox-inside-the-map)
-* [New] Option to add an AutoComplete searchbox on the checkout page map.
 * [New] Option stop the plugin from dissecting the address it receives from the Google API before adding it into the Street Address 1 field.
-* [New] E-commerce Support Discord community - Meet fellow store owners from around the world to discuss ways to grow your E-Commerce business. [Join Here >>>](https://discord.gg/d8TsBv8D).
+* [New] E-commerce Support Discord community - Meet fellow store owners from around the world to discuss ways to grow your E-Commerce business. [Join Here >>>](https://discord.gg/U85vKcjsqZ).
 * [Fix] Shipping Cost by Region restriction features was not showing the available shipping regions dropdown if the plugin settings was firstly saved with no created shipping regions.
 * [Fix] Rare instances where lat and long array values for Shipping Cost by Distance feature would overwrite itself.
 * [Fix] Plugin settings link was not redirecting to the correct subsite on multisite installs.
 * [Improvement] Refactored JavaScript code for quicker and more modular future development of plugin.
 * [Change] Store Selector shortcode has been changed from `[lpac-store-selector]` to `[kikote_store_selector]`.
-* [Dev] Tested on WC 7.4.
+* [Info] Tested on WC 7.4.
 
 = 1.6.14 =
 * [Improvement] Don't enforce use of autocomplete feature when the customer has selected a Local Pickup shipping method.
@@ -278,16 +314,16 @@ Location Picker at Checkout for WooCommerce is now called Kikote! Meaning "Where
 * [New] It's now possible to update the map's instruction text from the plugin Display Settings area.
 * [Fix] Console error when callback method not set on Google Maps script.
 * [Improvement] The Street Address 1 field will no longer populate with the entire customer address. It will now attempt to only place the street address into the field. To return to the original functionality, please [see this doc](https://lpacwp.com/docs/custom-code-samples/checkout-map/how-to-add-full-address-to-address1-field/).
-* [Improvement] Improvements to plugin's menu item. Plugin submenus are now under the "SL Plugins" menu item.
-* [Dev] Tested on WC 7.3.
+* [Improvement] Improvements to plugin's menu item. Plugin submenus are now under the "SoaringLeads" menu item.
+* [Info] Tested on WC 7.3.
 
 = 1.6.12 =
 * [Fix] Map marker would sometimes appear as a white box on some websites.
 * [Improvement] Add "Location" label on WooCommerce Thank You and Past Order view pages.
 * [Improvement] Add Location Picker at Checkout Menu item.
 * [Compatibility] Improved compatibility with FunnelKit (previously WooFunnels).
-* [Dev] Tested on WC 7.2.
 * [Dev] Update Freemius SDK.
+* [Info] Tested on WC 7.2.
 
 = 1.6.11 =
 * [Dev] Update Freemius SDK.
@@ -296,7 +332,7 @@ Location Picker at Checkout for WooCommerce is now called Kikote! Meaning "Where
 * [New] Added an option to the plugin's Display Settings to choose the default map type that loads on the checkout page (Road Map, Satellite etc.).
 * [New] Add-ons tab in plugin settings.
 * [Dev] Code improvements.
-* [Dev] Tested on WC 7.1.
+* [Info] Tested on WC 7.1.
 
 = 1.6.9 =
 * [New PRO] Added a new option to the Cost by Distance Range feature for calculating distance per unit if using flat rates aren't ideal.
@@ -318,7 +354,7 @@ Location Picker at Checkout for WooCommerce is now called Kikote! Meaning "Where
 * [Fix] Address would not show in marker info window if no shipping zones exist on the website.
 * [Dev] You can now change the map locale using the `lpac_map_locale` filter.
 * [Dev] Customer's last order will no longer be their full formatted addresses, it will instead be the address line 1. This behavior can be changed using the `lpac_last_order_address` filter.
-* [Dev] Tested on WC v7.0-rc.2.
+* [Info] Tested on WC v7.0-rc.2.
 
 = 1.6.7 =
 

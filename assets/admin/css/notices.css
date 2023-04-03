@@ -5,9 +5,7 @@
 
 .lpac-admin-notice {
   background: #fff;
-  border: 1px solid #fca503;
-  border-left-width: 4px;
-  box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
+  box-shadow: 0 10px 10px rgb(0 0 0 / 4%);
   display: block;
   margin-bottom: 20px;
   margin-top: 30px;
@@ -21,14 +19,13 @@
   content: "";
   display: block;
   background-image: url("../../img/logo.png");
-  background-size: 110px 110px;
-  background-repeat: no-repeat;
-  background-position: 0 45%;
+  background-size: contain;
+  background-position: 0 50%;
   width: 130px;
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 5px;
+  left: 0;
 }
 
 .lpac-notice-title {
@@ -38,9 +35,8 @@
 }
 
 .lpac-notice-body {
-  font-size: 14px;
-  font-weight: 500;
-  margin: 10px 0 30px 0;
+  font-size: 16px;
+  font-weight: 400;
 }
 
 li#lpac-notice-cta a {
@@ -72,5 +68,11 @@ li#lpac-notice-dismiss a {
 
   #lpac-notice-dismiss {
     margin-top: 25px;
+  }
+}
+
+@media screen and (max-width: 782px) {
+  .lpac-notice-logo {
+    background-repeat: no-repeat;
   }
 }

@@ -80,6 +80,7 @@ class Lpac_Uninstall {
 			'lpac_view_order_page_map_id',
 			'lpac_checkout_page_map_id',
 			'lpac_checkout_page_map_default_view',
+			'kikote_disabled_map_controls',
 			// Store Locations
 			'lpac_store_locations_cords',
 			'lpac_store_locations_labels',

@@ -95,8 +95,8 @@ class Frontend_Enqueues
         // -------------
         // Output plugin version to console
         // -------------
-        $plugin_type = ( defined( 'LPAC_PLUGIN_PATH_URL_PRO' ) ? 'PRO' : 'Free' );
-        wp_add_inline_script( $this->plugin_name, "\n\t\t\tconsole.log('Location Picker at Checkout version {$plugin_type}: {$this->version}');\n\t\t\t" );
+        $plugin_type = ( LPAC_IS_PREMIUM_VERSION ? 'PRO' : 'Free' );
+        wp_add_inline_script( $this->plugin_name, "\n\t\t\tconsole.log('Kikote - Location Picker at Checkout for WooCommerce {$plugin_type}: v{$this->version}');\n\t\t\t" );
         // --------------
         // --------------
         /**

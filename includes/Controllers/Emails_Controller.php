@@ -95,10 +95,9 @@ class Emails_Controller {
 		$a_styles    = "background: $base_color; border-radius: 20px; color: $text_color; display: block; margin: 0 auto; padding: 10px; text-decoration: none; width: 150px;";
 		$a_styles    = apply_filters( 'lpac_email_btn_a_styles', $a_styles );
 
-		$button = <<<HTML
-		<p style="$p_styles"><a href="$link" class="btn button" style="$a_styles" target="_blank">$button_text</a></p>
-HTML;
-		echo $button;
+		?>
+		<p style="<?php echo esc_attr( $p_styles ); ?>"><a href="<?php echo esc_attr( $link ); ?>" class="btn button" style="<?php echo esc_attr( $a_styles ); ?>" target="_blank"><?php echo esc_html( $button_text ); ?></a></p>
+		<?php
 	}
 
 	/**
@@ -130,12 +129,12 @@ HTML;
 		$qr_code_link           = $this->get_resource_url( $folder_name, $order_id );
 		$delivery_location_text = __( 'Delivery Location', 'map-location-picker-at-checkout-for-woocommerce' );
 		$delivery_location_text = apply_filters( 'lpac_email_map_location_link_button_text', $delivery_location_text );
-
-		echo "<div style='text-align: center !important'>
-				<a href='$link' target='_blank'><img style='display: block !important; margin: 0 auto !important; text-align: center !important;' src='{$qr_code_link}'/></a>
-				 <p style='text-align: center !important; font-size: 20px; margin-bottom: 40px'>{$delivery_location_text}</p>
+		?>
+		<div style='text-align: center !important'>
+				<a href='<?php echo esc_attr( $link ); ?>' target='_blank'><img style='display: block !important; margin: 0 auto !important; text-align: center !important;' src='<?php echo esc_attr( $qr_code_link ); ?>'/></a>
+				<p style='text-align: center !important; font-size: 20px; margin-bottom: 40px'><?php echo esc_html( $delivery_location_text ); ?></p>
 			</div>";
-
+		<?php
 	}
 
 	/**
@@ -190,10 +189,9 @@ HTML;
 			$width      = $size_parts[0];
 			$height     = $size_parts[1];
 		}
-
-		$image = "<a href='$map_link' target='_blank'><img style='display: block !important; margin-bottom: 40px !important; margin-left: auto !important; margin-right: auto !important; postition: relative !important;' src='$image_src' width='$width' height='$height'/></a>";
-		echo $image;
-
+		?>
+		<a href='<?php echo esc_attr( $map_link ); ?>' target='_blank'><img style='display: block !important; margin-bottom: 40px !important; margin-left: auto !important; margin-right: auto !important; postition: relative !important;' src='<?php echo esc_attr( $image_src ); ?>' width='<?php echo esc_attr( $width ); ?>' height='<?php echo esc_attr( $height ); ?>'/></a>
+		<?php
 	}
 
 	/**
@@ -242,15 +240,22 @@ HTML;
 		$longitude   = $cords_array[1] ?? '';
 
 		$link = ( ! empty( $cords ) ) ? apply_filters( 'lpac_email_map_link_provider', "https://www.google.com/maps/search/?api=1&query=$cords", $latitude, $longitude ) : '#';
-
-		$markup = "<hr><p>
-				   		<span style='font-size: 18px'>$label:</span> <br/><br/>
-						<a style='font-weight: bold;' href='$link' target='_blank'>
-							$store_origin_name <br/>
-							$address <br/>
-						</a>
-					</p><hr><br/>";
-		echo $markup;
+		?>
+		<hr>
+		<p>
+		<span style='font-size: 18px'><?php echo esc_html( $label ); ?>:</span>
+		<br/>
+		<br/>
+		<a style='font-weight: bold;' href='<?php echo esc_attr( $link ); ?>' target='_blank'>
+			<?php echo esc_html( $store_origin_name ); ?> 
+			<br/>
+			<?php echo esc_html( $address ); ?>
+			<br/>
+		</a>
+		</p>
+		<hr>
+		<br/>
+		<?php
 	}
 
 }
