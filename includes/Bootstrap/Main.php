@@ -297,9 +297,13 @@ class Main
         /*
          * Output map on checkout page
          */
-        $checkout_page_map_location = get_option( 'lpac_checkout_map_orientation', 'woocommerce_before_checkout_billing_form' );
-        $checkout_page_map_location = apply_filters( 'lpac_checkout_map_orientation', $checkout_page_map_location );
-        $this->loader->add_action( $checkout_page_map_location, $plugin_public_display, 'output_map_on_checkout_page' );
+        add_action( 'plugins_loaded', function () {
+            $checkout_page_map_location = get_option( 'lpac_checkout_map_orientation', 'woocommerce_checkout_before_customer_details' );
+            $checkout_page_map_location = apply_filters( 'lpac_checkout_map_orientation', $checkout_page_map_location );
+            $class = new \Lpac\Views\Frontend\Frontend();
+            $priority = apply_filters( 'kikote_checkout_map_orientation_filter_priority', 9 );
+            add_action( $checkout_page_map_location, array( $class, 'output_map_on_checkout_page' ), $priority );
+        } );
         /*
          * Translated alert strings for checkout page.
          */
@@ -502,7 +506,7 @@ class Main
         
         add_menu_page(
             __( 'SoaringLeads Plugins', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'SL Plugins',
+            'SoaringLeads',
             'manage_options',
             'sl-plugins-menu',
             array( $this, 'output_root_submenu_upsells' ),
@@ -521,8 +525,8 @@ class Main
     {
         add_submenu_page(
             'sl-plugins-menu',
-            'Kikote- Location Picker at Checkout',
-            'Kikote- Location Picker at Checkout',
+            'Kikote - Location Picker at Checkout',
+            'Kikote - Location Picker at Checkout',
             'manage_options',
             'lpac-menu',
             array( $this, 'menu_item_html' ),
@@ -544,7 +548,7 @@ class Main
     }
     
     /**
-     * HTML for root SL Plugins page.
+     * HTML for root SoaringLeads page.
      *
      * Populate with upsell content.
      *

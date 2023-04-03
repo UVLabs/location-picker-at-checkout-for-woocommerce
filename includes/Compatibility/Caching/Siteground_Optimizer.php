@@ -2,13 +2,12 @@
 /**
  * Class responsible for adding compatibility with Siteground Optimizer.
  *
- * https://wordpress.org/plugins/sg-cachepress/
- *
  * Author:          Uriahs Victor
  * Created on:      01/02/2023 (d/m/y)
  *
- * @link    https://uriahsvictor.com
- * @since   1.6.14
+ * @link https://uriahsvictor.com
+ * @link https://wordpress.org/plugins/sg-cachepress/
+ * @since 1.6.14
  * @package Compatibility
  */
 
@@ -31,7 +30,7 @@ class Siteground_Optimizer {
 	 *
 	 * Setting the link as defer causes it to load(execute) when the page is done downloading, it should actually be executed immediately.
 	 *
-	 * @param array $exclude_list
+	 * @param array $exclude_list The list of handles to exclude.
 	 * @return array
 	 * @since 1.6.14
 	 */
@@ -45,7 +44,7 @@ class Siteground_Optimizer {
 	 *
 	 * They are already minified.
 	 *
-	 * @param array $exclude_list
+	 * @param array $exclude_list The list of handles to exclude.
 	 * @return array
 	 * @since 1.6.14
 	 */
@@ -59,7 +58,7 @@ class Siteground_Optimizer {
 	/**
 	 * Exclude inline scripts from being combined.
 	 *
-	 * @param array $exclude_list
+	 * @param array $exclude_list The list of handles to exclude.
 	 * @return array
 	 * @since 1.6.14
 	 */
@@ -72,7 +71,7 @@ class Siteground_Optimizer {
 	/**
 	 * Exclude scripts from being combined.
 	 *
-	 * @param array $exclude_list
+	 * @param array $exclude_list The list of handles to exclude.
 	 * @return array
 	 * @since 1.6.14
 	 */

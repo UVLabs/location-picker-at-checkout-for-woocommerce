@@ -149,12 +149,18 @@
         "select[name^=lpac_places_autocomplete_country_restrictions]"
       );
       const placesAutoCompleteType = $("#lpac_places_autocomplete_type");
+      const placesAutoCompleteSearchbox = $(
+        "#lpac_places_autocomplete_searchbox_in_map"
+      );
+      const placesAutoCompleteForced = $("#lpac_force_places_autocomplete");
 
       if (!placesAutoCompleteChecked) {
         placesAllowedFields.closest("tr").hide();
         placesAutoCompleteHideMap.closest("tr").hide();
         placesAutoCompleteCountryRestrictions.closest("tr").hide();
         placesAutoCompleteType.closest("tr").hide();
+        placesAutoCompleteSearchbox.closest("tr").hide();
+        placesAutoCompleteForced.closest("tr").hide();
       }
 
       placesAutoComplete.on("click", () => {
@@ -163,11 +169,15 @@
           placesAutoCompleteHideMap.closest("tr").show();
           placesAutoCompleteCountryRestrictions.closest("tr").show();
           placesAutoCompleteType.closest("tr").show();
+          placesAutoCompleteSearchbox.closest("tr").show();
+          placesAutoCompleteForced.closest("tr").show();
         } else {
           placesAllowedFields.closest("tr").hide();
           placesAutoCompleteHideMap.closest("tr").hide();
           placesAutoCompleteCountryRestrictions.closest("tr").hide();
           placesAutoCompleteType.closest("tr").hide();
+          placesAutoCompleteSearchbox.closest("tr").hide();
+          placesAutoCompleteForced.closest("tr").hide();
         }
       });
     }

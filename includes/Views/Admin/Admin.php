@@ -69,22 +69,25 @@ class Admin {
 
 		$map_link = Functions::create_customer_directions_link( $latitude, $longitude );
 
-		$markup = <<<HTML
+		?>
+		<div id='lpac-admin-order-meta'>
 			<div class="lpac-admin-order-meta-location">
-				<p><strong>$customer_location_meta_text:</strong></p>
-				<p><a href="$map_link" target="_blank"><button class='btn button' style='cursor:pointer' type='button'>$view_on_map_text</button></a></p>
-				<p style="font-size: 12px">$places_autocomplete_used_text</p>
+				<p><strong><?php echo esc_html( $customer_location_meta_text ); ?>:</strong></p>
+				<p><a href="<?php echo esc_attr( $map_link ); ?>" target="_blank"><button class='btn button' style='cursor:pointer' type='button'><?php echo esc_html( $view_on_map_text ); ?></button></a></p>
+				<p style="font-size: 12px"><?php echo esc_html( $places_autocomplete_used_text ); ?></p>
 			</div>
-HTML;
+		<?php
 
 		if ( ! empty( $store_origin_name ) ) {
 			$store_origin_name_meta_text = esc_html__( 'Selected Store', 'map-location-picker-at-checkout-for-woocommerce' );
-			$markup                     .= <<<HTML
-		<p><strong>$store_origin_name_meta_text:</strong> <span style="color: green; text-decoration: underline">$store_origin_name</span></p>
-HTML;
-		}
+			?>
+		
+		<p><strong><?php echo esc_html( $store_origin_name_meta_text ); ?>:</strong> <span style="color: green; text-decoration: underline"><?php echo esc_html( $store_origin_name ); ?></span></p>
+		
+		<?php } ?>
 
-		echo "<div id='lpac-admin-order-meta'>" . $markup . '</div>';
+		</div>
+		<?php
 	}
 
 	/**
@@ -170,14 +173,11 @@ JAVASCRIPT;
 		// Expose JS variables for usage
 		wp_add_inline_script( LPAC_PLUGIN_NAME . '-base-map', $global_variables, 'before' );
 
-		$map_container = <<<HTML
-			<div id="wrap" style="display: block; text-align: center;">
+		?>
+		<div id="wrap" style="display: block; text-align: center;">
 			<div class="lpac-map" style="display: inline-block; border: 1px solid #eee; width: 100%; height:345px;"></div>
-			</div>
-HTML;
-
-		echo $map_container;
-
+		</div>
+		<?php
 	}
 
 	/**
@@ -199,16 +199,15 @@ HTML;
 		$disabled          = $custom_attributes['disabled'] ?? '';
 		$script            = $link ? "window.open('$link')" : ''; // Adds button location link js if a 'link' value present on the field.
 
-		$markup = <<<HTML
-				<tr valign='top'>
-				<th scope='row' class='titledesc'>$name</th>
-				<td>
-					<button onclick="event.preventDefault(); $script" id="$id" class="$class" $disabled>$text</button>
-					<p class="description">$description</p>
-				</td>
-				</tr>
-HTML;
-		echo $markup;
+		?>
+			<tr valign='top'>
+			<th scope='row' class='titledesc'><?php echo esc_html( $name ); ?></th>
+			<td>
+				<button onclick="event.preventDefault(); <?php echo esc_attr( $script ); ?>" id="<?php echo esc_attr( $id ); ?>" class="<?php echo esc_attr( $class ); ?>" <?php echo esc_attr( $disabled ); ?>><?php echo esc_html( $text ); ?></button>
+				<p class="description"><?php echo wp_kses_post( $description ); ?></p>
+			</td>
+			</tr>
+		<?php
 
 	}
 
@@ -224,18 +223,15 @@ HTML;
 		$name        = $value['name'];
 		$description = $value['desc'];
 		$id          = $value['id'] ?? '';
-
-		$markup = <<<HTML
-				<tr valign='top' id="$id">
-				<th scope='row' class="titledesc $class" style='font-size: 18px'>$name</th>
-				<td>
-					<hr/>
-					<p class="description">$description</p>
-				</td>
-				</tr>
-HTML;
-		echo $markup;
-
+		?>
+			<tr valign='top' id="<?php echo esc_attr( $id ); ?>">
+			<th scope='row' class="titledesc <?php echo esc_attr( $class ); ?>" style='font-size: 18px'><?php echo esc_html( $name ); ?></th>
+			<td>
+				<hr/>
+				<p class="description"><?php echo wp_kses_post( $description ); ?></p>
+			</td>
+			</tr>
+		<?php
 	}
 
 	/**
@@ -251,18 +247,15 @@ HTML;
 		$description = $value['desc'];
 		$css         = $value['css'];
 
-		$markup = <<<HTML
-				<tr valign='top'>
-				<th scope='row' class="titledesc">$name</th>
-				<td>
-					<div class="$class" style="$css"></div>
-					<!-- <hr/> -->
-					<p class="description">$description</p>
-				</td>
-				</tr>
-HTML;
-		echo $markup;
-
+		?>
+			<tr valign='top'>
+			<th scope='row' class="titledesc"><?php echo esc_html( $name ); ?></th>
+			<td>
+				<div class="<?php echo esc_attr( $class ); ?>" style="<?php echo esc_attr( $css ); ?>"></div>
+				<p class="description"><?php echo wp_kses_post( $description ); ?></p>
+			</td>
+			</tr>
+		<?php
 	}
 
 	/**
@@ -280,15 +273,14 @@ HTML;
 		$text      = $value['text'];
 		$css       = $value['css'];
 
-		$markup = <<<HTML
-				<tr valign='top' class="$row_class">
-				<th scope='row' class="titledesc">$name</th>
-				<td>
-					<p class="$class" style="$css" id="$id">$text</p>
-				</td>
-				</tr>
-HTML;
-		echo $markup;
+		?>
+			<tr valign='top' class="<?php echo esc_attr( $row_class ); ?>">
+			<th scope='row' class="titledesc"><?php echo esc_html( $name ); ?></th>
+			<td>
+				<p class="<?php echo esc_attr( $class ); ?>" style="<?php echo esc_attr( $css ); ?>" id="<?php echo esc_attr( $id ); ?>"><?php echo wp_kses_post( $text ); ?></p>
+			</td>
+			</tr>
+		<?php
 	}
 
 	/**
@@ -341,11 +333,11 @@ HTML;
 						continue;
 					}
 
-					$readonly = $table_columns[ $field_name ]['readonly'] ?? '';
-					$readonly = ( $readonly ) ? 'readonly' : '';
+					$readonly = esc_attr( $table_columns[ $field_name ]['readonly'] ?? '' );
+					$readonly = esc_attr( ( $readonly ) ? 'readonly' : '' );
 
-					$required = $table_columns[ $field_name ]['required'] ?? '';
-					$required = ( $required ) ? 'required' : '';
+					$required = esc_attr( $table_columns[ $field_name ]['required'] ?? '' );
+					$required = esc_attr( ( $required ) ? 'required' : '' );
 
 					$placeholder = $table_columns[ $field_name ]['placeholder'] ?? '';
 
@@ -364,16 +356,16 @@ HTML;
 								$item_value = $option_details[ $option_element_value ];
 
 								if ( $current_saved_settings[ $select_element_id ] === $item_id ) {
-									$options .= "<option value='$item_id' selected>$item_value</option>";
+									$options .= "<option value='" . esc_attr( $item_id ) . "' selected>" . esc_html( $item_value ) . '</option>';
 								} else {
-									$options .= "<option value='$item_id'>$item_value</option>";
+									$options .= "<option value='" . esc_attr( $item_id ) . "'>" . esc_html( $item_value ) . '</option>';
 								}
 							}
 
 							$hold_inputs .= "
 									<td>
-										<select name='$select_element_id' $fields_disabled>
-											<option value=''>--$default_dropdown_text--</option>
+										<select name='" . esc_attr( $select_element_id ) . "' $fields_disabled>
+											<option value=''>--" . esc_html( $default_dropdown_text ) . "--</option>
 											$options
 										</select>
 									</td>
@@ -381,15 +373,15 @@ HTML;
 							break;
 						case 'checkbox':
 							$checked      = (bool) $current_saved_settings['should_calculate_per_distance_unit_checkbox'] ?? '';
-							$hold_inputs .= "<td><input type='checkbox' class='$field_name' name='$field_name' placeholder='$placeholder' $readonly $fields_disabled $required" . checked( $checked, true, false ) . '/></td>';
+							$hold_inputs .= "<td><input type='checkbox' class='" . esc_attr( $field_name ) . "' name='" . esc_attr( $field_name ) . "' placeholder='" . esc_attr( $placeholder ) . "' $readonly $fields_disabled $required" . checked( $checked, true, false ) . '/></td>';
 							break;
 						default:
-							$hold_inputs .= "<td><input type='text' class='$field_name' name='$field_name' value='$current_saved_settings[$field_name]' placeholder='$placeholder' $readonly $fields_disabled $required/></td>";
+							$hold_inputs .= "<td><input type='text' class='" . esc_attr( $field_name ) . "' name='" . esc_attr( $field_name ) . "' value='" . esc_attr( $current_saved_settings[ $field_name ] ) . "' placeholder='" . esc_attr( $placeholder ) . "' $readonly $fields_disabled $required/></td>";
 							break;
 					}
 				}
 
-				$hold_inputs .= "<td><input data-repeater-delete type='button' value='$delete_text' /></td>";
+				$hold_inputs .= "<td><input data-repeater-delete type='button' value='" . esc_html( $delete_text ) . "' /></td>";
 
 				$repeater_items .= '<tr data-repeater-item><div>' . $hold_inputs . '</tr></span>';
 			}
@@ -442,29 +434,27 @@ HTML;
 			$repeater_items = '<tr data-repeater-item><div>' . $hold_inputs . '</div></tr>';
 		}
 
-		$markup = <<<HTML
-				<tr valign='top' id="$row_id">
-				<th scope='row' class="titledesc">$name</th>
+		?>
+				<tr valign='top' id="<?php echo esc_attr( $row_id ); ?>">
+				<th scope='row' class="titledesc"><?php echo esc_html( $name ); ?></th>
 				<td>
-					<div class="repeater $class">	
+					<div class="repeater <?php echo esc_attr( $class ); ?>">	
 						<table  class="" >
 							<thead>
 								<tr>
-								$table_column_headings
+								<?php echo wp_kses_post( $table_column_headings ); ?>
 								</tr>
 							</thead>
-							<tbody data-repeater-list="$list_name" >
-								$repeater_items
+							<tbody data-repeater-list="<?php echo esc_attr( $list_name ); ?>" >
+								<?php echo ( $repeater_items ); //phpcs:ignore -- Individual enteries already sanitized ?>
 							</tbody>
-							<td><input data-repeater-create type="button" value="$add"/></td>
+							<td><input data-repeater-create type="button" value="<?php echo esc_attr( $add ); ?>"/></td>
 						</table>
 					</div>
-					<div>$description</div>
+					<div><?php echo wp_kses_post( $description ); ?></div>
 				</td>
 				</tr>
-HTML;
-
-		echo $markup;
+		<?php
 	}
 
 	/**
@@ -490,18 +480,17 @@ HTML;
 	public function create_custom_wc_settings_upsell_banner( $value ) {
 
 		/* translators: 1: HTML break element */
-		$signup_text = sprintf( __( 'Custom Maps, Custom Marker Icons, Saved Addresses, More Visibility Rules, Cost by Region, Cost by Distance, Cost by Store Location, Multi-Store Distance Pricing, Export Order Locations & More. %s Get the most out of LPAC with the PRO version.', 'map-location-picker-at-checkout-for-woocommerce' ), '<br/><br/>' );
+		$signup_text = sprintf( esc_html__( 'Custom Maps, Custom Marker Icons, Saved Addresses, More Visibility Rules, Cost by Region, Cost by Distance, Cost by Store Location, Multi-Store Distance Pricing, Export Order Locations & More. %s Get the most out of LPAC with the PRO version.', 'map-location-picker-at-checkout-for-woocommerce' ), '<br/><br/>' );
 		/* translators: 1: Dashicons outbound link icon */
-		$learn_more = sprintf( __( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
+		$learn_more = sprintf( esc_html__( 'Learn More %s', 'map-location-picker-at-checkout-for-woocommerce' ), '<span style="text-decoration: none" class="dashicons dashicons-external"></span>' );
 
-		$markup = <<<HTML
+		?>
 		<div class="lpac-banner-pro">
-			<p style="font-size: 18px"><strong>$signup_text</strong></p>
+			<p style="font-size: 18px"><strong><?php echo $signup_text //phpcs:ignore -- Already escaped above.; ?></strong></p>
 			<br/>
-			<p><a class="lpac-button" href="https://lpacwp.com/pricing?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=proupsell" target="_blank">$learn_more</a></p>
+			<p><a class="lpac-button" href="https://lpacwp.com/pricing?utm_source=banner&utm_medium=lpacdashboard&utm_campaign=proupsell" target="_blank"><?php echo $learn_more; //phpcs:ignore -- Already escaped above ?></a></p>
 		</div>
-HTML;
-		echo $markup;
+		<?php
 
 	}
 
@@ -516,16 +505,15 @@ HTML;
 		$height    = $value['height'] ?? 'auto';
 		$url       = $value['url'] ?? '#';
 
-		$markup = <<<HTML
-				<tr valign='top' class="$row_class">
+		?>
+				<tr valign='top' class="<?php echo esc_attr( $row_class ); ?>">
 				<!-- <th scope='row' class="titledesc"></th> -->
 				<td>
-					<a href='$url' target='_blank'><img src="$src" class="$class" id="$id" height= "$height" /></a>
-					<p style="font-size: 18px; font-weight: 700; text-align: left; margin-top: 10px">$desc</p>
+					<a href='<?php echo esc_attr( $url ); ?>' target='_blank'><img src="<?php echo esc_attr( $src ); ?>" class="<?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $id ); ?>" height="<?php echo esc_attr( $height ); ?>" /></a>
+					<p style="font-size: 18px; font-weight: 700; text-align: left; margin-top: 10px"><?php echo wp_kses_post( $desc ); ?></p>
 				</td>
 				</tr>
-HTML;
-		echo $markup;
+		<?php
 	}
 
 	/**
@@ -567,9 +555,9 @@ HTML;
 		$map_link = Functions::create_customer_directions_link( $latitude, $longitude );
 
 		$text = esc_html__( 'View', 'map-location-picker-at-checkout-for-woocommerce' );
-		echo "
-			<p><a href='$map_link' target='_blank'><button class='btn button' style='cursor:pointer' type='button'>$text</button></a></p>
-		";
+		?>
+		<p><a href='<?php echo esc_attr( $map_link ); ?>' target='_blank'><button class='btn button' style='cursor:pointer' type='button'><?php echo esc_html( $text ); ?></button></a></p>
+		<?php
 	}
 
 	/**
@@ -607,9 +595,9 @@ HTML;
 			return;
 		}
 
-		echo "
-			<p>$store_name</p>
-		";
+		?>
+			<p><?php echo esc_html( $store_name ); ?></p>
+		<?php
 	}
 
 }

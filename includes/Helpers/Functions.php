@@ -259,6 +259,8 @@ class Functions {
 
 		$dissect_customer_address = get_option( 'kikote_dissect_customer_address', 'yes' );
 
+		$disabled_map_controls = get_option( 'kikote_disabled_map_controls', array() );
+
 		$options = array(
 			'latitude'                                 => $latitude,
 			'longitude'                                => $longitude,
@@ -278,6 +280,7 @@ class Functions {
 			'lpac_past_order_page_default_map_type'    => $past_order_page_default_map_type,
 			'lpac_admin_order_screen_default_map_type' => $admin_order_screen_default_map_type,
 			'dissect_customer_address'                 => $dissect_customer_address,
+			'disabled_map_controls'                    => $disabled_map_controls,
 		);
 
 		return apply_filters( 'lpac_map_options', $options );

@@ -52,10 +52,10 @@ class Controller {
 			'lpac_past_order_page_default_map_type'    => $options['lpac_past_order_page_default_map_type'],
 			'lpac_admin_order_screen_default_map_type' => $options['lpac_admin_order_screen_default_map_type'],
 			'dissect_customer_address'                 => $options['dissect_customer_address'] === 'yes' ? true : false,
+			'disabled_map_controls'                    => $options['disabled_map_controls'],
 		);
 
 		return apply_filters( 'lpac_map_stored_public_settings', $data );
-
 	}
 
 	/**

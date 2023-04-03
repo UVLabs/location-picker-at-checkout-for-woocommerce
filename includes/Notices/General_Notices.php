@@ -30,7 +30,8 @@ class General_Notices extends Notice {
 		$this->create_translators_needed_notice();
 		$this->create_saas_pilot_notice();
 		$this->create_dps_released_notice();
-		$this->create_discord_server_notice();
+		$this->create_ecommerce_community_notice();
+		$this->createPrintusReleaseNotice();
 	}
 
 	/**
@@ -38,12 +39,12 @@ class General_Notices extends Notice {
 	 *
 	 * @return void
 	 */
-	public function create_translators_needed_notice() {
+	private function create_translators_needed_notice() {
 
 		$days_since_installed = $this->get_days_since_installed();
 
-		// Show notice after 4 weeks
-		if ( $days_since_installed < 30 ) {
+		// Show notice after 66 days
+		if ( $days_since_installed < 66 ) {
 			return;
 		}
 
@@ -54,12 +55,12 @@ class General_Notices extends Notice {
 
 		$content = array(
 			'title' => esc_html__( 'We Need Your Help', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🙏',
-			'body'  => esc_html__( 'Do you speak a language beside English? If so, then please help translate LPAC to your native language; this will help other users who know your native language, but speak little to no English, better navigate and set up the plugin. Plus, you will get a cool "Translation Contributor" badge on your WordPress.org profile', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🚀',
+			'body'  => esc_html__( 'Do you speak a language beside English? If so, then please help translate Kikote to your native language; this will help other users who know your native language, but speak little to no English, better navigate and set up the plugin. Plus, you will get a cool "Translation Contributor" badge on your WordPress.org profile', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🚀',
 			'cta'   => esc_html__( 'I can help', 'map-location-picker-at-checkout-for-woocommerce' ),
 			'link'  => esc_attr( 'https://translate.wordpress.org/projects/wp-plugins/map-location-picker-at-checkout-for-woocommerce/' ),
 		);
 
-		echo $this->create_notice_markup( 'help_translate_lpac', $content );
+		$this->create_notice_markup( 'help_translate_lpac', $content );
 	}
 
 	/**
@@ -67,23 +68,23 @@ class General_Notices extends Notice {
 	 *
 	 * @return void
 	 */
-	public function create_saas_pilot_notice() {
+	private function create_saas_pilot_notice() {
 
 		$days_since_installed = $this->get_days_since_installed();
 
-		// Show notice after 10 days
-		if ( $days_since_installed < 10 ) {
+		// Show notice after 30 days
+		if ( $days_since_installed < 30 ) {
 			return;
 		}
 
 		$content = array(
 			'title' => esc_html__( 'Help Shape the Future', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 👀',
-			'body'  => sprintf( esc_html__( 'Want a more streamlined delivery/pickup workflow for you or your drivers? Signup for early access to the LPAC Web App pilot; quickly pull up orders and directions from one simplified dashboard. %1$1sLimited spots available%2$2s', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 👾', '<strong>', '</strong>' ),
+			'body'  => sprintf( esc_html__( 'Want a more streamlined delivery/pickup workflow for you or your drivers? Signup for early access to the Kikote Web App pilot; quickly pull up orders and directions from one simplified dashboard. %1$1sLimited spots available%2$2s', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 👾', '<strong>', '</strong>' ),
 			'cta'   => esc_html__( 'Learn more', 'map-location-picker-at-checkout-for-woocommerce' ),
 			'link'  => esc_attr( 'https://lpacwp.com/saas-pilot/' ),
 		);
 
-		echo $this->create_notice_markup( 'saas_pilot', $content );
+		$this->create_notice_markup( 'saas_pilot', $content );
 	}
 
 	/**
@@ -91,22 +92,22 @@ class General_Notices extends Notice {
 	 *
 	 * since 1.6.13
 	 */
-	public function create_dps_released_notice() {
+	private function create_dps_released_notice() {
 
 		$days_since_installed = $this->get_days_since_installed();
 
-		// Show notice after 5 days
-		if ( $days_since_installed < 5 ) {
+		// Show notice after 24 days
+		if ( $days_since_installed < 24 ) {
 			return;
 		}
 
 		$content = array(
 			'title' => esc_html__( 'Say hello to Delivery & Pickup Scheduling for WooCommerce!', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🚀',
-			'body'  => esc_html__( 'Hey! I\'ve just released a new plugin that helps you further optimize your store, by letting customers select the date and time they\'d like their Delivery or Pickup order. Give it a shot and let me know how it can be improved to better serve you!', 'map-location-picker-at-checkout-for-woocommerce' ),
+			'body'  => esc_html__( 'Hey! We have a new plugin that helps you further optimize your store— by letting customers select the date and time they\'d like their Delivery or Pickup order. Give it a shot and let me know how it can be improved to better serve you!', 'map-location-picker-at-checkout-for-woocommerce' ),
 			'link'  => esc_attr( 'https://dpswp.com/' ),
 		);
 
-		echo $this->create_notice_markup( 'dps_released', $content );
+		$this->create_notice_markup( 'dps_released', $content );
 	}
 
 	/**
@@ -115,16 +116,38 @@ class General_Notices extends Notice {
 	 * @return void
 	 * @since 1.0.0
 	 */
-	public function create_discord_server_notice() {
+	private function create_ecommerce_community_notice() {
+
+		$days_since_installed = $this->get_days_since_installed();
+
+		// Show notice after 3 days
+		if ( $days_since_installed < 3 ) {
+			return;
+		}
 
 		$content = array(
 			'title' => esc_html__( 'Join our E-Commerce Support Discord Community', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🚀',
 			'body'  => sprintf( esc_html__( 'Meet E-commerce and chat with store owners like yourself from around the world and discuss on ways to help grow sales, plugin recommendations, tips and tricks and more. %1$1sGrow your store today.%2$2s', 'map-location-picker-at-checkout-for-woocommerce' ), '<strong>', '</strong>' ),
-			'cta'   => esc_html__( 'Let me in', 'map-location-picker-at-checkout-for-woocommerce' ),
-			'link'  => esc_attr( 'https://discord.gg/d8TsBv8D' ),
+			'cta'   => esc_html__( 'Learn more', 'map-location-picker-at-checkout-for-woocommerce' ),
+			'link'  => esc_attr( 'https://lpacwp.com/e-commerce-support-community/?utm_source=plugin-notice&utm_medium=wp-dashboard&utm_campaign=ecom-community' ),
 		);
 
-		echo $this->create_notice_markup( 'discord_server', $content );
+		$this->create_notice_markup( 'discord_server', $content );
 	}
 
+	/**
+	 * Create Printus released notice.
+	 *
+	 * @return void
+	 */
+	private function createPrintusReleaseNotice() {
+
+		$content = array(
+			'title' => esc_html__( '[NEW] Printus - Cloud Printing Plugin for WooCommerce', 'map-location-picker-at-checkout-for-woocommerce' ) . ' 🚀',
+			'body'  => sprintf( esc_html__( 'Print WooCommerce receipts, invoices or package labels to ANY printer as soon as a new order comes in.', 'map-location-picker-at-checkout-for-woocommerce' ), '📈', '<strong>', '</strong>', '%' ),
+			'link'  => esc_attr( 'https://printus.cloud/?utm_source=banner&utm_medium=kikotenotice&utm_campaign=cross-sell' ),
+		);
+
+		$this->create_notice_markup( 'printus_launch_notice', $content );
+	}
 }

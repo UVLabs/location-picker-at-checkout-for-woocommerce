@@ -90,23 +90,18 @@ class Notice {
 
 		$dismiss_url  = esc_html( $this->create_dismiss_url( $notice_id ) );
 		$dismiss_text = esc_html__( 'Dismiss', 'map-location-picker-at-checkout-for-woocommerce' );
-
-		$markup = <<<HTML
-
+		?>
 			<div class="update-nag lpac-admin-notice">
 			<div class="lpac-notice-logo"></div> 
-			<p class="lpac-notice-title">$title</p> 
-			<p class="lpac-notice-body">$body</p>
+			<p class="lpac-notice-title"><?php echo esc_html( $title ); ?></p> 
+			<p class="lpac-notice-body"><?php echo wp_kses_post( $body ); ?></p>
 			<ul class="lpac-notice-body">
-			$learm_more_output
-			<li id="lpac-notice-dismiss"><a href="$dismiss_url" style="color: #2b4fa3"> <span class="dashicons dashicons-dismiss"></span>$dismiss_text</a></li>
+			<?php echo wp_kses_post( $learm_more_output ); ?>
+			<li id="lpac-notice-dismiss"><a href="<?php echo esc_attr( $dismiss_url ); ?>" style="color: #2b4fa3"> <span class="dashicons dashicons-dismiss"></span><?php echo esc_html( $dismiss_text ); ?></a></li>
 			</ul>
 			</div>
 
-HTML;
-
-		return $markup;
-
+		<?php
 	}
 
 	/**
@@ -159,7 +154,6 @@ HTML;
 		}
 
 		return;
-
 	}
 
 }

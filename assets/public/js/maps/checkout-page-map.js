@@ -28,21 +28,21 @@ const find_location_btn = document.querySelector("#lpac-find-location-btn");
 const places_autocomplete_used = document.querySelector(
   "#lpac_places_autocomplete"
 );
-
 if (typeof find_location_btn !== "undefined" && find_location_btn !== null) {
   find_location_btn.addEventListener("click", async () => {
-    const latLng = await bootstrapMapFunctionality(mapOptions);
+    let mapData = {
+      map,
+      mapOptions,
+      marker,
+      infowindow,
+    };
+
+    const latLng = await bootstrapMapFunctionality(mapData);
 
     if (latLng.lat !== "" && latLng.lng !== "") {
       const geocodeResults = await geocodeCoordinates(latLng, map);
-      const mapData = {
-        map,
-        mapOptions,
-        marker,
-        latLng,
-        infowindow,
-        geocodeResults,
-      };
+      mapData["latLng"] = latLng;
+      mapData["geocodeResults"] = geocodeResults;
       setupMap(mapData);
       fillAllAddressFields(geocodeResults);
     }

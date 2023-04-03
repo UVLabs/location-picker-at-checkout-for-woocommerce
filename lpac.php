@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Kikote- Location Picker at Checkout for WooCommerce plugin.
+ * Kikote - Location Picker at Checkout Plugin for WooCommerce.
  *
  * @link              https://uriahsvictor.com
  * @link              https://github.com/UVLabs/location-picker-at-checkout-for-woocommerce
@@ -9,19 +9,19 @@
  * @package           Lpac
  *
  * @wordpress-plugin
- * Plugin Name:       Kikote- Location Picker at Checkout for WooCommerce
+ * Plugin Name:       Kikote - Location Picker at Checkout for WooCommerce
  * Plugin URI:        https://lpacwp.com
  * Description:       Allow customers to choose their shipping or pickup location using a map at checkout.
- * Version:           1.7.0-lite
+ * Version:           1.7.4-lite
  * Requires at least: 5.7
  * Author:            Uriahs Victor
- * Author URI:        https://uriahsvictor.com
+ * Author URI:        https://lpacwp.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       map-location-picker-at-checkout-for-woocommerce
  * Domain Path:       /languages
  * WC requires at least: 3.0
- * WC tested up to: 7.4
+ * WC tested up to: 7.5
  * Requires PHP: 7.4
  */
 // If this file is called directly, abort.
@@ -29,46 +29,76 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 if ( !defined( 'LPAC_VERSION' ) ) {
-    define( 'LPAC_VERSION', '1.7.0' );
+    define( 'LPAC_VERSION', '1.7.4' );
 }
 /**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-lpac-activator.php
+ * Check PHP version
  */
-if ( !function_exists( 'activate_lpac' ) ) {
-    /**
-     * Code that runs when the plugin is activated.
-     *
-     * @return void
-     * @since 1.0.0
-     */
-    function activate_lpac()
-    {
-        require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-activator.php';
-        Lpac_Activator::activate();
+if ( function_exists( 'phpversion' ) ) {
+    
+    if ( version_compare( phpversion(), '7.4', '<' ) ) {
+        add_action( 'admin_notices', function () {
+            echo  "<div class='notice notice-error is-dismissible'>" ;
+            /* translators: 1: Opening <p> HTML element 2: Opening <strong> HTML element 3: Closing <strong> HTML element 4: Closing <p> HTML element  */
+            echo  sprintf(
+                esc_html__( '%1$s%2$sKikote - Location Picker at Checkout for WooCommerce NOTICE:%3$s PHP version too low to use this plugin. Please change to at least PHP 7.4. You can contact your web host for assistance in updating your PHP version.%4$s', 'map-location-picker-at-checkout-for-woocommerce' ),
+                '<p>',
+                '<strong>',
+                '</strong>',
+                '</p>'
+            ) ;
+            echo  '</div>' ;
+        } );
+        return;
     }
 
 }
 /**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-lpac-deactivator.php
+ * Check PHP versions
  */
-if ( !function_exists( 'deactivate_lpac' ) ) {
-    /**
-     * Code that runs when the plugin is deactivated.
-     *
-     * @return void
-     * @since 1.0.0
-     */
-    function deactivate_lpac()
-    {
-        require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-deactivator.php';
-        Lpac_Deactivator::deactivate();
+if ( defined( 'PHP_VERSION' ) ) {
+    
+    if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
+        add_action( 'admin_notices', function () {
+            echo  "<div class='notice notice-error is-dismissible'>" ;
+            /* translators: 1: Opening <p> HTML element 2: Opening <strong> HTML element 3: Closing <strong> HTML element 4: Closing <p> HTML element  */
+            echo  sprintf(
+                esc_html__( '%1$s%2$sKikote - Location Picker at Checkout for WooCommerce NOTICE:%3$s PHP version too low to use this plugin. Please change to at least PHP 7.4. You can contact your web host for assistance in updating your PHP version.%4$s', 'map-location-picker-at-checkout-for-woocommerce' ),
+                '<p>',
+                '<strong>',
+                '</strong>',
+                '</p>'
+            ) ;
+            echo  '</div>' ;
+        } );
+        return;
     }
 
 }
-register_activation_hook( __FILE__, 'activate_lpac' );
-register_deactivation_hook( __FILE__, 'deactivate_lpac' );
+/**
+ * Check that WooCommerce is active.
+ *
+ * This needs to happen before freemius does any work.
+ *
+ * @since 1.0.0
+ */
+
+if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ), true ) ) {
+    add_action( 'admin_notices', function () {
+        echo  "<div class='notice notice-error is-dismissible'>" ;
+        /* translators: 1: Opening <p> HTML element 2: Opening <strong> HTML element 3: Closing <strong> HTML element 4: Closing <p> HTML element  */
+        echo  sprintf(
+            esc_html__( '%1$s%2$sKikote - Location Picker at Checkout for WooCommerce NOTICE:%3$s WooCommerce is not activated, please activate it to use the plugin.%4$s', 'map-location-picker-at-checkout-for-woocommerce' ),
+            '<p>',
+            '<strong>',
+            '</strong>',
+            '</p>'
+        ) ;
+        echo  '</div>' ;
+    } );
+    return;
+}
+
 
 if ( function_exists( 'lpac_fs' ) ) {
     lpac_fs()->set_basename( false, __FILE__ );
@@ -128,21 +158,52 @@ if ( function_exists( 'lpac_fs' ) ) {
         do_action( 'lpac_fs_loaded' );
     }
     
-    // Composer autoload.
-    require dirname( __FILE__ ) . '/vendor/autoload.php';
     /**
-     * Check that WooCommerce is active.
+     * Composer autoload. DO NOT PLACE THIS LINE BEFORE FREEMIUS SDK RUNS.
      *
-     * This needs to happen before freemius does any work.
-     *
-     * @since 1.0.0
+     * Doing that will cause the plugin to throw an error when trying to activate PRO when the Free version is active or vice versa.
+     * This is because both PRO and Free are generated from the same codebase, meaning composer autoloader file would already be
+     * present and throw an error when trying to be redefined.
      */
+    require_once dirname( __FILE__ ) . '/vendor/autoload.php';
+    /**
+     * The code that runs during plugin activation.
+     * This action is documented in includes/class-lpac-activator.php
+     */
+    if ( !function_exists( 'activate_lpac' ) ) {
+        /**
+         * Code that runs when the plugin is activated.
+         *
+         * @return void
+         * @since 1.0.0
+         */
+        function activate_lpac()
+        {
+            require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-activator.php';
+            Lpac_Activator::activate();
+        }
     
-    if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ), true ) ) {
-        add_action( 'admin_notices', array( new Lpac\Notices\Admin(), 'lpac_wc_not_active_notice' ) );
-        return;
     }
+    /**
+     * The code that runs during plugin deactivation.
+     * This action is documented in includes/class-lpac-deactivator.php
+     */
+    if ( !function_exists( 'deactivate_lpac' ) ) {
+        /**
+         * Code that runs when the plugin is deactivated.
+         *
+         * @return void
+         * @since 1.0.0
+         */
+        function deactivate_lpac()
+        {
+            require_once plugin_dir_path( __FILE__ ) . 'includes/class-lpac-deactivator.php';
+            Lpac_Deactivator::deactivate();
+        }
     
+    }
+    register_activation_hook( __FILE__, 'activate_lpac' );
+    register_deactivation_hook( __FILE__, 'deactivate_lpac' );
     /**
      * Move this code to the main plugin file and then run it in an action hook when the SDK is initialized: lpac_fs_loaded.
      */
@@ -154,37 +215,11 @@ if ( function_exists( 'lpac_fs' ) ) {
     
     require __DIR__ . '/class-lpac-uninstall.php';
     require __DIR__ . '/admin-pointers.php';
-    
-    if ( function_exists( 'lpac_fs' ) ) {
-        lpac_fs()->add_action( 'after_uninstall', array( new Lpac_Uninstall(), 'remove_plugin_settings' ) );
-        lpac_fs()->add_filter( 'show_deactivation_subscription_cancellation', '__return_false' );
-        lpac_fs()->add_filter( 'plugin_icon', function () {
-            return dirname( __FILE__ ) . '/assets/img/logo.png';
-        } );
-    }
-    
-    /**
-     * Check PHP version
-     */
-    if ( function_exists( 'phpversion' ) ) {
-        
-        if ( version_compare( phpversion(), '7.4', '<' ) ) {
-            add_action( 'admin_notices', array( new Lpac\Notices\Admin(), 'output_php_version_notice' ) );
-            return;
-        }
-    
-    }
-    /**
-     * Check PHP versions
-     */
-    if ( defined( 'PHP_VERSION' ) ) {
-        
-        if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
-            add_action( 'admin_notices', array( new Lpac\Notices\Admin(), 'output_php_version_notice' ) );
-            return;
-        }
-    
-    }
+    lpac_fs()->add_action( 'after_uninstall', array( new Lpac_Uninstall(), 'remove_plugin_settings' ) );
+    lpac_fs()->add_filter( 'show_deactivation_subscription_cancellation', '__return_false' );
+    lpac_fs()->add_filter( 'plugin_icon', function () {
+        return dirname( __FILE__ ) . '/assets/img/logo.png';
+    } );
     define( 'LPAC_BASE_FILE', basename( plugin_dir_path( __FILE__ ) ) );
     define( 'LPAC_PLUGIN_NAME', 'lpac' );
     define( 'LPAC_PLUGIN_DIR', __DIR__ . '/' );
@@ -192,6 +227,7 @@ if ( function_exists( 'lpac_fs' ) ) {
     define( 'LPAC_PLUGIN_ASSETS_PATH_URL', plugin_dir_url( __FILE__ ) . 'assets/' );
     define( 'LPAC_PLUGIN_PATH_URL', plugin_dir_url( __FILE__ ) );
     define( 'LPAC_INSTALLED_AT_VERSION', get_option( 'lpac_installed_at_version', constant( 'LPAC_VERSION' ) ) );
+    define( 'LPAC_IS_PREMIUM_VERSION', lpac_fs()->is_premium() );
     define( 'LPAC_GOOGLE_MAPS_API_LINK', 'https://maps.googleapis.com/maps/api/js?key=' );
     define( 'LPAC_GOOGLE_MAPS_API_KEY', get_option( 'lpac_google_maps_api_key', '' ) );
     define( 'LPAC_GOOGLE_MAPS_DIRECTIONS_LINK', 'https://maps.google.com/maps?daddr=' );
@@ -217,6 +253,11 @@ if ( function_exists( 'lpac_fs' ) ) {
         array_push( $google_params, "libraries={$libraries}" );
     }
     
+    // Map Region.
+    $region = get_option( 'lpac_google_map_region' );
+    if ( !empty($region) ) {
+        $google_params[] = "region={$region}";
+    }
     // Callback parameter is required even though we're not making use of it.
     $google_params[] = 'callback=GMapsScriptLoaded';
     // Bring our parameters together.

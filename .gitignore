@@ -2,7 +2,7 @@ todo.txt
 vendor
 .DS_Store
 dist
-artifact
+artifact-kikote
 lpac.zip
 logs
 .vscode

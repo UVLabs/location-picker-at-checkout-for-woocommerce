@@ -12,10 +12,11 @@
  * @since   1.3.3
  * @package Lpac
  */
+
 namespace Lpac\Compatibility\FunnelKit;
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**

@@ -4,12 +4,12 @@
 
 # Start fresh
 rm -rf dist
-rm -rf artifact
+rm -rf artifact-kikote
 rm lpac.zip
 
 # Make our directories
 mkdir -p dist
-mkdir -p artifact
+mkdir -p artifact-kikote
 
 # Remove dev dependencies
 composer install --no-dev
@@ -26,7 +26,7 @@ npm run format
 rsync -acvP --delete --exclude-from=".distignore-github-lite" ./ "./dist"
 
 #Change to our dist folder and zip to artifact folder
-(cd dist && zip -r ../artifact/lpac.zip .)
+(cd dist && zip -r ../artifact-kikote/lpac.zip .)
 
 # Delete dist folder
 rm -rf dist

@@ -28,8 +28,8 @@ class Frontend
     /**
      * Exposes map settings to be used in client-side javascript.
      *
-     * @since    1.0.0
-     * @param      string $additional   Additional settings to pass to JS.
+     * @param string $additional   Additional settings to pass to JS.
+     * @since 1.0.0
      */
     private function setup_global_js_vars( $additional = array() )
     {
@@ -231,7 +231,7 @@ JAVASCRIPT;
 		<?php 
         ?>
 		<div style='display: <?php 
-        echo  $display ;
+        echo  esc_attr( $display ) ;
         ?>' id='lpac-map-container' class='woocommerce-shipping-fields__field-wrapper'>
 			<?php 
         do_action( 'lpac_before_checkout_map', '', $user_id );
@@ -245,13 +245,13 @@ JAVASCRIPT;
         do_action( 'lpac_before_checkout_map_controls', '', $user_id );
         ?>
 			<div id='lpac-map-instructions'> <?php 
-        echo  $instuctions_text ;
+        echo  esc_html( $instuctions_text ) ;
         ?></div>
 			<?php 
         do_action( 'lpac_before_detect_location_btn', '', $user_id );
         ?>
 			<div id='lpac-find-location-btn-wrapper'><button id='lpac-find-location-btn' class='button btn' type='button'><?php 
-        echo  $lpac_find_location_btn_text ;
+        echo  esc_html( $lpac_find_location_btn_text ) ;
         ?></button></div>
 			<?php 
         do_action( 'lpac_after_detect_location_btn', '', $user_id );
@@ -315,13 +315,16 @@ JAVASCRIPT;
         if ( empty($store_origin_name) ) {
             return;
         }
-        $store_origin_name_label = apply_filters( 'lpac_order_details_deliver_from_text', __( 'Order origin', 'map-location-picker-at-checkout-for-woocommerce' ) );
-        $markup = <<<HTML
-\t\t<br/>
-\t\t<h2 class='woocommerce-order-details__title'>{$store_origin_name_label}</h2>
-\t\t<p class='lpac_order_details_deliver_from_text' style='font-size: 20px; font-weight: bold'>{$store_origin_name}</p>
-HTML;
-        echo  $markup ;
+        $store_origin_name_label = apply_filters( 'lpac_order_details_deliver_from_text', esc_html__( 'Order origin', 'map-location-picker-at-checkout-for-woocommerce' ) );
+        ?>
+			<br/>
+			<h2 class='woocommerce-order-details__title'><?php 
+        echo  esc_html( $store_origin_name_label ) ;
+        ?></h2>
+			<p class='lpac_order_details_deliver_from_text' style='font-size: 20px; font-weight: bold'><?php 
+        echo  esc_html( $store_origin_name ) ;
+        ?></p>
+		<?php 
     }
     
     /**
@@ -385,7 +388,7 @@ HTML;
         do_action( 'lpac_before_order_details_map', '', $user_id );
         ?>
 			<h2 class='woocommerce-order-details__title'><?php 
-        echo  $label ;
+        echo  esc_html( $label ) ;
         ?></h2>
 			<div class='lpac-map'></div>
 			<?php 
@@ -439,21 +442,19 @@ HTML;
         if ( empty($style) ) {
             return;
         }
-        $output = <<<HTML
-\t\t<style>
-\t\t\t.lpac-map{
-\t\t\t\t{$style}
-\t\t\t}
-
-\t\t\t@media screen and (max-width: 960px ){
-\t\t\t\t.lpac-map{
-\t\t\t\t\t{$style_mobile}
-\t\t\t\t}
-\t\t\t}
-\t\t</style>
-\t\t
-HTML;
-        echo  $output ;
+        ?>
+		<style>
+			.lpac-map{ <?php 
+        echo  esc_attr( $style ) ;
+        ?> }
+			@media screen and (max-width: 960px ){
+				.lpac-map{ <?php 
+        echo  esc_attr( $style_mobile ) ;
+        ?> }
+			}
+		</style>
+		
+		<?php 
     }
     
     /**
@@ -476,32 +477,36 @@ HTML;
         }
         $learn_more = esc_html__( 'Learn More', 'map-location-picker-at-checkout-for-woocommerce' );
         $api_key = get_option( 'lpac_google_maps_api_key' );
-        $notice_text = esc_html__( 'Hi Admin, some websites might have issues with displaying or using the Google Map. If you\'re having issues then please have a look at your browser console for any errors.' );
-        $additional = esc_html__( 'Only Admins on your website can see this notice. You can turn it off in the plugin settings from the "Tools" submenu if everything works fine.' );
+        $notice_text = esc_html__( 'Hi Admin, some websites might have issues with displaying or using the Google Map. If you\'re having issues then please have a look at your browser console for any errors.', 'map-location-picker-at-checkout-for-woocommerce' );
+        $additional = esc_html__( 'Only Admins on your website can see this notice. You can turn it off in the plugin settings from the "Tools" submenu if everything works fine.', 'map-location-picker-at-checkout-for-woocommerce' );
         
         if ( empty($api_key) ) {
             $no_api_key = sprintf( esc_html__( 'You have not entered a Google Maps API Key! The plugin will not function how it should until you have entered the key. Please read the following doc for instructions on obtaining a Google Maps API Key %s' ), "<a style='color: blue !important' href='https://lpacwp.com/docs/getting-started/google-cloud-console/getting-your-google-maps-api-key/' target='_blank'>{$learn_more} >></a>" );
-            $no_api_key_markup = <<<HTML
-\t\t\t<div class="lpac-admin-notice" style="background: red; text-align: center; margin-bottom: 20px; padding: 10px; font-weight: bold">
-\t\t\t<p style=" color: #ffffff !important; font-size:14px;"><span style="font-weight: bold">Location Picker at Checkout: </span>
-\t\t\t\t{$no_api_key}
-\t\t\t</p>
-\t\t\t</div>
-HTML;
-            echo  $no_api_key_markup ;
+            ?>
+			<div class="lpac-admin-notice" style="background: red; text-align: center; margin-bottom: 20px; padding: 10px; font-weight: bold">
+			<p style=" color: #ffffff !important; font-size:14px;"><span style="font-weight: bold">Location Picker at Checkout: </span>
+				<?php 
+            echo  wp_kses_post( $no_api_key ) ;
+            ?>
+			</p>
+			</div>
+			<?php 
         }
         
-        $markup = <<<HTML
-\t\t<div class="lpac-admin-notice" style="background: #246df3; text-align: center; margin-bottom: 20px; padding: 10px;">
-\t\t\t<p style=" color: #ffffff !important; font-size:14px;"><span style="font-weight: bold">Location Picker at Checkout: </span>
-\t\t\t\t{$notice_text}
-\t\t\t</p>
-\t\t\t<p style=" color: #ffffff !important; font-size:12px; font-weight: bold;" >
-\t\t\t\t{$additional}
-\t\t\t</p>
-\t\t</div>
-HTML;
-        echo  $markup ;
+        ?>
+		<div class="lpac-admin-notice" style="background: #246df3; text-align: center; margin-bottom: 20px; padding: 10px;">
+			<p style=" color: #ffffff !important; font-size:14px;"><span style="font-weight: bold">Location Picker at Checkout: </span>
+				<?php 
+        echo  esc_html( $notice_text ) ;
+        ?>
+			</p>
+			<p style=" color: #ffffff !important; font-size:12px; font-weight: bold;" >
+				<?php 
+        echo  esc_html( $additional ) ;
+        ?>
+			</p>
+		</div>
+		<?php 
     }
     
     /**
@@ -513,7 +518,7 @@ HTML;
     {
         $strings = array(
             'geolocation_not_supported'  => __( 'Geolocation is not possible on this web browser. Please switch to a different web browser to use our interactive map.', 'map-location-picker-at-checkout-for-woocommerce' ),
-            'manually_select_location'   => __( 'Please select your location manually using the map.', 'map-location-picker-at-checkout-for-woocommerce' ),
+            'manually_select_location'   => __( 'Please select your location manually by clicking on the map then moving the marker to your desired location.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'no_results_found'           => __( 'No address results found for your location.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'moving_too_quickly'         => __( 'Slow down, you are moving too quickly, use the zoom out button to move the marker across larger distances.', 'map-location-picker-at-checkout-for-woocommerce' ),
             'generic_error'              => __( 'An error occurred while trying to detect your location. Please try again after the page has refreshed.', 'map-location-picker-at-checkout-for-woocommerce' ),
